@@ -6,9 +6,9 @@ import {
 } from "lucide-react";
 
 /* ============================================================
-   TOKENS
+   TOKENS — light + dark palettes behind a theme context
    ============================================================ */
-const C = {
+const LIGHT = {
   ink: "#121212",
   paper: "#FAF9F5",
   paperDim: "#F2F0EA",
@@ -19,9 +19,35 @@ const C = {
   accent: "#3547F0",
   accentDim: "#EBEDFD",
   white: "#FFFFFF",
+  navBg: "rgba(250,249,245,0.86)",
 };
 
-const FONTS = `
+const DARK = {
+  ink: "#F2F0EA",
+  paper: "#131210",
+  paperDim: "#1C1A16",
+  mid: "#A7A395",
+  faint: "#726E60",
+  line: "#2C2A24",
+  lineStrong: "#413D33",
+  accent: "#5B6BFF",
+  accentDim: "#1E2350",
+  white: "#FFFFFF",
+  navBg: "rgba(19,18,16,0.86)",
+};
+
+const ThemeContext = React.createContext({ theme: "dark", C: DARK, toggle: () => {} });
+function useC() { return React.useContext(ThemeContext).C; }
+function useThemeToggle() { return React.useContext(ThemeContext); }
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState("dark");
+  const C = theme === "dark" ? DARK : LIGHT;
+  const toggle = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+  return <ThemeContext.Provider value={{ theme, C, toggle }}>{children}</ThemeContext.Provider>;
+}
+
+const getFonts = (C) => `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
   .f-display{font-family:'Space Grotesk',sans-serif;}
   .f-mono{font-family:'IBM Plex Mono',monospace;}
@@ -42,6 +68,7 @@ const FONTS = `
   .btn-press:active{transform:scale(.96);}
   .hover-lift{transition:transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease;}
   .hover-lift:hover{transform:translateY(-4px);}
+  body{background-color:${C.paper};}
   input:focus, textarea:focus { border-color:${C.accent} !important; box-shadow:0 0 0 3px ${C.accentDim}; }
   @media (prefers-reduced-motion: reduce){ .marquee-track,.rise,.pulse-dot,.digit-in,.float-slow,.btn-press,.hover-lift{animation:none !important; transition:none !important;} }
 `;
@@ -188,6 +215,7 @@ function useMagnetic(strength = 14) {
 }
 
 function Eyebrow({ children, dot = true }) {
+  const C = useC();
   return (
     <div className="f-mono flex items-center gap-2 uppercase tracking-widest text-xs" style={{ color: C.mid }}>
       {dot && <span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />}
@@ -197,10 +225,12 @@ function Eyebrow({ children, dot = true }) {
 }
 
 function Rule({ tight }) {
+  const C = useC();
   return <div style={{ borderTop: `1px solid ${C.line}`, width: "100%" }} className={tight ? "my-4" : "my-10"} />;
 }
 
 function Button({ children, variant = "primary", onClick, icon: Icon = ArrowRight, className = "", type = "button", magnetic = true }) {
+  const C = useC();
   const m = useMagnetic(10);
   const base = "f-mono inline-flex items-center gap-2 px-6 py-3.5 text-xs uppercase tracking-widest transition-all duration-200 btn-press group/btn";
   const mag = magnetic ? { ref: m.ref, onMouseMove: m.onMouseMove, onMouseLeave: m.onMouseLeave } : {};
@@ -238,6 +268,7 @@ function Button({ children, variant = "primary", onClick, icon: Icon = ArrowRigh
 }
 
 function StatBlock({ value, label, animated = true }) {
+  const C = useC();
   const numeric = /^\d+$/.test(String(value));
   return (
     <div>
@@ -265,6 +296,7 @@ function useCountdown(target) {
 }
 
 function Countdown({ target, size = "lg" }) {
+  const C = useC();
   const { d, h, m, s } = useCountdown(target);
   const cell = (v, label) => (
     <div className="flex flex-col items-center">
@@ -289,6 +321,7 @@ function Countdown({ target, size = "lg" }) {
 
 /* Ticket-punch progress track — signature element */
 function ProgressTrack({ status, compact }) {
+  const C = useC();
   const idx = STATUS_ORDER.indexOf(status);
   return (
     <div className="flex items-center w-full">
@@ -329,6 +362,7 @@ function ProgressTrack({ status, compact }) {
 }
 
 function StatusPill({ status }) {
+  const C = useC();
   const map = {
     Submitted: C.mid, Picked: C.ink, Designing: C.accent, Delivered: "#2E9C5B", Completed: "#2E9C5B", Rejected: C.faint,
   };
@@ -343,11 +377,13 @@ function StatusPill({ status }) {
    NAV
    ============================================================ */
 function Nav({ go, view }) {
+  const C = useC();
+  const { theme, toggle } = useThemeToggle();
   const links = [
     ["home", "Home"], ["week", "This Week"], ["archive", "Archive"],
   ];
   return (
-    <div className="sticky top-0 z-40 backdrop-blur" style={{ backgroundColor: "rgba(250,249,245,0.86)", borderBottom: `1px solid ${C.line}` }}>
+    <div className="sticky top-0 z-40 backdrop-blur" style={{ backgroundColor: C.navBg, borderBottom: `1px solid ${C.line}` }}>
       <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 h-16 flex items-center justify-between">
         <button onClick={() => go("home")} className="f-display flex items-center gap-2 tracking-tight group" style={{ fontSize: 20, fontWeight: 700, color: C.ink }}>
           PICKED
@@ -365,15 +401,52 @@ function Nav({ go, view }) {
             </button>
           ))}
         </div>
-        <Button variant="ghost" onClick={() => go("submit")} className="!py-2.5 !px-4">Submit a brief</Button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggle}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="relative flex items-center rounded-full btn-press shrink-0"
+            style={{ width: 44, height: 24, backgroundColor: theme === "dark" ? C.accent : C.paperDim, border: `1px solid ${C.lineStrong}`, transition: "background-color .25s ease" }}
+          >
+            <span
+              className="absolute rounded-full flex items-center justify-center transition-transform duration-300"
+              style={{ width: 18, height: 18, top: 2, left: 2, backgroundColor: C.paper, transform: theme === "dark" ? "translateX(20px)" : "translateX(0)" }}
+            >
+              {theme === "dark" ? <Circle size={9} color={C.accent} fill={C.accent} /> : <CircleDot size={9} color={C.mid} />}
+            </span>
+          </button>
+          <Button variant="ghost" onClick={() => go("submit")} className="!py-2.5 !px-4">Submit a brief</Button>
+        </div>
       </div>
     </div>
   );
 }
 
 function Footer({ go }) {
+  const C = useC();
   return (
     <div style={{ borderTop: `1px solid ${C.line}` }} className="mt-24">
+      {/* Special work — commissions outside the weekly pick */}
+      <div style={{ borderBottom: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20">
+          <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Not everyone wants to wait for Friday</span>
+          <div className="f-display mt-3 max-w-xl" style={{ fontSize: "clamp(24px,3.2vw,34px)", lineHeight: 1.3, fontWeight: 500, color: C.ink }}>
+            If you'd rather just hire me for a proper campaign, gig, or one-off — that's on the table too.
+          </div>
+          <p className="f-body mt-4 max-w-lg" style={{ fontSize: 15, lineHeight: 1.7, color: C.mid }}>
+            No brief pool, no waiting your turn. Just email me directly and tell me what you need.
+          </p>
+          <a href="mailto:oshiderooreoluwa@gmail.com"
+            className="group inline-flex items-center gap-2 f-mono uppercase text-xs tracking-widest px-6 py-3.5 rounded-full mt-7 btn-press"
+            style={{ border: `1px solid ${C.ink}`, color: C.ink, transition: "background-color .25s ease, color .25s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = C.ink; e.currentTarget.style.color = C.paper; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = C.ink; }}
+          >
+            oshiderooreoluwa@gmail.com <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        </div>
+      </div>
+
       {/* Creator credit — its own section, not a footnote */}
       <div style={{ borderBottom: `1px solid ${C.line}` }}>
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8">
@@ -423,6 +496,7 @@ function Footer({ go }) {
    HOME
    ============================================================ */
 function Home({ go, openBrief }) {
+  const C = useC();
   const target = useMemo(() => Date.now() + (4 * 3600 + 22 * 60 + 10) * 1000, []);
 
   /* Shared "log entry" row: a slim mono margin column + a wide content column.
@@ -539,6 +613,7 @@ function Home({ go, openBrief }) {
    WEEK PAGE (current cycle detail)
    ============================================================ */
 function WeekPage({ go }) {
+  const C = useC();
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 pb-24">
       <Reveal>
@@ -579,6 +654,7 @@ function WeekPage({ go }) {
    PROJECT / REVEAL PAGE
    ============================================================ */
 function ProjectPage({ project, go }) {
+  const C = useC();
   const p = project || ARCHIVE[0];
   return (
     <div>
@@ -647,6 +723,7 @@ function ProjectPage({ project, go }) {
    ARCHIVE
    ============================================================ */
 function ArchivePage({ go, openBrief }) {
+  const C = useC();
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
       <Reveal>
@@ -692,6 +769,8 @@ function ArchivePage({ go, openBrief }) {
 const DRAFT_KEY = "picked_brief_draft";
 
 function SubmitFlow({ go }) {
+  const C = useC();
+  const inputStyle = { border: `1px solid ${C.line}`, backgroundColor: C.paper, padding: "13px 16px", borderRadius: 3, width: "100%", fontSize: 15, fontFamily: "'Inter',sans-serif", outline: "none", color: C.ink, transition: "border-color .2s ease, box-shadow .2s ease" };
   const [step, setStep] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
@@ -890,7 +969,7 @@ function SubmitFlow({ go }) {
               placeholder="What story do you want your social campaign to tell?"
               rows={8}
               className="f-body w-full p-5 rounded outline-none resize-none"
-              style={{ border: `1px solid ${C.line}`, backgroundColor: C.white, fontSize: 15, lineHeight: 1.6 }}
+              style={{ border: `1px solid ${C.line}`, backgroundColor: C.paper, fontSize: 15, lineHeight: 1.6 }}
             />
             <p className="f-body text-xs mt-3" style={{ color: C.mid }}>
               Tell me what you're trying to achieve, who it's for, what it should communicate, and anything else I should know. Every brief here is for one art-directed social campaign — nothing else.
@@ -956,6 +1035,7 @@ function SubmitFlow({ go }) {
 }
 
 function Field({ label, children, optional }) {
+  const C = useC();
   return (
     <div>
       <div className="f-mono uppercase text-[10px] tracking-widest mb-2.5 flex items-center gap-2" style={{ color: C.mid }}>
@@ -965,9 +1045,9 @@ function Field({ label, children, optional }) {
     </div>
   );
 }
-const inputStyle = { border: `1px solid ${C.line}`, backgroundColor: C.white, padding: "13px 16px", borderRadius: 3, width: "100%", fontSize: 15, fontFamily: "'Inter',sans-serif", outline: "none", color: C.ink, transition: "border-color .2s ease, box-shadow .2s ease" };
 
 function Chip({ children, active, onClick }) {
+  const C = useC();
   return (
     <button onClick={onClick} className="f-mono text-[11px] uppercase tracking-wide px-3.5 py-2 rounded-full btn-press"
       style={{ border: `1px solid ${active ? C.ink : C.line}`, backgroundColor: active ? C.ink : "transparent", color: active ? C.paper : C.mid, transition: "all .25s cubic-bezier(.16,1,.3,1)" }}
@@ -983,6 +1063,7 @@ function Chip({ children, active, onClick }) {
    STATUS LOOKUP
    ============================================================ */
 function StatusPage() {
+  const C = useC();
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
       <Eyebrow>What happens next</Eyebrow>
@@ -1027,6 +1108,7 @@ function StatusPage() {
 const SAMPLE_IMG = "https://res.cloudinary.com/dmqyultl0/image/upload/v1787108898/Instagram_post_-_17_iep814.png";
 
 function FloatingSample() {
+  const C = useC();
   const ref = useRef(null);
   const [pos, setPos] = useState({ x: null, y: null });
   const [open, setOpen] = useState(false);
@@ -1142,15 +1224,16 @@ function FloatingSample() {
 /* ============================================================
    ROOT
    ============================================================ */
-export default function App() {
+function AppShell() {
+  const C = useC();
   const [view, setView] = useState("home");
   const [project, setProject] = useState(null);
   const go = (v) => { setView(v); window.scrollTo({ top: 0, behavior: "smooth" }); };
   const openBrief = (p) => { setProject(p); go("project"); };
 
   return (
-    <div className="f-body min-h-screen w-full" style={{ backgroundColor: C.paper, color: C.ink }}>
-      <style>{FONTS}</style>
+    <div className="f-body min-h-screen w-full" style={{ backgroundColor: C.paper, color: C.ink, transition: "background-color .3s ease, color .3s ease" }}>
+      <style>{getFonts(C)}</style>
       <Nav go={go} view={view} />
       <div key={view} className="rise">
         {view === "home" && <Home go={go} openBrief={openBrief} />}
@@ -1163,5 +1246,13 @@ export default function App() {
       <Footer go={go} />
       {view === "home" && <FloatingSample />}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppShell />
+    </ThemeProvider>
   );
 }
