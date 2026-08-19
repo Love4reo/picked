@@ -370,6 +370,26 @@ function Nav({ go, view }) {
 function Footer({ go }) {
   return (
     <div style={{ borderTop: `1px solid ${C.line}` }} className="mt-24">
+      {/* Creator credit — its own section, not a footnote */}
+      <div style={{ borderBottom: `1px solid ${C.line}` }}>
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8">
+          <div>
+            <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Designed &amp; built by</span>
+            <div className="f-display mt-3" style={{ fontSize: "clamp(30px,4.5vw,48px)", fontWeight: 600, color: C.ink, letterSpacing: "-0.01em" }}>
+              Isaac Oreoluwa
+            </div>
+          </div>
+          <a href="https://isaacoreoluwa.xyz" target="_blank" rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 f-mono uppercase text-xs tracking-widest px-6 py-3.5 rounded-full shrink-0 btn-press"
+            style={{ border: `1px solid ${C.ink}`, color: C.ink, transition: "background-color .25s ease, color .25s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = C.ink; e.currentTarget.style.color = C.paper; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = C.ink; }}
+          >
+            isaacoreoluwa.xyz <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        </div>
+      </div>
+
       <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-14 flex flex-col sm:flex-row justify-between gap-8">
         <div>
           <div className="f-display" style={{ fontSize: 22, fontWeight: 700, color: C.ink }}>PICKED</div>
