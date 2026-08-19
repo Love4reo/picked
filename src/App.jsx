@@ -374,7 +374,7 @@ function Footer({ go }) {
         <div>
           <div className="f-display" style={{ fontSize: 22, fontWeight: 700, color: C.ink }}>PICKED</div>
           <p className="f-body text-sm mt-2 max-w-xs" style={{ color: C.mid }}>
-            One designer. One art-directed social campaign a week. Free — because I miss making real creative work for real businesses.
+            One designer. One campaign a week. I miss making real stuff for real businesses — so here we are.
           </p>
         </div>
         <div className="flex gap-16">
@@ -400,148 +400,109 @@ function Footer({ go }) {
    ============================================================ */
 function Home({ go, openBrief }) {
   const target = useMemo(() => Date.now() + (4 * 3600 + 22 * 60 + 10) * 1000, []);
-  const names = POOL.map((b) => b.business);
+
+  /* Shared "log entry" row: a slim mono margin column + a wide content column.
+     Every entry on the page — the intro note, this week's brief, past weeks —
+     uses this same two-column shape, so the page reads as one running log
+     rather than a stack of different marketing sections. */
+  const Entry = ({ index, meta, children, first = false }) => (
+    <div
+      className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 grid grid-cols-[56px_1fr] sm:grid-cols-[96px_1fr] gap-6 sm:gap-10 py-12 sm:py-16"
+      style={{ borderTop: first ? "none" : `1px solid ${C.line}` }}
+    >
+      <div className="pt-1">
+        <div className="f-mono text-xs sm:text-sm" style={{ color: C.faint }}>{index}</div>
+        {meta && <div className="f-mono uppercase text-[9px] sm:text-[10px] tracking-widest mt-2 leading-relaxed" style={{ color: C.mid }}>{meta}</div>}
+      </div>
+      <div>{children}</div>
+    </div>
+  );
+
   return (
     <div>
-      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 sm:pt-24 pb-10">
-        <div className="rise">
-          <Eyebrow>Week {CYCLE.week} · Briefs open {CYCLE.opened} – {CYCLE.deadline}</Eyebrow>
-          <h1 className="f-display mt-6" style={{ fontSize: "clamp(40px,7vw,84px)", lineHeight: 0.98, fontWeight: 600, color: C.ink, letterSpacing: "-0.02em" }}>
-            Every Friday, I pick one<br />business and make their campaign.
-          </h1>
-          <p className="f-body mt-7 max-w-lg" style={{ fontSize: 18, lineHeight: 1.55, color: C.mid }}>
-            Not a studio, not an agency — just me, missing the kind of work where you actually get to think about the whole thing: the idea, the direction, the type, all the stuff that gets skipped when work moves too fast. So I made myself a weekly excuse to keep doing it.
+      {/* 00 — the intro note, standing in for a hero */}
+      <Entry index="00" meta={<>Vol. 1<br />Ongoing</>} first>
+        <div className="rise max-w-2xl">
+          <p className="f-display" style={{ fontSize: "clamp(24px,3.4vw,34px)", lineHeight: 1.3, fontWeight: 500, color: C.ink }}>
+            I miss making proper creative work for real businesses — the idea, the direction, the type, the tiny details nobody asked about. So I started doing it again.
           </p>
-          <div className="flex flex-wrap items-center gap-4 mt-9">
+          <p className="f-body mt-5" style={{ fontSize: 15, lineHeight: 1.7, color: C.mid }}>
+            One business, one campaign, every week — picked from whoever submits a brief. Free, because that's the whole point. Here's what's happened so far.
+          </p>
+          <div className="flex flex-wrap items-center gap-4 mt-7">
             <Button onClick={() => go("submit")}>Submit a brief</Button>
-            <Button variant="ghost" icon={null} onClick={() => go("archive")}>See the work</Button>
+            <Button variant="ghost" icon={null} onClick={() => go("archive")}>See the archive</Button>
           </div>
         </div>
-      </div>
+      </Entry>
 
-      {/* Marquee ticker of the pool — signature motion moment */}
-      <div className="overflow-hidden py-4" style={{ borderTop: `1px solid ${C.line}`, borderBottom: `1px solid ${C.line}` }}>
-        <div className="flex whitespace-nowrap marquee-track" style={{ width: "max-content" }}>
-          {[...names, ...names].map((n, i) => (
-            <span key={i} className="f-mono uppercase text-xs tracking-widest flex items-center gap-6 pr-6" style={{ color: C.faint }}>
-              {n}
-              <span className="inline-block w-1 h-1 rounded-full" style={{ backgroundColor: C.accent }} />
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* work — shown immediately, before any of the mechanics */}
-      <div style={{ borderTop: `1px solid ${C.line}` }}>
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16">
-          <Reveal>
-            <div className="flex items-end justify-between mb-3">
-              <Eyebrow>Previously picked</Eyebrow>
-              <button onClick={() => go("archive")} className="f-mono uppercase text-[11px] tracking-widest flex items-center gap-1 group" style={{ color: C.ink }}>
-                View archive <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+      {/* This week — in progress */}
+      <Entry
+        index={`W${String(CYCLE.week).padStart(2, "0")}`}
+        meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.accent }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />In progress</span></>}
+      >
+        <Reveal>
+          <div className="flex flex-col md:flex-row md:items-start gap-8">
+            <div className="flex-1">
+              <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
+              <div className="f-mono uppercase text-[10px] tracking-widest mt-1.5" style={{ color: C.mid }}>{currentBrief.category}</div>
+              <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>{currentBrief.brief}</p>
+              <button onClick={() => go("week")} className="f-mono text-xs uppercase tracking-widest flex items-center gap-1 group mt-6" style={{ color: C.ink }}>
+                Follow along <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </div>
-            <p className="f-body text-sm mb-8" style={{ color: C.mid }}>Three so far. More every Friday.</p>
-          </Reveal>
-          <div className="grid sm:grid-cols-3 gap-6">
-            {ARCHIVE.map((a, i) => (
-              <Reveal delay={i * 100} key={a.week}>
-                <button onClick={() => openBrief(a)} className="text-left group w-full">
-                  <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
-                    <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110 flex items-end p-5">
-                      <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: "#fff", opacity: 0.85 }}>Week 0{a.week}</span>
-                    </div>
-                  </div>
-                  <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 17, fontWeight: 600, color: C.ink }}>{a.business}</div>
-                  <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{a.category}</div>
-                </button>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Live cycle strip — simplified to one clear fact */}
-      <div style={{ borderBottom: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
-        <Reveal>
-          <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-10 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12">
-            <StatBlock value="18" label="Briefs in the pool" />
-            <p className="f-body text-sm max-w-sm" style={{ color: C.mid }}>
-              One gets picked from all of them, every Friday. No shortlist. No rounds. Just one.
-            </p>
-          </div>
-        </Reveal>
-      </div>
-
-      {/* Countdown block — signature */}
-      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20">
-        <Reveal>
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 pb-10" style={{ borderBottom: `1px solid ${C.line}` }}>
-            <div>
-              <Eyebrow>Design in progress</Eyebrow>
-              <div className="f-display mt-3" style={{ fontSize: "clamp(26px,3.5vw,40px)", fontWeight: 600, color: C.ink }}>
-                Next pick opens Friday.
-              </div>
-            </div>
-            <Countdown target={target} />
-          </div>
-        </Reveal>
-
-        {/* current brief teaser */}
-        <Reveal delay={100}>
-          <div className="grid md:grid-cols-2 gap-0 mt-10 hover-lift" style={{ border: `1px solid ${C.line}`, borderRadius: 4, overflow: "hidden" }}>
-            <div className="p-8 sm:p-10 flex flex-col justify-between" style={{ backgroundColor: C.ink, color: C.paper, minHeight: 320 }}>
-              <div>
-                <Eyebrow dot={false}><span style={{ color: C.faint }}>This week's brief</span></Eyebrow>
-                <div className="f-display mt-4" style={{ fontSize: 34, fontWeight: 600 }}>{currentBrief.business}</div>
-                <div className="f-mono uppercase text-[11px] tracking-widest mt-2" style={{ color: C.faint }}>{currentBrief.category}</div>
-                <p className="f-body mt-5 text-sm leading-relaxed" style={{ color: "#C9C7BE", maxWidth: 400 }}>{currentBrief.brief}</p>
-              </div>
-              <div className="mt-8 flex items-center justify-between">
-                <span className="f-mono text-xs uppercase tracking-widest flex items-center gap-1.5" style={{ color: C.accent }}>
-                  <span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} /> Designing
-                </span>
-                <button onClick={() => go("week")} className="f-mono text-xs uppercase tracking-widest flex items-center gap-1 group" style={{ color: C.paper }}>
-                  Follow along <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
-              </div>
-            </div>
-            <div className="p-8 sm:p-10 flex flex-col items-center justify-center text-center gap-4" style={{ backgroundColor: C.paperDim }}>
-              <div className="f-display" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>Come back Friday.</div>
-              <p className="f-body text-sm max-w-xs" style={{ color: C.mid }}>The finished post stays hidden while it's in progress. That's part of the fun.</p>
-              <div className="w-full h-40 rounded relative overflow-hidden mt-2 float-slow" style={{ border: `1px dashed ${C.lineStrong}` }}>
+            <div className="w-full md:w-56 shrink-0">
+              <div className="w-full aspect-[4/5] rounded relative overflow-hidden float-slow" style={{ border: `1px dashed ${C.lineStrong}` }}>
                 <div className="absolute inset-0" style={{
                   backgroundImage: `repeating-linear-gradient(135deg, ${C.line} 0px, ${C.line} 1px, transparent 1px, transparent 12px)`,
                 }} />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Lock size={22} color={C.faint} />
+                  <Lock size={20} color={C.faint} />
                 </div>
               </div>
+              <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Hidden until it's done — next pick {CYCLE.deadline}.</p>
             </div>
           </div>
         </Reveal>
-      </div>
+      </Entry>
 
-      {/* how it works */}
-      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pb-20">
-        <Reveal><Eyebrow>How it works</Eyebrow></Reveal>
-        <div className="grid sm:grid-cols-3 gap-10 mt-8">
-          {[
-            ["Drop a brief", "Tell me what you need, who it's for, and what it should say. Takes a few minutes."],
-            ["I pick one. Every Friday.", "One brief, chosen from everyone who submitted that week."],
-            ["You get a finished campaign", "A fully art-directed piece, delivered to your inbox — free, ready to publish."],
-          ].map(([t, d], i) => (
-            <Reveal delay={i * 100} key={t}>
-              <div className="group">
-                <div className="f-mono text-xs transition-transform duration-300 group-hover:translate-x-1 inline-block" style={{ color: C.accent }}>0{i + 1}</div>
-                <div className="f-display mt-3" style={{ fontSize: 21, fontWeight: 600, color: C.ink }}>{t}</div>
-                <p className="f-body text-sm mt-2 leading-relaxed" style={{ color: C.mid }}>{d}</p>
+      {/* Past weeks — the actual work, same log format */}
+      {ARCHIVE.map((a, i) => (
+        <Entry key={a.week} index={`W${String(a.week).padStart(2, "0")}`} meta={a.category}>
+          <Reveal delay={i * 80}>
+            <button onClick={() => openBrief(a)} className="flex flex-col md:flex-row md:items-start gap-6 md:gap-8 text-left group w-full">
+              <div className="w-full md:w-64 shrink-0 aspect-[4/5] rounded relative overflow-hidden" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
+                <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" />
               </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
+              <div className="pt-1">
+                <div className="f-display transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>{a.business}</div>
+                <div className="f-body text-sm mt-2 leading-relaxed max-w-md" style={{ color: C.mid }}>{a.brief}</div>
+                <span className="f-mono text-[11px] uppercase tracking-widest flex items-center gap-1 group mt-4" style={{ color: C.ink }}>
+                  Read the thinking <ArrowRight size={11} className="transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
+              </div>
+            </button>
+          </Reveal>
+        </Entry>
+      ))}
 
+      {/* Fine print — mechanics, kept quiet and appendix-like */}
+      <Entry index="—" meta="The fine print">
+        <Reveal>
+          <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 max-w-2xl">
+            {[
+              ["Drop a brief", "Tell me what you need, who it's for, and what it should say."],
+              ["One gets picked, every Friday", "No shortlist, no rounds — just one, from everyone who submitted."],
+              ["It lands in your inbox", "Fully art-directed, free, ready to publish."],
+            ].map(([t, d]) => (
+              <div key={t} className="flex-1">
+                <div className="f-body text-sm font-medium" style={{ color: C.ink }}>{t}</div>
+                <p className="f-body text-xs mt-1.5 leading-relaxed" style={{ color: C.mid }}>{d}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </Entry>
     </div>
   );
 }
