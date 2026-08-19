@@ -374,7 +374,7 @@ function Footer({ go }) {
         <div>
           <div className="f-display" style={{ fontSize: 22, fontWeight: 700, color: C.ink }}>PICKED</div>
           <p className="f-body text-sm mt-2 max-w-xs" style={{ color: C.mid }}>
-            One designer. One social media post a week. Free — because I miss making things for real businesses.
+            One designer. One art-directed social campaign a week. Free — because I miss making real creative work for real businesses.
           </p>
         </div>
         <div className="flex gap-16">
@@ -407,14 +407,14 @@ function Home({ go, openBrief }) {
         <div className="rise">
           <Eyebrow>Week {CYCLE.week} · Briefs open {CYCLE.opened} – {CYCLE.deadline}</Eyebrow>
           <h1 className="f-display mt-6" style={{ fontSize: "clamp(40px,7vw,84px)", lineHeight: 0.98, fontWeight: 600, color: C.ink, letterSpacing: "-0.02em" }}>
-            Someone's getting a<br />free social media post this week.
+            Every Friday, I pick one<br />business and make their campaign.
           </h1>
           <p className="f-body mt-7 max-w-lg" style={{ fontSize: 18, lineHeight: 1.55, color: C.mid }}>
-            Business owners submit a real brief. Every week, I pick one and turn it into a finished social media post — for free.
+            Not a studio, not an agency — just me, missing the kind of work where you actually get to think about the whole thing: the idea, the direction, the type, all the stuff that gets skipped when work moves too fast. So I made myself a weekly excuse to keep doing it.
           </p>
           <div className="flex flex-wrap items-center gap-4 mt-9">
             <Button onClick={() => go("submit")}>Submit a brief</Button>
-            <Button variant="ghost" icon={null} onClick={() => go("archive")}>See previous posts</Button>
+            <Button variant="ghost" icon={null} onClick={() => go("archive")}>See the work</Button>
           </div>
         </div>
       </div>
@@ -431,13 +431,43 @@ function Home({ go, openBrief }) {
         </div>
       </div>
 
+      {/* work — shown immediately, before any of the mechanics */}
+      <div style={{ borderTop: `1px solid ${C.line}` }}>
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16">
+          <Reveal>
+            <div className="flex items-end justify-between mb-3">
+              <Eyebrow>Previously picked</Eyebrow>
+              <button onClick={() => go("archive")} className="f-mono uppercase text-[11px] tracking-widest flex items-center gap-1 group" style={{ color: C.ink }}>
+                View archive <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            </div>
+            <p className="f-body text-sm mb-8" style={{ color: C.mid }}>Three so far. More every Friday.</p>
+          </Reveal>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {ARCHIVE.map((a, i) => (
+              <Reveal delay={i * 100} key={a.week}>
+                <button onClick={() => openBrief(a)} className="text-left group w-full">
+                  <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
+                    <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110 flex items-end p-5">
+                      <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: "#fff", opacity: 0.85 }}>Week 0{a.week}</span>
+                    </div>
+                  </div>
+                  <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 17, fontWeight: 600, color: C.ink }}>{a.business}</div>
+                  <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{a.category}</div>
+                </button>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Live cycle strip — simplified to one clear fact */}
       <div style={{ borderBottom: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
         <Reveal>
           <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-10 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12">
             <StatBlock value="18" label="Briefs in the pool" />
             <p className="f-body text-sm max-w-sm" style={{ color: C.mid }}>
-              One gets picked from all of them, every Friday. No shortlist, no rounds — just one.
+              One gets picked from all of them, every Friday. No shortlist. No rounds. Just one.
             </p>
           </div>
         </Reveal>
@@ -498,8 +528,8 @@ function Home({ go, openBrief }) {
         <div className="grid sm:grid-cols-3 gap-10 mt-8">
           {[
             ["Drop a brief", "Tell me what you need, who it's for, and what it should say. Takes a few minutes."],
-            ["I pick one, every Friday", "One brief, chosen from everyone who submitted that week."],
-            ["You get a finished post", "Delivered to your inbox — free, ready to publish."],
+            ["I pick one. Every Friday.", "One brief, chosen from everyone who submitted that week."],
+            ["You get a finished campaign", "A fully art-directed piece, delivered to your inbox — free, ready to publish."],
           ].map(([t, d], i) => (
             <Reveal delay={i * 100} key={t}>
               <div className="group">
@@ -512,34 +542,6 @@ function Home({ go, openBrief }) {
         </div>
       </div>
 
-      {/* recent archive strip */}
-      <div style={{ borderTop: `1px solid ${C.line}` }}>
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16">
-          <Reveal>
-            <div className="flex items-end justify-between mb-8">
-              <Eyebrow>Previously picked</Eyebrow>
-              <button onClick={() => go("archive")} className="f-mono uppercase text-[11px] tracking-widest flex items-center gap-1 group" style={{ color: C.ink }}>
-                View archive <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
-            </div>
-          </Reveal>
-          <div className="grid sm:grid-cols-3 gap-6">
-            {ARCHIVE.map((a, i) => (
-              <Reveal delay={i * 100} key={a.week}>
-                <button onClick={() => openBrief(a)} className="text-left group w-full">
-                  <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
-                    <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110 flex items-end p-5">
-                      <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: "#fff", opacity: 0.85 }}>Week 0{a.week}</span>
-                    </div>
-                  </div>
-                  <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 17, fontWeight: 600, color: C.ink }}>{a.business}</div>
-                  <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{a.category}</div>
-                </button>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
@@ -734,17 +736,17 @@ function SubmitFlow({ go }) {
 
         <div className="mt-10 rounded p-8" style={{ border: `1px solid ${C.line}` }}>
           <StatusPill status="Submitted" />
-          <p className="f-body text-sm mt-4" style={{ color: C.mid }}>Every Friday, one brief gets picked. Your social media post request is officially in the pool for Week {CYCLE.week}.</p>
+          <p className="f-body text-sm mt-4" style={{ color: C.mid }}>Every Friday, one brief gets picked. Your social campaign brief is officially in the pool for Week {CYCLE.week}.</p>
           <div className="mt-8">
             <ProgressTrack status="Submitted" />
           </div>
         </div>
 
         <p className="f-body text-sm mt-8" style={{ color: C.mid }}>
-          We'll email <span style={{ color: C.ink }}>{data.email || "you"}</span> the moment anything changes. You can also check back anytime with your brief ID.
+          We'll email <span style={{ color: C.ink }}>{data.email || "you"}</span> the moment anything changes.
         </p>
         <div className="flex items-center justify-center gap-4 mt-8">
-          <Button onClick={() => go("status")}>Track my brief</Button>
+          <Button onClick={() => go("status")}>What happens next</Button>
           <Button variant="ghost" icon={null} onClick={() => go("home")}>Back home</Button>
         </div>
       </div>
@@ -754,7 +756,7 @@ function SubmitFlow({ go }) {
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 pb-24">
       <div className="flex items-center justify-between mb-3">
-        <Eyebrow>Submit a social media post brief</Eyebrow>
+        <Eyebrow>Submit a social campaign brief</Eyebrow>
         <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>{step + 1} / {steps.length}</span>
       </div>
       <div className="w-full h-px mb-10" style={{ backgroundColor: C.line }}>
@@ -807,13 +809,13 @@ function SubmitFlow({ go }) {
           <div>
             <textarea
               value={data.brief} onChange={(e) => set("brief", e.target.value)}
-              placeholder="What do you want your social media post to say?"
+              placeholder="What story do you want your social campaign to tell?"
               rows={8}
               className="f-body w-full p-5 rounded outline-none resize-none"
               style={{ border: `1px solid ${C.line}`, backgroundColor: C.white, fontSize: 15, lineHeight: 1.6 }}
             />
             <p className="f-body text-xs mt-3" style={{ color: C.mid }}>
-              Tell me what you're trying to achieve, who it's for, what it should communicate, and anything else I should know. Every brief here is for a social media post — nothing else.
+              Tell me what you're trying to achieve, who it's for, what it should communicate, and anything else I should know. Every brief here is for one art-directed social campaign — nothing else.
             </p>
           </div>
         )}
@@ -844,7 +846,7 @@ function SubmitFlow({ go }) {
             {[
               ["Business", data.businessName || "—"],
               ["Category", data.category || "—"],
-              ["Format", "Social media post"],
+              ["Format", "Social campaign"],
               ["Brief", data.brief ? data.brief.slice(0, 120) + (data.brief.length > 120 ? "…" : "") : "—"],
               ["Delivery email", data.email || "—"],
             ].map(([k, v]) => (
@@ -902,51 +904,40 @@ function Chip({ children, active, onClick }) {
    STATUS LOOKUP
    ============================================================ */
 function StatusPage() {
-  const [id, setId] = useState("0241");
-  const [lookedUp, setLookedUp] = useState(true);
-  const brief = POOL.find((b) => b.id === id) || POOL[0];
-
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
-      <Eyebrow>Track a brief</Eyebrow>
-      <h1 className="f-display mt-4" style={{ fontSize: 38, fontWeight: 600, color: C.ink }}>Where's my brief?</h1>
-      <div className="flex gap-3 mt-8">
-        <input value={id} onChange={(e) => setId(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="0248" style={{ ...inputStyle, fontFamily: "'IBM Plex Mono',monospace" }} />
-        <Button icon={Search} onClick={() => setLookedUp(true)}>Find</Button>
-      </div>
+      <Eyebrow>What happens next</Eyebrow>
+      <h1 className="f-display mt-4" style={{ fontSize: 38, fontWeight: 600, color: C.ink }}>Your brief is in.</h1>
+      <p className="f-body text-sm mt-4 max-w-lg" style={{ color: C.mid }}>
+        There's no dashboard to refresh and no ticket number to track — just one designer working through everything
+        that comes in. Here's exactly what happens from here.
+      </p>
 
-      {lookedUp && brief && (
-        <div className="mt-10 rounded p-8 rise" style={{ border: `1px solid ${C.line}` }}>
-          <div className="flex items-center justify-between">
-            <span className="f-mono text-xs tracking-widest" style={{ color: C.faint }}>BRIEF #{brief.id}</span>
-            <StatusPill status={brief.status} />
-          </div>
-          <div className="f-display mt-4" style={{ fontSize: 24, fontWeight: 600, color: C.ink }}>{brief.business}</div>
-          <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{brief.category} · Submitted {brief.submitted}</div>
-
-          <div className="mt-8">
-            <ProgressTrack status={brief.status} />
-          </div>
-
-          <Rule />
-
-          {brief.status === "Designing" || brief.status === "Picked" ? (
-            <div className="text-center py-4">
-              <div className="f-display" style={{ fontSize: 22, fontWeight: 700, color: C.accent }}>YOU'VE BEEN PICKED</div>
-              <p className="f-body text-sm mt-2" style={{ color: C.mid }}>Your design is being made right now. Keep an eye on your inbox.</p>
+      <div className="mt-10 rounded p-8" style={{ border: `1px solid ${C.line}` }}>
+        <div className="flex flex-col gap-8">
+          <div className="flex gap-4">
+            <span className="f-mono text-xs mt-1" style={{ color: C.faint }}>01</span>
+            <div>
+              <div className="f-body text-sm font-medium" style={{ color: C.ink }}>Your brief joins the pool</div>
+              <p className="f-body text-sm mt-1" style={{ color: C.mid }}>It sits alongside everything else submitted this week — no queue position, no ranking.</p>
             </div>
-          ) : brief.status === "Delivered" ? (
-            <div className="text-center py-4">
-              <div className="f-display" style={{ fontSize: 20, fontWeight: 600, color: "#2E9C5B" }}>Delivered</div>
-              <p className="f-body text-sm mt-2" style={{ color: C.mid }}>Check your inbox — your finished post is waiting.</p>
+          </div>
+          <div className="flex gap-4">
+            <span className="f-mono text-xs mt-1" style={{ color: C.faint }}>02</span>
+            <div>
+              <div className="f-body text-sm font-medium" style={{ color: C.ink }}>One brief gets picked</div>
+              <p className="f-body text-sm mt-1" style={{ color: C.mid }}>Every Friday, one is chosen for that week's free post — no shortlist, no rounds.</p>
             </div>
-          ) : (
-            <p className="f-body text-sm text-center py-2" style={{ color: C.mid }}>
-              "Every Friday, one brief gets picked." Your brief is still in the running for Week {CYCLE.week}.
-            </p>
-          )}
+          </div>
+          <div className="flex gap-4">
+            <span className="f-mono text-xs mt-1" style={{ color: C.faint }}>03</span>
+            <div>
+              <div className="f-body text-sm font-medium" style={{ color: C.ink }}>You'll hear by email either way</div>
+              <p className="f-body text-sm mt-1" style={{ color: C.mid }}>Picked or not, an email goes out to the address you submitted with — check your inbox (and spam folder, just in case).</p>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -1030,11 +1021,11 @@ function FloatingSample() {
             }}
           >
             <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", borderRadius: 4 }}>
-              <img src={SAMPLE_IMG} alt="Sample social media post" draggable={false}
+              <img src={SAMPLE_IMG} alt="Sample social campaign design" draggable={false}
                 style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }} />
             </div>
             <div className="f-mono uppercase text-[9px] tracking-widest mt-2 text-center" style={{ color: C.mid }}>
-              A social post
+              A social campaign
             </div>
           </div>
           <div
@@ -1054,13 +1045,13 @@ function FloatingSample() {
         >
           <div className="max-w-md w-full rise" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: "rgba(255,255,255,0.6)" }}>Sample social media post</span>
+              <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: "rgba(255,255,255,0.6)" }}>Sample social campaign</span>
               <button onClick={() => setOpen(false)} className="f-mono uppercase text-[10px] tracking-widest flex items-center gap-1.5 transition-transform duration-200 hover:rotate-90" style={{ color: "#fff" }}>
                 <X size={14} />
               </button>
             </div>
             <div className="rounded overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
-              <img src={SAMPLE_IMG} alt="Sample social media post — full size" style={{ width: "100%", display: "block" }} />
+              <img src={SAMPLE_IMG} alt="Sample social campaign design — full size" style={{ width: "100%", display: "block" }} />
             </div>
           </div>
         </div>
