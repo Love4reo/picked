@@ -340,7 +340,7 @@ function StatusPill({ status }) {
    ============================================================ */
 function Nav({ go, view }) {
   const links = [
-    ["home", "Home"], ["week", "This Week"], ["archive", "Archive"], ["admin", "Admin"],
+    ["home", "Home"], ["week", "This Week"], ["archive", "Archive"],
   ];
   return (
     <div className="sticky top-0 z-40 backdrop-blur" style={{ backgroundColor: "rgba(250,249,245,0.86)", borderBottom: `1px solid ${C.line}` }}>
@@ -692,8 +692,31 @@ function SubmitFlow({ go }) {
     brief: "", email: "", phone: "",
   });
   const [done, setDone] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const steps = ["About your business", "Your post", "Upload references", "Delivery", "Review"];
   const set = (k, v) => setData((d) => ({ ...d, [k]: v }));
+
+  const submitBrief = async () => {
+    setSending(true);
+    setError("");
+    try {
+      const res = await fetch("https://formspree.io/f/xqpzgoap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        setDone(true);
+      } else {
+        setError("Something went wrong sending your brief. Please try again.");
+      }
+    } catch {
+      setError("Something went wrong sending your brief. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
 
   const canNext = () => {
     if (step === 0) return data.businessName.trim().length > 1 && data.category;
@@ -841,9 +864,12 @@ function SubmitFlow({ go }) {
         {step < steps.length - 1 ? (
           <Button onClick={() => canNext() && setStep(step + 1)} className={!canNext() ? "opacity-40 pointer-events-none" : ""}>Continue</Button>
         ) : (
-          <Button onClick={() => setDone(true)}>Drop my brief</Button>
+          <Button onClick={submitBrief} className={sending ? "opacity-60 pointer-events-none" : ""}>{sending ? "Sending…" : "Drop my brief"}</Button>
         )}
       </div>
+      {error && (
+        <p className="f-body text-sm mt-4 text-center" style={{ color: "#C0392B" }}>{error}</p>
+      )}
     </div>
   );
 }
@@ -926,113 +952,9 @@ function StatusPage() {
 }
 
 /* ============================================================
-   ADMIN DASHBOARD
-   ============================================================ */
-function Admin() {
-  const [tab, setTab] = useState("overview");
-  const [selected, setSelected] = useState(null);
-  const [pickedId, setPickedId] = useState("0241");
-
-  const counts = {
-    Submitted: POOL.filter((b) => b.status === "Submitted").length,
-    Picked: pickedId ? 1 : 0,
-    Designing: POOL.filter((b) => b.status === "Designing").length,
-    Delivered: 0,
-  };
-
-  return (
-    <div className="max-w-6xl mx-auto px-6 sm:px-10 pt-12 pb-24">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <Eyebrow>Private · Admin only</Eyebrow>
-          <h1 className="f-display mt-3" style={{ fontSize: 34, fontWeight: 600, color: C.ink }}>Week {CYCLE.week} dashboard</h1>
-        </div>
-        <div className="flex gap-1 p-1 rounded-full" style={{ backgroundColor: C.paperDim }}>
-          {["overview", "submissions"].map((t) => (
-            <button key={t} onClick={() => setTab(t)}
-              className="f-mono uppercase text-[10px] tracking-widest px-4 py-2 rounded-full capitalize transition-colors"
-              style={{ backgroundColor: tab === t ? C.ink : "transparent", color: tab === t ? C.paper : C.mid }}>
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {tab === "overview" && (
-        <div className="mt-12">
-          <p className="f-body text-sm mb-8 max-w-md" style={{ color: C.mid }}>
-            One brief gets picked from everything submitted this week — no shortlist, no rounds.
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pb-10" style={{ borderBottom: `1px solid ${C.line}` }}>
-            {Object.entries(counts).map(([k, v]) => <StatBlock key={k} value={String(v).padStart(2, "0")} label={k} />)}
-          </div>
-          <div className="mt-10 rounded p-8" style={{ border: `1px solid ${C.line}` }}>
-            <Eyebrow>This week's pick</Eyebrow>
-            <div className="flex items-center justify-between mt-4">
-              <div>
-                <div className="f-display" style={{ fontSize: 24, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
-                <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>#{currentBrief.id} · {currentBrief.category}</div>
-              </div>
-              <StatusPill status="Designing" />
-            </div>
-            <div className="mt-6 flex gap-3">
-              <Button variant="ghost" icon={Upload}>Upload final design</Button>
-              <Button variant="text" icon={ChevronRight} onClick={() => { setTab("submissions"); setSelected(currentBrief); }}>Open brief</Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {tab === "submissions" && (
-        <div className="mt-10">
-          <Eyebrow>All briefs — pick one</Eyebrow>
-          <div className="flex flex-col gap-2 mt-5">
-            {POOL.map((b) => (
-              <button key={b.id} onClick={() => setSelected(b)} className="flex items-center gap-4 p-4 rounded text-left transition-colors" style={{ border: `1px solid ${selected?.id === b.id ? C.ink : C.line}` }}>
-                <span className="f-mono text-[11px]" style={{ color: C.faint, width: 44 }}>#{b.id}</span>
-                <span className="f-body text-sm font-medium flex-1" style={{ color: C.ink }}>{b.business}</span>
-                <span className="f-mono uppercase text-[10px] tracking-widest hidden sm:block" style={{ color: C.mid, width: 140 }}>{b.category}</span>
-                <span className="f-body text-xs hidden md:block flex-1 truncate" style={{ color: C.mid }}>{b.brief}</span>
-                <span className="f-mono text-[10px] hidden sm:block" style={{ color: C.faint, width: 60 }}>{b.submitted}</span>
-                <StatusPill status={b.id === pickedId ? "Designing" : b.status} />
-              </button>
-            ))}
-          </div>
-
-          {selected && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-6" style={{ backgroundColor: "rgba(18,18,18,0.5)", animation: "riseIn .25s ease both" }} onClick={() => setSelected(null)}>
-              <div className="rounded-lg max-w-lg w-full p-8 rise" style={{ backgroundColor: C.paper }} onClick={(e) => e.stopPropagation()}>
-                <div className="flex justify-between items-start">
-                  <span className="f-mono text-[10px] tracking-widest" style={{ color: C.faint }}>BRIEF #{selected.id}</span>
-                  <button onClick={() => setSelected(null)} className="transition-transform duration-200 hover:rotate-90"><X size={16} color={C.mid} /></button>
-                </div>
-                <div className="f-display mt-3" style={{ fontSize: 24, fontWeight: 600, color: C.ink }}>{selected.business}</div>
-                <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{selected.category} · Submitted {selected.submitted}</div>
-                <p className="f-body text-sm mt-5 leading-relaxed" style={{ color: C.ink }}>{selected.brief}</p>
-                {selected.id === pickedId ? (
-                  <div className="mt-8 rounded p-5 text-center rise" style={{ backgroundColor: C.ink }}>
-                    <div className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.accent }}>This week's winner</div>
-                    <div className="f-display mt-1" style={{ color: C.paper, fontSize: 18, fontWeight: 600 }}>Let's design it.</div>
-                  </div>
-                ) : (
-                  <div className="flex gap-3 mt-8 flex-wrap">
-                    <Button icon={Sparkles} onClick={() => { setPickedId(selected.id); setSelected(null); }}>Pick this one</Button>
-                    <Button variant="text" icon={X} onClick={() => setSelected(null)}>Close</Button>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ============================================================
    FLOATING SAMPLE STICKER — draggable, click-to-expand
    ============================================================ */
-const SAMPLE_IMG = "https://res.cloudinary.com/dmqyultl0/image/upload/v1787108898/Rent_Instant_Camera_1_bhifqb.jpg";
+const SAMPLE_IMG = "https://res.cloudinary.com/dmqyultl0/image/upload/v1787108898/Instagram_post_-_17_iep814.png";
 
 function FloatingSample() {
   const ref = useRef(null);
@@ -1167,7 +1089,6 @@ export default function App() {
         {view === "project" && <ProjectPage project={project} go={go} />}
         {view === "submit" && <SubmitFlow go={go} />}
         {view === "status" && <StatusPage />}
-        {view === "admin" && <Admin />}
       </div>
       <Footer go={go} />
       <FloatingSample />
