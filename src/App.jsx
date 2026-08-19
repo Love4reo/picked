@@ -622,8 +622,6 @@ function ProjectPage({ project, go }) {
           <div>
             <Eyebrow>The brief</Eyebrow>
             <p className="f-body mt-4 leading-relaxed" style={{ color: C.ink, fontSize: 16 }}>{p.brief}</p>
-            <Eyebrow>The challenge</Eyebrow>
-            <p className="f-body mt-4 leading-relaxed" style={{ color: C.mid, fontSize: 15 }}>{p.challenge}</p>
           </div>
         </Reveal>
         <Reveal delay={100}>
@@ -784,8 +782,21 @@ function SubmitFlow({ go }) {
     }
   };
 
+  // Website is optional, but if something's typed in, it has to actually look like a link.
+  const isValidWebsite = (v) => {
+    const val = v.trim();
+    if (!val) return true;
+    const withProto = /^https?:\/\//i.test(val) ? val : `https://${val}`;
+    try {
+      const u = new URL(withProto);
+      return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(u.hostname);
+    } catch {
+      return false;
+    }
+  };
+
   const canNext = () => {
-    if (step === 0) return data.businessName.trim().length > 1 && data.category;
+    if (step === 0) return data.businessName.trim().length > 1 && data.category && isValidWebsite(data.website);
     if (step === 1) return data.brief.trim().length > 12;
     if (step === 3) return /\S+@\S+\.\S+/.test(data.email);
     return true;
@@ -862,7 +873,10 @@ function SubmitFlow({ go }) {
                 </div>
                 <div className="sm:col-span-2">
                   <div className="f-mono text-[10px] uppercase tracking-widest mb-1.5" style={{ color: C.faint }}>Website</div>
-                  <input value={data.website} onChange={(e) => set("website", e.target.value)} placeholder="yourbusiness.com" style={inputStyle} />
+                  <input value={data.website} onChange={(e) => set("website", e.target.value)} placeholder="yourbusiness.com" style={{ ...inputStyle, borderColor: data.website && !isValidWebsite(data.website) ? "#C0392B" : C.line }} />
+                  {data.website && !isValidWebsite(data.website) && (
+                    <p className="f-body text-xs mt-2" style={{ color: "#C0392B" }}>That doesn't look like a valid link — try something like yourbusiness.com</p>
+                  )}
                 </div>
               </div>
             </Field>
@@ -1147,7 +1161,7 @@ export default function App() {
         {view === "status" && <StatusPage />}
       </div>
       <Footer go={go} />
-      <FloatingSample />
+      {view === "home" && <FloatingSample />}
     </div>
   );
 }
