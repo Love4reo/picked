@@ -90,11 +90,15 @@ const ARCHIVE = [
     thinking: "I leaned into the constraint. One ink colour, a hand-set feeling headline, and copy that reads like it was written by an actual person behind the counter, not a marketing team.",
   },
   {
-    week: 1, business: "Halcyon Studio", category: "Fitness", title: "Launch Campaign",
-    grad: ["#101820", "#1F3A5F"], accent: "#5EE6D3",
-    brief: "We're a new Pilates studio opening in Ikoyi and need a launch campaign — three social posts that introduce who we are.",
-    challenge: "Zero existing brand assets. I was designing the studio's first impression from nothing.",
-    thinking: "Week one, so I wanted the format itself to say something: a three-part visual rhythm across the grid, each post a movement in a sequence, echoing the discipline of the practice itself.",
+    week: 1, business: "Studio Orea", category: "Beauty", title: "Studio Flyer",
+    images: [
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787168515/Instagram_post_-_25_1_wrk0bu.png",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787168512/Instagram_post_-_27_ws2qbz.png",
+    ],
+    grad: ["#3B0F1E", "#C96A2E"], accent: "#F6D9C4",
+    brief: "A single flyer for our nail and lash studio in Lugbe, Abuja. Needs to carry the full service list and location without losing the glam — and make people want to book on the spot.",
+    challenge: "A flyer that has to do a lot of jobs at once — services, pricing context, location, contact, a CTA — for a brand whose only existing asset was a playful, hand-lettered logo. The risk was cramming it full and losing the personality that logo already had.",
+    thinking: "I built everything around that hand-lettered mark instead of fighting it — a deep wine-to-amber gradient behind it for warmth, and let the actual nail work do the selling: three real photos anchored along the bottom instead of illustrations. Services and location live in one clean card on the right so the eye has somewhere to land, and the 'Book now' pill echoes the same loose, hand-drawn energy as the logo — so the CTA feels like part of the brand, not a sticker on top of it.",
   },
 ];
 
@@ -491,8 +495,12 @@ function Home({ go, openBrief }) {
         <Entry key={a.week} index={`W${String(a.week).padStart(2, "0")}`} meta={a.category}>
           <Reveal delay={i * 80}>
             <button onClick={() => openBrief(a)} className="flex flex-col md:flex-row md:items-start gap-6 md:gap-8 text-left group w-full">
-              <div className="w-full md:w-64 shrink-0 aspect-[4/5] rounded relative overflow-hidden" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
-                <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" />
+              <div className="w-full md:w-64 shrink-0 aspect-[4/5] rounded relative overflow-hidden" style={{ background: a.images ? C.paperDim : `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
+                {a.images ? (
+                  <img src={a.images[0]} alt={`${a.business} — ${a.title}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
+                ) : (
+                  <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" />
+                )}
               </div>
               <div className="pt-1">
                 <div className="f-display transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>{a.business}</div>
@@ -586,16 +594,29 @@ function ProjectPage({ project, go }) {
 
       <Reveal delay={120}>
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
-          <div className="w-full aspect-[16/10] rounded overflow-hidden relative group" style={{ background: `linear-gradient(150deg, ${p.grad[0]}, ${p.grad[1]})` }}>
-            <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-105">
-              <div className="f-display text-center" style={{ color: p.accent, fontSize: "clamp(28px,6vw,72px)", fontWeight: 700, letterSpacing: "-0.02em" }}>
-                {p.title}
+          <div className="w-full aspect-[16/10] rounded overflow-hidden relative group" style={{ background: p.images ? C.paperDim : `linear-gradient(150deg, ${p.grad[0]}, ${p.grad[1]})` }}>
+            {p.images ? (
+              <img src={p.images[0]} alt={`${p.business} — ${p.title}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-105">
+                <div className="f-display text-center" style={{ color: p.accent, fontSize: "clamp(28px,6vw,72px)", fontWeight: 700, letterSpacing: "-0.02em" }}>
+                  {p.title}
+                </div>
               </div>
-            </div>
-            <div className="absolute bottom-5 left-6 f-mono text-[10px] uppercase tracking-widest" style={{ color: "#fff", opacity: 0.7 }}>
+            )}
+            <div className="absolute bottom-5 left-6 f-mono text-[10px] uppercase tracking-widest" style={{ color: "#fff", opacity: 0.7, textShadow: p.images ? "0 1px 6px rgba(0,0,0,0.5)" : "none" }}>
               Made for {p.business}
             </div>
           </div>
+          {p.images && p.images.length > 1 && (
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-3">
+              {p.images.slice(1).map((src, idx) => (
+                <div key={idx} className="aspect-square rounded overflow-hidden" style={{ backgroundColor: C.paperDim }}>
+                  <img src={src} alt={`${p.business} — logo`} className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </Reveal>
 
@@ -643,12 +664,18 @@ function ArchivePage({ go, openBrief }) {
         {ARCHIVE.map((a, i) => (
           <Reveal delay={i * 100} key={a.week}>
             <button onClick={() => openBrief(a)} className="text-left group w-full">
-              <div className="w-full aspect-[4/5] rounded relative overflow-hidden">
-                <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }} />
-                <div className="absolute inset-0 flex items-center justify-center opacity-90">
-                  <span className="f-display transition-transform duration-500 group-hover:-translate-y-1 inline-block" style={{ color: a.accent, fontSize: 26, fontWeight: 700 }}>{a.title}</span>
-                </div>
-                <div className="absolute top-4 left-4 f-mono text-[10px] uppercase tracking-widest" style={{ color: "#fff", opacity: 0.85 }}>Week 0{a.week}</div>
+              <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ backgroundColor: a.images ? C.paperDim : "transparent" }}>
+                {a.images ? (
+                  <img src={a.images[0]} alt={`${a.business} — ${a.title}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
+                ) : (
+                  <>
+                    <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }} />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-90">
+                      <span className="f-display transition-transform duration-500 group-hover:-translate-y-1 inline-block" style={{ color: a.accent, fontSize: 26, fontWeight: 700 }}>{a.title}</span>
+                    </div>
+                  </>
+                )}
+                <div className="absolute top-4 left-4 f-mono text-[10px] uppercase tracking-widest" style={{ color: "#fff", opacity: 0.85, textShadow: a.images ? "0 1px 4px rgba(0,0,0,0.5)" : "none" }}>Week 0{a.week}</div>
               </div>
               <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 18, fontWeight: 600, color: C.ink }}>{a.business}</div>
               <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{a.category}</div>
