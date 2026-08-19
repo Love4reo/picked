@@ -80,7 +80,7 @@ const ARCHIVE = [
     grad: ["#F0EDE4", "#D8CFC0"], accent: "#8A6E4B",
     brief: "A social media post announcing our resort collection. We wanted something that felt like quiet luxury — not loud, not trendy. Lots of negative space, one strong typographic moment.",
     challenge: "Marlowe & Finch's existing catalogue leaned generic — stock-photo energy with centred logo treatments. The brief asked for restraint, which is harder to design than spectacle.",
-    thinking: "I picked this one because 'quiet' briefs are the ones people underestimate. I built the whole cover around a single oversized numeral — 03, for their third collection — set in a warm serif against a sand gradient, with the product photography cropped tight and off-centre. The restraint is the design.",
+    thinking: "I picked this one because 'quiet' briefs are the ones people underestimate. I designed the whole cover around a single oversized numeral — 03, for their third collection — set in a warm serif against a sand gradient, with the product photography cropped tight and off-centre. The restraint is the design.",
   },
   {
     week: 2, business: "Third Place Coffee", category: "Food & Hospitality", title: "Promo Flyer",
@@ -98,7 +98,7 @@ const ARCHIVE = [
     grad: ["#3B0F1E", "#C96A2E"], accent: "#F6D9C4",
     brief: "A single flyer for our nail and lash studio in Lugbe, Abuja. Needs to carry the full service list and location without losing the glam — and make people want to book on the spot.",
     challenge: "A flyer that has to do a lot of jobs at once — services, pricing context, location, contact, a CTA — for a brand whose only existing asset was a playful, hand-lettered logo. The risk was cramming it full and losing the personality that logo already had.",
-    thinking: "I built everything around that hand-lettered mark instead of fighting it — a deep wine-to-amber gradient behind it for warmth, and let the actual nail work do the selling: three real photos anchored along the bottom instead of illustrations. Services and location live in one clean card on the right so the eye has somewhere to land, and the 'Book now' pill echoes the same loose, hand-drawn energy as the logo — so the CTA feels like part of the brand, not a sticker on top of it.",
+    thinking: "I designed everything around that hand-lettered mark instead of fighting it — a deep wine-to-amber gradient behind it for warmth, and let the actual nail work do the selling: three real photos anchored along the bottom instead of illustrations. Services and location live in one clean card on the right so the eye has somewhere to land, and the 'Book now' pill echoes the same loose, hand-drawn energy as the logo — so the CTA feels like part of the brand, not a sticker on top of it.",
   },
 ];
 
@@ -378,7 +378,7 @@ function Footer({ go }) {
       <div style={{ borderBottom: `1px solid ${C.line}` }}>
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8">
           <div>
-            <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Designed &amp; built by</span>
+            <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Designed by</span>
             <div className="f-display mt-3" style={{ fontSize: "clamp(30px,4.5vw,48px)", fontWeight: 600, color: C.ink, letterSpacing: "-0.01em" }}>
               Isaac Oreoluwa
             </div>
@@ -594,27 +594,24 @@ function ProjectPage({ project, go }) {
 
       <Reveal delay={120}>
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
-          <div className="w-full aspect-[16/10] rounded overflow-hidden relative group" style={{ background: p.images ? C.paperDim : `linear-gradient(150deg, ${p.grad[0]}, ${p.grad[1]})` }}>
-            {p.images ? (
-              <img src={p.images[0]} alt={`${p.business} — ${p.title}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
-            ) : (
+          {p.images ? (
+            <div className={`grid gap-4 ${p.images.length > 1 ? "sm:grid-cols-2" : "grid-cols-1"}`}>
+              {p.images.map((src, idx) => (
+                <div key={idx} className="w-full aspect-[4/5] rounded overflow-hidden flex items-center justify-center" style={{ backgroundColor: C.paperDim }}>
+                  <img src={src} alt={`${p.business} — ${idx === 0 ? p.title : "logo"}`} className="w-full h-full object-contain transition-transform duration-500 ease-out hover:scale-[1.02]" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="w-full aspect-[16/10] rounded overflow-hidden relative group" style={{ background: `linear-gradient(150deg, ${p.grad[0]}, ${p.grad[1]})` }}>
               <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-105">
                 <div className="f-display text-center" style={{ color: p.accent, fontSize: "clamp(28px,6vw,72px)", fontWeight: 700, letterSpacing: "-0.02em" }}>
                   {p.title}
                 </div>
               </div>
-            )}
-            <div className="absolute bottom-5 left-6 f-mono text-[10px] uppercase tracking-widest" style={{ color: "#fff", opacity: 0.7, textShadow: p.images ? "0 1px 6px rgba(0,0,0,0.5)" : "none" }}>
-              Made for {p.business}
-            </div>
-          </div>
-          {p.images && p.images.length > 1 && (
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-3">
-              {p.images.slice(1).map((src, idx) => (
-                <div key={idx} className="aspect-square rounded overflow-hidden" style={{ backgroundColor: C.paperDim }}>
-                  <img src={src} alt={`${p.business} — logo`} className="w-full h-full object-cover" />
-                </div>
-              ))}
+              <div className="absolute bottom-5 left-6 f-mono text-[10px] uppercase tracking-widest" style={{ color: "#fff", opacity: 0.7 }}>
+                Made for {p.business}
+              </div>
             </div>
           )}
         </div>
