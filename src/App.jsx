@@ -344,7 +344,7 @@ function Nav({ go, view }) {
   ];
   return (
     <div className="sticky top-0 z-40 backdrop-blur" style={{ backgroundColor: "rgba(250,249,245,0.86)", borderBottom: `1px solid ${C.line}` }}>
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 h-16 flex items-center justify-between">
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 h-16 flex items-center justify-between">
         <button onClick={() => go("home")} className="f-display flex items-center gap-2 tracking-tight group" style={{ fontSize: 20, fontWeight: 700, color: C.ink }}>
           PICKED
           <span className="inline-block w-1.5 h-1.5 rounded-full mt-1 transition-transform duration-300 group-hover:scale-150" style={{ backgroundColor: C.accent }} />
@@ -370,7 +370,7 @@ function Nav({ go, view }) {
 function Footer({ go }) {
   return (
     <div style={{ borderTop: `1px solid ${C.line}` }} className="mt-24">
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 py-14 flex flex-col sm:flex-row justify-between gap-8">
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-14 flex flex-col sm:flex-row justify-between gap-8">
         <div>
           <div className="f-display" style={{ fontSize: 22, fontWeight: 700, color: C.ink }}>PICKED</div>
           <p className="f-body text-sm mt-2 max-w-xs" style={{ color: C.mid }}>
@@ -403,7 +403,7 @@ function Home({ go, openBrief }) {
   const names = POOL.map((b) => b.business);
   return (
     <div>
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 pt-16 sm:pt-24 pb-10">
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 sm:pt-24 pb-10">
         <div className="rise">
           <Eyebrow>Week {CYCLE.week} · Briefs open {CYCLE.opened} – {CYCLE.deadline}</Eyebrow>
           <h1 className="f-display mt-6" style={{ fontSize: "clamp(40px,7vw,84px)", lineHeight: 0.98, fontWeight: 600, color: C.ink, letterSpacing: "-0.02em" }}>
@@ -434,7 +434,7 @@ function Home({ go, openBrief }) {
       {/* Live cycle strip — simplified to one clear fact */}
       <div style={{ borderBottom: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
         <Reveal>
-          <div className="max-w-6xl mx-auto px-6 sm:px-10 py-10 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12">
+          <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-10 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12">
             <StatBlock value="18" label="Briefs in the pool" />
             <p className="f-body text-sm max-w-sm" style={{ color: C.mid }}>
               One gets picked from all of them, every Friday. No shortlist, no rounds — just one.
@@ -444,7 +444,7 @@ function Home({ go, openBrief }) {
       </div>
 
       {/* Countdown block — signature */}
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 py-16 sm:py-20">
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20">
         <Reveal>
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 pb-10" style={{ borderBottom: `1px solid ${C.line}` }}>
             <div>
@@ -493,7 +493,7 @@ function Home({ go, openBrief }) {
       </div>
 
       {/* how it works */}
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 pb-20">
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pb-20">
         <Reveal><Eyebrow>How it works</Eyebrow></Reveal>
         <div className="grid sm:grid-cols-3 gap-10 mt-8">
           {[
@@ -514,7 +514,7 @@ function Home({ go, openBrief }) {
 
       {/* recent archive strip */}
       <div style={{ borderTop: `1px solid ${C.line}` }}>
-        <div className="max-w-6xl mx-auto px-6 sm:px-10 py-16">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16">
           <Reveal>
             <div className="flex items-end justify-between mb-8">
               <Eyebrow>Previously picked</Eyebrow>
@@ -549,7 +549,7 @@ function Home({ go, openBrief }) {
    ============================================================ */
 function WeekPage({ go }) {
   return (
-    <div className="max-w-6xl mx-auto px-6 sm:px-10 pt-14 pb-24">
+    <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 pb-24">
       <Reveal>
         <Eyebrow>Week {CYCLE.week}</Eyebrow>
         <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 600, color: C.ink }}>The current cycle.</h1>
@@ -592,7 +592,7 @@ function ProjectPage({ project, go }) {
   return (
     <div>
       <Reveal>
-        <div className="max-w-4xl mx-auto px-6 sm:px-10 pt-16 pb-8 text-center">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-8 text-center">
           <Eyebrow>Week 0{p.week} · The design is ready</Eyebrow>
           <h1 className="f-display mt-5" style={{ fontSize: "clamp(30px,5vw,52px)", fontWeight: 600, color: C.ink }}>
             Designed for {p.business}.
@@ -602,7 +602,7 @@ function ProjectPage({ project, go }) {
       </Reveal>
 
       <Reveal delay={120}>
-        <div className="max-w-5xl mx-auto px-6 sm:px-10">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
           <div className="w-full aspect-[16/10] rounded overflow-hidden relative group" style={{ background: `linear-gradient(150deg, ${p.grad[0]}, ${p.grad[1]})` }}>
             <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-105">
               <div className="f-display text-center" style={{ color: p.accent, fontSize: "clamp(28px,6vw,72px)", fontWeight: 700, letterSpacing: "-0.02em" }}>
@@ -616,7 +616,7 @@ function ProjectPage({ project, go }) {
         </div>
       </Reveal>
 
-      <div className="max-w-3xl mx-auto px-6 sm:px-10 py-16 grid sm:grid-cols-2 gap-12">
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 grid sm:grid-cols-2 gap-12">
         <Reveal>
           <div>
             <Eyebrow>The brief</Eyebrow>
@@ -649,7 +649,7 @@ function ProjectPage({ project, go }) {
    ============================================================ */
 function ArchivePage({ go, openBrief }) {
   return (
-    <div className="max-w-6xl mx-auto px-6 sm:px-10 pt-16 pb-24">
+    <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
       <Reveal>
         <Eyebrow>All completed weeks</Eyebrow>
         <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,58px)", fontWeight: 600, color: C.ink }}>The design archive.</h1>
@@ -727,7 +727,7 @@ function SubmitFlow({ go }) {
 
   if (done) {
     return (
-      <div className="max-w-xl mx-auto px-6 sm:px-10 pt-24 pb-24 text-center rise">
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-24 pb-24 text-center rise">
         <Eyebrow>Submission received</Eyebrow>
         <h1 className="f-display mt-5" style={{ fontSize: 44, fontWeight: 600, color: C.ink }}>You're in.</h1>
         <div className="f-mono text-sm mt-3" style={{ color: C.mid }}>BRIEF #0259</div>
@@ -752,7 +752,7 @@ function SubmitFlow({ go }) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-6 sm:px-10 pt-14 pb-24">
+    <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 pb-24">
       <div className="flex items-center justify-between mb-3">
         <Eyebrow>Submit a social media post brief</Eyebrow>
         <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>{step + 1} / {steps.length}</span>
@@ -907,7 +907,7 @@ function StatusPage() {
   const brief = POOL.find((b) => b.id === id) || POOL[0];
 
   return (
-    <div className="max-w-xl mx-auto px-6 sm:px-10 pt-16 pb-24">
+    <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
       <Eyebrow>Track a brief</Eyebrow>
       <h1 className="f-display mt-4" style={{ fontSize: 38, fontWeight: 600, color: C.ink }}>Where's my brief?</h1>
       <div className="flex gap-3 mt-8">
