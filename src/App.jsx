@@ -647,22 +647,58 @@ function ArchivePage({ go, openBrief }) {
 /* ============================================================
    SUBMISSION FLOW
    ============================================================ */
+const DRAFT_KEY = "picked_brief_draft";
+
 function SubmitFlow({ go }) {
-  const [step, setStep] = useState(0);
-  const [data, setData] = useState({
-    businessName: "", category: "",
-    instagram: "", facebook: "", tiktok: "", twitter: "", website: "",
-    brief: "", email: "", phone: "",
+  const [step, setStep] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+      return saved?.step ?? 0;
+    } catch { return 0; }
+  });
+  const [data, setData] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+      return saved?.data ?? {
+        businessName: "", category: "",
+        instagram: "", facebook: "", tiktok: "", twitter: "", website: "",
+        brief: "", email: "", phone: "",
+      };
+    } catch {
+      return {
+        businessName: "", category: "",
+        instagram: "", facebook: "", tiktok: "", twitter: "", website: "",
+        brief: "", email: "", phone: "",
+      };
+    }
   });
   const [done, setDone] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const steps = ["About your business", "Your post", "Upload references", "Delivery", "Review"];
   const set = (k, v) => setData((d) => ({ ...d, [k]: v }));
+
+  // Autosave the draft on every change so a reload or accidental navigation doesn't lose it.
+  useEffect(() => {
+    if (done) return;
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ step, data }));
+    } catch { /* storage unavailable — fail silently, nothing to save to anyway */ }
+  }, [step, data, done]);
+
+  // Which step a given form field lives on, so we can jump the user back to a field an error points at.
+  const stepForField = (field) => {
+    if (["businessName", "category"].includes(field)) return 0;
+    if (field === "brief") return 1;
+    if (["email", "phone"].includes(field)) return 3;
+    return step;
+  };
 
   const submitBrief = async () => {
     setSending(true);
     setError("");
+    setFieldErrors({});
     try {
       const res = await fetch("https://formspree.io/f/xqpzgoap", {
         method: "POST",
@@ -670,12 +706,35 @@ function SubmitFlow({ go }) {
         body: JSON.stringify(data),
       });
       if (res.ok) {
+        try { localStorage.removeItem(DRAFT_KEY); } catch { /* nothing to clean up */ }
         setDone(true);
+        return;
+      }
+
+      // Try to read Formspree's actual error payload instead of showing a generic message.
+      let payload = null;
+      try { payload = await res.json(); } catch { /* non-JSON error body */ }
+
+      if (payload?.errors?.length) {
+        const messages = payload.errors.map((e) => e.message || `${e.field || "Field"} is invalid`);
+        setError(messages.join(" "));
+        const fe = {};
+        let jumpTo = null;
+        payload.errors.forEach((e) => {
+          if (e.field) {
+            fe[e.field] = e.message || "This field is invalid.";
+            if (jumpTo === null) jumpTo = stepForField(e.field);
+          }
+        });
+        setFieldErrors(fe);
+        if (jumpTo !== null && jumpTo !== step) setStep(jumpTo);
+      } else if (payload?.error) {
+        setError(payload.error);
       } else {
-        setError("Something went wrong sending your brief. Please try again.");
+        setError(`Something went wrong sending your brief (error ${res.status}). Please try again.`);
       }
     } catch {
-      setError("Something went wrong sending your brief. Please try again.");
+      setError("Couldn't reach the server — check your connection and try again.");
     } finally {
       setSending(false);
     }
@@ -794,7 +853,8 @@ function SubmitFlow({ go }) {
         {step === 3 && (
           <div className="flex flex-col gap-6">
             <Field label="Email address">
-              <input value={data.email} onChange={(e) => set("email", e.target.value)} placeholder="you@business.com" style={inputStyle} />
+              <input value={data.email} onChange={(e) => { set("email", e.target.value); setFieldErrors((fe) => ({ ...fe, email: undefined })); }} placeholder="you@business.com" style={{ ...inputStyle, borderColor: fieldErrors.email ? "#C0392B" : C.line }} />
+              {fieldErrors.email && <p className="f-body text-xs mt-2" style={{ color: "#C0392B" }}>{fieldErrors.email}</p>}
             </Field>
             <Field label="Phone number" optional>
               <input value={data.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+234 ..." style={inputStyle} />
