@@ -103,11 +103,16 @@ const POOL = [
 
 const ARCHIVE = [
   {
-    week: 3, business: "Marlowe & Finch", category: "Fashion", title: "Resort Capsule Lookbook",
-    grad: ["#F0EDE4", "#D8CFC0"], accent: "#8A6E4B",
-    brief: "A social media post announcing our resort collection. We wanted something that felt like quiet luxury — not loud, not trendy. Lots of negative space, one strong typographic moment.",
-    challenge: "Marlowe & Finch's existing catalogue leaned generic — stock-photo energy with centred logo treatments. The brief asked for restraint, which is harder to design than spectacle.",
-    thinking: "I picked this one because 'quiet' briefs are the ones people underestimate. I designed the whole cover around a single oversized numeral — 03, for their third collection — set in a warm serif against a sand gradient, with the product photography cropped tight and off-centre. The restraint is the design.",
+    week: 3, business: "Kairos", category: "Fitness", title: "Launch Campaign",
+    images: [
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204311/Instagram_post_-_18_noizbx.png",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204318/Instagram_post_-_16_s7moll.png",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204315/Instagram_post_-_17_ezq0px.png",
+    ],
+    grad: ["#161616", "#FF6A1A"], accent: "#FF6A1A",
+    brief: "We just launched Kairos, a health-tracking wearable, and need a set of Instagram posts introducing it — sleep tracking, everyday wear, the whole idea that it's one device for every moment that matters. Clean, confident, not overly techy.",
+    challenge: "The product photography was already strong — soft, lifestyle-driven, well shot. What was missing was a system: no consistent headline treatment, no recurring mark, nothing tying one post to the next as a campaign instead of a batch of separate images.",
+    thinking: "I built the whole thing around one repeatable move: a stacked three-line headline where the middle line always breaks into the brand's orange, and a small double-arrow mark in the corner as a signature you'd start to recognize post after post. The photography stayed the hero — I just gave it a frame that made the posts feel like a campaign instead of a product dump.",
   },
   {
     week: 2, business: "Third Place Coffee", category: "Food & Hospitality", title: "Promo Flyer",
