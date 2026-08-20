@@ -797,7 +797,7 @@ function SubmitFlow({ go }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const steps = ["About your business", "Your post", "Upload references", "Delivery", "Review"];
+  const steps = ["About your business", "Your post", "If you're picked", "Delivery", "Review"];
   const set = (k, v) => setData((d) => ({ ...d, [k]: v }));
 
   // Autosave the draft on every change so a reload or accidental navigation doesn't lose it.
@@ -978,12 +978,17 @@ function SubmitFlow({ go }) {
         )}
 
         {step === 2 && (
-          <div>
-            <div className="rounded p-12 flex flex-col items-center gap-3 text-center" style={{ border: `1px dashed ${C.lineStrong}` }}>
-              <Upload size={20} color={C.mid} />
-              <div className="f-body text-sm" style={{ color: C.ink }}>Drop reference images or assets</div>
-              <div className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>Optional · PNG, JPG, PDF up to 20MB</div>
+          <div className="rounded p-8 sm:p-10" style={{ border: `1px solid ${C.line}` }}>
+            <Clock size={20} color={C.mid} />
+            <div className="f-display mt-4" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>
+              Nothing to upload right now.
             </div>
+            <p className="f-body mt-3 max-w-md" style={{ fontSize: 15, lineHeight: 1.65, color: C.mid }}>
+              If your brief gets picked, I'll follow up by email and ask for whatever the campaign actually needs — your logo, brand colors, product photos, stock images, that kind of thing.
+            </p>
+            <p className="f-body mt-3 max-w-md" style={{ fontSize: 15, lineHeight: 1.65, color: C.mid }}>
+              No sense collecting files for a brief that might not get made.
+            </p>
           </div>
         )}
 
