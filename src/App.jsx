@@ -103,7 +103,18 @@ const POOL = [
 
 const ARCHIVE = [
   {
-    week: 3, business: "Kairos", category: "Fitness", title: "Launch Campaign",
+    week: 3, business: "Third Place Coffee", category: "Food & Hospitality", title: "New Location Flyer",
+    grad: ["#2B2B2B", "#4A3A2C"], accent: "#E8A33D",
+    images: [
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787216769/Instagram_post_-_6_2_ukwh78.png",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787217033/Instagram_post_-_7_1_rw7itt.png",
+    ],
+    brief: "We're opening a second location and want a flyer we can print and hand out around the neighbourhood — warm, a little rough around the edges, not corporate.",
+    challenge: "The client wanted something printable at low cost — single colour on kraft paper — while still feeling considered, and it needed to announce a location without one, since the new space wasn't open yet.",
+    thinking: "I framed it as an in-store lifestyle shot bleeding up into a bold two-line headline — More Coffee. Same Spirit. — with a hand-lettered 'Coming soon!' banner doing the announcement instead of a hard date. A torn kraft-paper strip at the bottom, styled like the shop's own packaging, carries the practical bits: same heart, new neighbourhood, stay tuned. It reads like a note from the shop, not a real-estate ad.",
+  },
+  {
+    week: 2, business: "Kairos", category: "Fitness", title: "Launch Campaign",
     images: [
       "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204693/Instagram_post_-_18_3_y28wrb.png",
       "https://res.cloudinary.com/dmqyultl0/image/upload/v1787205271/Instagram_post_-_21_rhdkat.png",
@@ -113,17 +124,6 @@ const ARCHIVE = [
     brief: "We just launched Kairos, a health-tracking wearable, and need a set of Instagram posts introducing it — sleep tracking, everyday wear, the whole idea that it's one device for every moment that matters. Clean, confident, not overly techy.",
     challenge: "The product photography was already strong — soft, lifestyle-driven, well shot. What was missing was a system: no consistent headline treatment, no recurring mark, nothing tying one post to the next as a campaign instead of a batch of separate images.",
     thinking: "I designed the whole thing around one repeatable move: a stacked three-line headline where the middle line always breaks into the brand's orange, and a small double-arrow mark in the corner as a signature you'd start to recognize post after post. The photography stayed the hero — I just gave it a frame that made the posts feel like a campaign instead of a product dump.",
-  },
-  {
-    week: 2, business: "Third Place Coffee", category: "Food & Hospitality", title: "New Location Flyer",
-    grad: ["#2B2B2B", "#4A3A2C"], accent: "#E8A33D",
-    images: [
-      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787216769/Instagram_post_-_6_2_ukwh78.png",
-      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787217033/Instagram_post_-_7_1_rw7itt.png",
-    ],
-    brief: "We're opening a second location and want a flyer we can print and hand out around the neighbourhood — warm, a little rough around the edges, not corporate.",
-    challenge: "The client wanted something printable at low cost — single colour on kraft paper — while still feeling considered, and it needed to announce a location without one, since the new space wasn't open yet.",
-    thinking: "I framed it as an in-store lifestyle shot bleeding up into a bold two-line headline — More Coffee. Same Spirit. — with a hand-lettered 'Coming soon!' banner doing the announcement instead of a hard date. A torn kraft-paper strip at the bottom, styled like the shop's own packaging, carries the practical bits: same heart, new neighbourhood, stay tuned. It reads like a note from the shop, not a real-estate ad.",
   },
   {
     week: 1, business: "Studio Orea", category: "Beauty", title: "Studio Flyer",
