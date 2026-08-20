@@ -914,7 +914,6 @@ function ArchivePage({ go, openBrief }) {
                     </div>
                   </>
                 )}
-                <div className="absolute top-4 left-4 f-mono text-[10px] uppercase tracking-widest" style={{ color: "#fff", opacity: 0.85, textShadow: a.images ? "0 1px 4px rgba(0,0,0,0.5)" : "none" }}>Week 0{a.week}</div>
               </div>
               <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 18, fontWeight: 600, color: C.ink }}>{a.business}</div>
               <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{a.category}</div>
@@ -1354,35 +1353,16 @@ function FloatingSample() {
           transition: "transform .3s cubic-bezier(.16,1,.3,1)",
         }}
       >
-        <div className="relative">
-          <div
-            className="f-mono uppercase text-[9px] tracking-widest px-2.5 py-1 rounded-full absolute -top-3 -left-3 z-10"
-            style={{ backgroundColor: C.accent, color: "#fff", transform: "rotate(-8deg)", boxShadow: "0 4px 12px rgba(53,71,240,0.35)" }}
-          >
-            Sample
-          </div>
-          <div
-            style={{
-              width: 148, border: `2px solid ${C.ink}`, borderRadius: 10,
-              backgroundColor: C.paper, padding: 8,
-              boxShadow: hover ? "0 18px 34px rgba(18,18,18,0.22)" : "0 10px 24px rgba(18,18,18,0.16)",
-              transition: "box-shadow .3s ease",
-            }}
-          >
-            <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", borderRadius: 4 }}>
-              <img src={SAMPLE_IMG} alt="Sample social campaign design" draggable={false}
-                style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }} />
-            </div>
-            <div className="f-mono uppercase text-[9px] tracking-widest mt-2 text-center" style={{ color: C.mid }}>
-              A social campaign
-            </div>
-          </div>
-          <div
-            className="f-mono uppercase text-[8px] tracking-widest absolute -bottom-5 right-0"
-            style={{ color: C.faint, transform: "rotate(4deg)" }}
-          >
-            Click or drag
-          </div>
+        <div
+          style={{
+            width: 148, aspectRatio: "1 / 1", overflow: "hidden", borderRadius: 10,
+            border: `2px solid ${C.ink}`,
+            boxShadow: hover ? "0 18px 34px rgba(18,18,18,0.22)" : "0 10px 24px rgba(18,18,18,0.16)",
+            transition: "box-shadow .3s ease",
+          }}
+        >
+          <img src={SAMPLE_IMG} alt="Sample social campaign design" draggable={false}
+            style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }} />
         </div>
       </div>
 
@@ -1393,8 +1373,7 @@ function FloatingSample() {
           onClick={() => setOpen(false)}
         >
           <div className="max-w-md w-full rise" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: "rgba(255,255,255,0.6)" }}>Sample social campaign</span>
+            <div className="flex items-center justify-end mb-4">
               <button onClick={() => setOpen(false)} className="f-mono uppercase text-[10px] tracking-widest flex items-center gap-1.5 transition-transform duration-200 hover:rotate-90" style={{ color: "#fff" }}>
                 <X size={14} />
               </button>
