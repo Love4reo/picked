@@ -1338,7 +1338,10 @@ function StatusPage() {
 /* ============================================================
    FLOATING SAMPLE STICKER — draggable, click-to-expand
    ============================================================ */
-const SAMPLE_IMG = "https://res.cloudinary.com/dmqyultl0/image/upload/v1787210430/Instagram_post_-_5_u1nxqq.png";
+const SAMPLE_IMAGES = [
+  "https://res.cloudinary.com/dmqyultl0/image/upload/v1787210430/Instagram_post_-_5_u1nxqq.png",
+  "https://res.cloudinary.com/dmqyultl0/image/upload/v1787227199/Instagram_post_-_8_ww1a49.png",
+];
 
 function FloatingSample() {
   const C = useC();
@@ -1346,7 +1349,14 @@ function FloatingSample() {
   const [pos, setPos] = useState({ x: null, y: null });
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
+  const [idx, setIdx] = useState(0);
   const drag = useRef({ dragging: false, moved: false, offX: 0, offY: 0 });
+
+  useEffect(() => {
+    if (SAMPLE_IMAGES.length < 2) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % SAMPLE_IMAGES.length), 2400);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     const SIZE = 168;
@@ -1409,13 +1419,29 @@ function FloatingSample() {
           <div
             style={{
               width: 148, aspectRatio: "4 / 5", overflow: "hidden", borderRadius: 10,
-              border: `2px solid ${C.ink}`, backgroundColor: C.paper,
+              border: `2px solid ${C.ink}`, backgroundColor: C.paper, position: "relative",
               boxShadow: hover ? "0 18px 34px rgba(18,18,18,0.22)" : "0 10px 24px rgba(18,18,18,0.16)",
               transition: "box-shadow .3s ease",
             }}
           >
-            <img src={SAMPLE_IMG} alt="Sample social campaign design" draggable={false}
-              style={{ width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" }} />
+            {SAMPLE_IMAGES.map((src, i) => (
+              <img key={src} src={src} alt="Sample social campaign design" draggable={false}
+                style={{
+                  position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain",
+                  pointerEvents: "none", opacity: i === idx ? 1 : 0, transition: "opacity 0.7s ease",
+                }} />
+            ))}
+            {SAMPLE_IMAGES.length > 1 && (
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                {SAMPLE_IMAGES.map((_, i) => (
+                  <span key={i} className="rounded-full" style={{
+                    width: i === idx ? 12 : 4, height: 4,
+                    backgroundColor: i === idx ? C.ink : "rgba(18,18,18,0.3)",
+                    transition: "width 0.3s ease, background-color 0.3s ease",
+                  }} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -1433,7 +1459,7 @@ function FloatingSample() {
               </button>
             </div>
             <div className="rounded overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
-              <img src={SAMPLE_IMG} alt="Sample social campaign design — full size" style={{ width: "100%", display: "block" }} />
+              <img src={SAMPLE_IMAGES[idx]} alt="Sample social campaign design — full size" style={{ width: "100%", display: "block" }} />
             </div>
           </div>
         </div>
