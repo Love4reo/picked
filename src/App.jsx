@@ -680,7 +680,7 @@ function Home({ go, openBrief }) {
             <button onClick={() => openBrief(a)} className="flex flex-col md:flex-row md:items-start gap-6 md:gap-8 text-left group w-full">
               <div className="w-full md:w-64 shrink-0 aspect-[4/5] rounded relative overflow-hidden" style={{ background: a.images ? C.paperDim : `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
                 {a.images ? (
-                  <img src={a.images[0]} alt={`${a.business} — ${a.title}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
+                  <ArchiveCardMedia a={a} />
                 ) : (
                   <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" />
                 )}
