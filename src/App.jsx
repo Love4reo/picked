@@ -889,6 +889,57 @@ function ProjectPage({ project, go }) {
 /* ============================================================
    ARCHIVE
    ============================================================ */
+function ArchiveCardMedia({ a }) {
+  const [idx, setIdx] = useState(0);
+  const multi = a.images && a.images.length > 1;
+
+  useEffect(() => {
+    if (!multi) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % a.images.length), 2200);
+    return () => clearInterval(t);
+  }, [multi, a.images]);
+
+  if (!a.images) {
+    return (
+      <>
+        <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }} />
+        <div className="absolute inset-0 flex items-center justify-center opacity-90">
+          <span className="f-display transition-transform duration-500 group-hover:-translate-y-1 inline-block" style={{ color: a.accent, fontSize: 26, fontWeight: 700 }}>{a.title}</span>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {a.images.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt={`${a.business} — ${a.title}`}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+          style={{ opacity: i === idx ? 1 : 0, transition: "opacity 0.7s ease, transform 0.5s ease-out" }}
+        />
+      ))}
+      {multi && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+          {a.images.map((_, i) => (
+            <span
+              key={i}
+              className="rounded-full"
+              style={{
+                width: i === idx ? 14 : 5, height: 5,
+                backgroundColor: i === idx ? "#fff" : "rgba(255,255,255,0.45)",
+                transition: "width 0.3s ease, background-color 0.3s ease",
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
 function ArchivePage({ go, openBrief }) {
   const C = useC();
   return (
@@ -904,16 +955,7 @@ function ArchivePage({ go, openBrief }) {
           <Reveal delay={i * 100} key={a.week}>
             <button onClick={() => openBrief(a)} className="text-left group w-full">
               <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ backgroundColor: a.images ? C.paperDim : "transparent" }}>
-                {a.images ? (
-                  <img src={a.images[0]} alt={`${a.business} — ${a.title}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
-                ) : (
-                  <>
-                    <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" style={{ background: `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }} />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-90">
-                      <span className="f-display transition-transform duration-500 group-hover:-translate-y-1 inline-block" style={{ color: a.accent, fontSize: 26, fontWeight: 700 }}>{a.title}</span>
-                    </div>
-                  </>
-                )}
+                <ArchiveCardMedia a={a} />
               </div>
               <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 18, fontWeight: 600, color: C.ink }}>{a.business}</div>
               <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{a.category}</div>
