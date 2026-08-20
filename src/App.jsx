@@ -527,6 +527,53 @@ function Footer({ go }) {
 }
 
 /* ============================================================
+   POOL ILLUSTRATION — a scatter of nodes with one picked, plus
+   corner registration marks. Deterministic, not random, so it
+   doesn't reshuffle on every re-render.
+   ============================================================ */
+function PoolIllustration({ count }) {
+  const C = useC();
+  const hash = (n) => {
+    const x = Math.sin(n * 12.9898) * 43758.5453;
+    return x - Math.floor(x);
+  };
+  const W = 200, H = 240, PAD = 20;
+  const dots = Array.from({ length: Math.max(count, 1) }, (_, i) => ({
+    x: PAD + hash(i * 3.7 + 1) * (W - PAD * 2),
+    y: PAD + hash(i * 9.1 + 4) * (H - PAD * 2 - 40), // keep clear of the label band at the bottom
+  }));
+  const pick = dots[Math.min(3, dots.length - 1)];
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+      {/* corner registration marks */}
+      <path d={`M10,26 L10,10 L26,10`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
+      <path d={`M${W - 26},10 L${W - 10},10 L${W - 10},26`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
+      <path d={`M10,${H - 26} L10,${H - 10} L26,${H - 10}`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
+      <path d={`M${W - 26},${H - 10} L${W - 10},${H - 10} L${W - 10},${H - 26}`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
+
+      {/* faint diagonal, purely compositional */}
+      <line x1={PAD} y1={H - PAD - 30} x2={W - PAD} y2={PAD} stroke={C.line} strokeWidth="0.75" opacity="0.5" />
+
+      {/* the pool — one hollow ring per brief */}
+      {dots.map((d, i) => (
+        d === pick ? null : <circle key={i} cx={d.x} cy={d.y} r="2.5" fill="none" stroke={C.lineStrong} strokeWidth="1" />
+      ))}
+
+      {/* the pick — crosshair + target ring around one node */}
+      {pick && (
+        <g>
+          <line x1={pick.x - 22} y1={pick.y} x2={pick.x + 22} y2={pick.y} stroke={C.accent} strokeWidth="0.75" opacity="0.55" />
+          <line x1={pick.x} y1={pick.y - 22} x2={pick.x} y2={pick.y + 22} stroke={C.accent} strokeWidth="0.75" opacity="0.55" />
+          <circle cx={pick.x} cy={pick.y} r="13" fill="none" stroke={C.accent} strokeWidth="1" strokeDasharray="2 3" />
+          <circle cx={pick.x} cy={pick.y} r="4" fill={C.accent} />
+        </g>
+      )}
+    </svg>
+  );
+}
+
+/* ============================================================
    HOME
    ============================================================ */
 function Home({ go, openBrief }) {
@@ -584,8 +631,11 @@ function Home({ go, openBrief }) {
                 <SubmitCTA go={go} className="mt-6" />
               </div>
               <div className="w-full md:w-56 shrink-0">
-                <div className="w-full aspect-[4/5] rounded relative overflow-hidden flex flex-col items-center justify-center gap-1" style={{ border: `1px solid ${C.line}` }}>
-                  <StatBlock value={String(POOL.length)} label="In the pool" />
+                <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ border: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
+                  <PoolIllustration count={POOL.length} />
+                  <div className="absolute inset-x-0 bottom-0 px-5 pt-10 pb-5" style={{ background: `linear-gradient(to top, ${C.paperDim} 50%, transparent)` }}>
+                    <StatBlock value={String(POOL.length)} label="In the pool" />
+                  </div>
                 </div>
                 <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Pick happens {CYCLE.pickDate}.</p>
               </div>
@@ -761,8 +811,11 @@ function ProjectPage({ project, go }) {
   return (
     <div>
       <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-10">
-        <button onClick={() => go("archive")} className="f-mono uppercase text-xs tracking-widest flex items-center gap-2 group" style={{ color: C.mid }}>
-          <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1" /> Back to archive
+        <button onClick={() => go("archive")} aria-label="Back to archive" className="inline-flex items-center justify-center rounded-full group" style={{ width: 36, height: 36, border: `1px solid ${C.line}`, color: C.mid, transition: "border-color .2s ease, color .2s ease" }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.lineStrong; e.currentTarget.style.color = C.ink; }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.color = C.mid; }}
+        >
+          <ArrowLeft size={15} className="transition-transform duration-300 group-hover:-translate-x-0.5" />
         </button>
       </div>
       <Reveal>
