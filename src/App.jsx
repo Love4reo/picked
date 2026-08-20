@@ -136,10 +136,10 @@ const ARCHIVE = [
 
 const CYCLE = {
   week: 4,
-  opened: "Aug 11",
-  deadline: "Aug 22",
-  pickDate: "Aug 22, 5:00 PM WAT",
-  nextOpen: "Aug 22", // when the pool reopens for the following week, once this one is picked
+  opened: "Aug 20",
+  deadline: "Aug 21",
+  pickDate: "Aug 21, 5:00 PM WAT",
+  nextOpen: "Aug 21", // when the pool reopens for the following week, once this one is picked
   status: "open", // open | picked | designing | delivered
 };
 
@@ -1353,16 +1353,24 @@ function FloatingSample() {
           transition: "transform .3s cubic-bezier(.16,1,.3,1)",
         }}
       >
-        <div
-          style={{
-            width: 148, aspectRatio: "1 / 1", overflow: "hidden", borderRadius: 10,
-            border: `2px solid ${C.ink}`,
-            boxShadow: hover ? "0 18px 34px rgba(18,18,18,0.22)" : "0 10px 24px rgba(18,18,18,0.16)",
-            transition: "box-shadow .3s ease",
-          }}
-        >
-          <img src={SAMPLE_IMG} alt="Sample social campaign design" draggable={false}
-            style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }} />
+        <div className="relative">
+          <div
+            className="f-mono uppercase text-[9px] tracking-widest px-2.5 py-1 rounded-full absolute -top-3 -left-3 z-10"
+            style={{ backgroundColor: C.accent, color: "#fff", transform: "rotate(-8deg)", boxShadow: "0 4px 12px rgba(53,71,240,0.35)" }}
+          >
+            Sample
+          </div>
+          <div
+            style={{
+              width: 148, aspectRatio: "4 / 5", overflow: "hidden", borderRadius: 10,
+              border: `2px solid ${C.ink}`, backgroundColor: C.paper,
+              boxShadow: hover ? "0 18px 34px rgba(18,18,18,0.22)" : "0 10px 24px rgba(18,18,18,0.16)",
+              transition: "box-shadow .3s ease",
+            }}
+          >
+            <img src={SAMPLE_IMG} alt="Sample social campaign design" draggable={false}
+              style={{ width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" }} />
+          </div>
         </div>
       </div>
 
