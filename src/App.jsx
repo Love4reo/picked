@@ -119,11 +119,11 @@ const ARCHIVE = [
     grad: ["#2B2B2B", "#4A3A2C"], accent: "#E8A33D",
     images: [
       "https://res.cloudinary.com/dmqyultl0/image/upload/v1787216769/Instagram_post_-_6_2_ukwh78.png",
-      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787216886/Instagram_post_-_7_um7tra.png",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787217033/Instagram_post_-_7_1_rw7itt.png",
     ],
     brief: "We're opening a second location and want a flyer we can print and hand out around the neighbourhood — warm, a little rough around the edges, not corporate.",
     challenge: "The client wanted something printable at low cost — single colour on kraft paper — while still feeling considered, and it needed to announce a location without one, since the new space wasn't open yet.",
-    thinking: "I built it as an in-store lifestyle shot bleeding up into a bold two-line headline — More Coffee. Same Spirit. — with a hand-lettered 'Coming soon!' banner doing the announcement instead of a hard date. A torn kraft-paper strip at the bottom, styled like the shop's own packaging, carries the practical bits: same heart, new neighbourhood, stay tuned. It reads like a note from the shop, not a real-estate ad.",
+    thinking: "I framed it as an in-store lifestyle shot bleeding up into a bold two-line headline — More Coffee. Same Spirit. — with a hand-lettered 'Coming soon!' banner doing the announcement instead of a hard date. A torn kraft-paper strip at the bottom, styled like the shop's own packaging, carries the practical bits: same heart, new neighbourhood, stay tuned. It reads like a note from the shop, not a real-estate ad.",
   },
   {
     week: 1, business: "Studio Orea", category: "Beauty", title: "Studio Flyer",
