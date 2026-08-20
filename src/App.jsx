@@ -661,10 +661,41 @@ function WeekPage({ go }) {
 function ProjectPage({ project, go }) {
   const C = useC();
   const p = project || ARCHIVE[0];
+
+  // Cloudinary honors fl_attachment as a Content-Disposition hint, forcing a real
+  // download instead of navigating to the image — plain <a download> doesn't
+  // reliably work cross-origin.
+  const toDownloadUrl = (url) => {
+    if (!url || !url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
+    return url.replace("/upload/", "/upload/fl_attachment/");
+  };
+
+  const downloadOne = (url, filename) => {
+    const a = document.createElement("a");
+    a.href = toDownloadUrl(url);
+    a.download = filename || "";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const downloadAll = () => {
+    if (!p.images?.length) return;
+    p.images.forEach((src, idx) => {
+      setTimeout(() => downloadOne(src, `${p.business} — ${p.title} ${idx + 1}`), idx * 350);
+    });
+  };
+
   return (
     <div>
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-10">
+        <button onClick={() => go("archive")} className="f-mono uppercase text-xs tracking-widest flex items-center gap-2 group" style={{ color: C.mid }}>
+          <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1" /> Back to archive
+        </button>
+      </div>
       <Reveal>
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-8 text-center">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-8 pb-8 text-center">
           <Eyebrow>Week 0{p.week} · The design is ready</Eyebrow>
           <h1 className="f-display mt-5" style={{ fontSize: "clamp(30px,5vw,52px)", fontWeight: 600, color: C.ink }}>
             Designed for {p.business}.
@@ -678,8 +709,15 @@ function ProjectPage({ project, go }) {
           {p.images ? (
             <div className={`grid gap-4 ${p.images.length > 1 ? "sm:grid-cols-2" : "grid-cols-1"}`}>
               {p.images.map((src, idx) => (
-                <div key={idx} className="w-full aspect-[4/5] rounded overflow-hidden flex items-center justify-center" style={{ backgroundColor: C.paperDim }}>
-                  <img src={src} alt={`${p.business} — ${idx === 0 ? p.title : "logo"}`} className="w-full h-full object-contain transition-transform duration-500 ease-out hover:scale-[1.02]" />
+                <div key={idx} className="w-full aspect-[4/5] rounded overflow-hidden relative group flex items-center justify-center" style={{ backgroundColor: C.paperDim }}>
+                  <img src={src} alt={`${p.business} — ${idx === 0 ? p.title : "logo"}`} className="w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.02]" />
+                  <button
+                    onClick={() => downloadOne(src, `${p.business} — ${p.title} ${idx + 1}`)}
+                    className="absolute bottom-3 right-3 f-mono uppercase text-[10px] tracking-widest px-3 py-2 rounded-full flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    style={{ backgroundColor: C.ink, color: C.paper }}
+                  >
+                    <Download size={11} /> Save
+                  </button>
                 </div>
               ))}
             </div>
@@ -715,7 +753,7 @@ function ProjectPage({ project, go }) {
 
       <Reveal>
         <div className="flex flex-col items-center gap-5 pb-24">
-          <Button icon={Download}>Download design</Button>
+          {p.images && <Button icon={Download} onClick={downloadAll}>Download design</Button>}
           <div className="f-display" style={{ fontSize: 20, fontWeight: 600, color: C.ink }}>Want me to design yours?</div>
           <Button variant="ghost" icon={null} onClick={() => go("submit")}>Submit another brief</Button>
         </div>
