@@ -81,7 +81,7 @@ const CATEGORIES = ["Food & Hospitality", "Fashion", "Fitness", "Retail", "Beaut
 const STATUS_ORDER = ["Submitted", "Picked", "Designing", "Delivered"];
 
 const POOL = [
-  { id: "0241", business: "Lagos Street Food Co.", category: "Food & Hospitality", brief: "We need an Instagram post set for our weekend food festival — three posts and a story that feel loud, hot, and a little chaotic, like the market itself.", status: "Designing", submitted: "Aug 11" },
+  { id: "0241", business: "Lagos Street Food Co.", category: "Food & Hospitality", brief: "We need an Instagram post set for our weekend food festival — three posts and a story that feel loud, hot, and a little chaotic, like the market itself.", status: "Submitted", submitted: "Aug 11" },
   { id: "0242", business: "Marlowe & Finch", category: "Fashion", brief: "A social media post announcing our resort capsule collection. Quiet luxury, lots of negative space, one strong typographic moment.", status: "Submitted", submitted: "Aug 11" },
   { id: "0243", business: "Iron & Ember Gym", category: "Fitness", brief: "Social post for our 6am strength class. Should feel heavy, industrial, a little intimidating.", status: "Submitted", submitted: "Aug 12" },
   { id: "0244", business: "Petalworks", category: "Retail", brief: "Instagram teaser post for our new Yaba location opening.", status: "Submitted", submitted: "Aug 12" },
@@ -106,7 +106,7 @@ const ARCHIVE = [
     week: 3, business: "Kairos", category: "Fitness", title: "Launch Campaign",
     images: [
       "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204693/Instagram_post_-_18_3_y28wrb.png",
-      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204318/Instagram_post_-_16_s7moll.png",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787205271/Instagram_post_-_21_rhdkat.png",
       "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204315/Instagram_post_-_17_ezq0px.png",
     ],
     grad: ["#161616", "#FF6A1A"], accent: "#FF6A1A",
@@ -139,9 +139,11 @@ const CYCLE = {
   opened: "Aug 11",
   deadline: "Aug 22",
   pickDate: "Aug 22, 5:00 PM WAT",
-  status: "designing", // open | picked | designing | delivered
+  nextOpen: "Aug 22", // when the pool reopens for the following week, once this one is picked
+  status: "open", // open | picked | designing | delivered
 };
 
+const submissionsOpen = CYCLE.status === "open";
 const currentBrief = POOL.find((b) => b.status === "Designing");
 
 /* ============================================================
@@ -269,6 +271,33 @@ function Button({ children, variant = "primary", onClick, icon: Icon = ArrowRigh
     <button type={type} onClick={onClick} className={base + " " + className + " hover:opacity-60"} style={{ color: C.mid }}>
       {children} {Icon && <Icon size={13} className="transition-transform duration-300 group-hover/btn:translate-x-1" />}
     </button>
+  );
+}
+
+/* Every "Submit a brief" entry point in the app routes through here, so the
+   open/closed rule only has to live in one place. When submissions are closed,
+   it swaps to a plain, non-interactive line telling people when the pool
+   reopens instead of a dead-looking disabled button. */
+function SubmitCTA({ go, variant = "primary", label = "Submit a brief", icon, className = "", asLink = false }) {
+  const C = useC();
+  if (!submissionsOpen) {
+    return (
+      <span className={`f-mono uppercase text-xs tracking-widest inline-flex items-center gap-2 ${className}`} style={{ color: C.faint }}>
+        <Lock size={12} /> Opens {CYCLE.nextOpen}
+      </span>
+    );
+  }
+  if (asLink) {
+    return (
+      <button onClick={() => go("submit")} className={className} style={{ color: C.ink }}>
+        {label}
+      </button>
+    );
+  }
+  return (
+    <Button variant={variant} onClick={() => go("submit")} icon={icon} className={className}>
+      {label}
+    </Button>
   );
 }
 
@@ -420,7 +449,7 @@ function Nav({ go, view }) {
               {theme === "dark" ? <Circle size={9} color={C.accent} fill={C.accent} /> : <CircleDot size={9} color={C.mid} />}
             </span>
           </button>
-          <Button variant="ghost" onClick={() => go("submit")} className="!py-2.5 !px-4">Submit a brief</Button>
+          <SubmitCTA go={go} variant="ghost" className="!py-2.5 !px-4" />
         </div>
       </div>
     </div>
@@ -484,7 +513,7 @@ function Footer({ go }) {
             <span className="f-mono uppercase text-[10px] tracking-widest mb-1" style={{ color: C.faint }}>Platform</span>
             <button onClick={() => go("home")} className="f-body text-sm text-left" style={{ color: C.ink }}>Home</button>
             <button onClick={() => go("archive")} className="f-body text-sm text-left" style={{ color: C.ink }}>Archive</button>
-            <button onClick={() => go("submit")} className="f-body text-sm text-left" style={{ color: C.ink }}>Submit a brief</button>
+            <SubmitCTA go={go} asLink className="f-body text-sm text-left" />
           </div>
           <div className="flex flex-col gap-2">
             <span className="f-mono uppercase text-[10px] tracking-widest mb-1" style={{ color: C.faint }}>Elsewhere</span>
@@ -533,41 +562,66 @@ function Home({ go, openBrief }) {
             One business, one campaign, every week — picked from whoever submits a brief. Free, because that's the whole point. Here's what's happened so far.
           </p>
           <div className="flex flex-wrap items-center gap-4 mt-7">
-            <Button onClick={() => go("submit")}>Submit a brief</Button>
+            <SubmitCTA go={go} />
             <Button variant="ghost" icon={null} onClick={() => go("archive")}>See the archive</Button>
           </div>
         </div>
       </Entry>
 
-      {/* This week — in progress */}
-      <Entry
-        index={`W${String(CYCLE.week).padStart(2, "0")}`}
-        meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.accent }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />In progress</span></>}
-      >
-        <Reveal>
-          <div className="flex flex-col md:flex-row md:items-start gap-8">
-            <div className="flex-1">
-              <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
-              <div className="f-mono uppercase text-[10px] tracking-widest mt-1.5" style={{ color: C.mid }}>{currentBrief.category}</div>
-              <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>{currentBrief.brief}</p>
-              <button onClick={() => go("week")} className="f-mono text-xs uppercase tracking-widest flex items-center gap-1 group mt-6" style={{ color: C.ink }}>
-                Follow along <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
-            </div>
-            <div className="w-full md:w-56 shrink-0">
-              <div className="w-full aspect-[4/5] rounded relative overflow-hidden float-slow" style={{ border: `1px dashed ${C.lineStrong}` }}>
-                <div className="absolute inset-0" style={{
-                  backgroundImage: `repeating-linear-gradient(135deg, ${C.line} 0px, ${C.line} 1px, transparent 1px, transparent 12px)`,
-                }} />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Lock size={20} color={C.faint} />
-                </div>
+      {/* This week — open for submissions, or already in progress */}
+      {submissionsOpen ? (
+        <Entry
+          index={`W${String(CYCLE.week).padStart(2, "0")}`}
+          meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.accent }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />Open</span></>}
+        >
+          <Reveal>
+            <div className="flex flex-col md:flex-row md:items-start gap-8">
+              <div className="flex-1">
+                <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>The pool is open.</div>
+                <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>
+                  Drop a brief before {CYCLE.deadline} and it's in the running. I pick one Friday — no shortlist, no funnel, just whichever one I can't stop thinking about.
+                </p>
+                <SubmitCTA go={go} className="mt-6" />
               </div>
-              <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Hidden until it's done — next pick {CYCLE.deadline}.</p>
+              <div className="w-full md:w-56 shrink-0">
+                <div className="w-full aspect-[4/5] rounded relative overflow-hidden flex flex-col items-center justify-center gap-1" style={{ border: `1px solid ${C.line}` }}>
+                  <StatBlock value={String(POOL.length)} label="In the pool" />
+                </div>
+                <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Pick happens {CYCLE.pickDate}.</p>
+              </div>
             </div>
-          </div>
-        </Reveal>
-      </Entry>
+          </Reveal>
+        </Entry>
+      ) : (
+        <Entry
+          index={`W${String(CYCLE.week).padStart(2, "0")}`}
+          meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.accent }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />In progress</span></>}
+        >
+          <Reveal>
+            <div className="flex flex-col md:flex-row md:items-start gap-8">
+              <div className="flex-1">
+                <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
+                <div className="f-mono uppercase text-[10px] tracking-widest mt-1.5" style={{ color: C.mid }}>{currentBrief.category}</div>
+                <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>{currentBrief.brief}</p>
+                <button onClick={() => go("week")} className="f-mono text-xs uppercase tracking-widest flex items-center gap-1 group mt-6" style={{ color: C.ink }}>
+                  Follow along <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </div>
+              <div className="w-full md:w-56 shrink-0">
+                <div className="w-full aspect-[4/5] rounded relative overflow-hidden float-slow" style={{ border: `1px dashed ${C.lineStrong}` }}>
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: `repeating-linear-gradient(135deg, ${C.line} 0px, ${C.line} 1px, transparent 1px, transparent 12px)`,
+                  }} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Lock size={20} color={C.faint} />
+                  </div>
+                </div>
+                <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Hidden until it's done — next pool opens {CYCLE.nextOpen}.</p>
+              </div>
+            </div>
+          </Reveal>
+        </Entry>
+      )}
 
       {/* Past weeks — the actual work, same log format */}
       {ARCHIVE.map((a, i) => (
@@ -624,32 +678,49 @@ function WeekPage({ go }) {
       <Reveal>
         <Eyebrow>Week {CYCLE.week}</Eyebrow>
         <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 600, color: C.ink }}>The current cycle.</h1>
-        <p className="f-body mt-4 max-w-lg" style={{ color: C.mid, fontSize: 16 }}>18 briefs were submitted this week. One got picked — here's where it stands.</p>
+        <p className="f-body mt-4 max-w-lg" style={{ color: C.mid, fontSize: 16 }}>
+          {submissionsOpen
+            ? `${POOL.length} briefs submitted so far. One gets picked ${CYCLE.deadline}.`
+            : `${POOL.length} briefs were submitted this week. One got picked — here's where it stands.`}
+        </p>
       </Reveal>
 
-      <Reveal delay={120}>
-        <div className="mt-14">
-          <div className="rounded p-8 sm:p-10 hover-lift" style={{ border: `1px solid ${C.line}` }}>
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <Eyebrow>This week's brief</Eyebrow>
-              <StatusPill status="Designing" />
-            </div>
-            <div className="f-display mt-4" style={{ fontSize: 32, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
-            <div className="f-mono uppercase text-[11px] tracking-widest mt-1" style={{ color: C.mid }}>{currentBrief.category}</div>
-            <p className="f-body mt-5 max-w-2xl" style={{ color: C.ink, fontSize: 16, lineHeight: 1.6 }}>"{currentBrief.brief}"</p>
-            <div className="mt-8">
-              <ProgressTrack status="Designing" />
-            </div>
-            <div className="mt-10 rounded flex flex-col items-center justify-center text-center py-14 float-slow" style={{ backgroundColor: C.paperDim }}>
-              <div className="f-display" style={{ fontSize: 24, fontWeight: 600, color: C.ink }}>Design in progress.</div>
-              <p className="f-body text-sm mt-2" style={{ color: C.mid }}>"Come back Friday."</p>
+      {submissionsOpen ? (
+        <Reveal delay={120}>
+          <div className="mt-14 rounded p-8 sm:p-10 hover-lift text-center flex flex-col items-center" style={{ border: `1px solid ${C.line}` }}>
+            <Eyebrow>The pool is open</Eyebrow>
+            <div className="f-display mt-4" style={{ fontSize: 28, fontWeight: 600, color: C.ink }}>Nothing's been picked yet.</div>
+            <p className="f-body mt-3 max-w-md" style={{ color: C.mid, fontSize: 15, lineHeight: 1.65 }}>
+              Drop a brief before {CYCLE.deadline} and it's in the running for this week's pick.
+            </p>
+            <SubmitCTA go={go} className="mt-7" />
+          </div>
+        </Reveal>
+      ) : (
+        <Reveal delay={120}>
+          <div className="mt-14">
+            <div className="rounded p-8 sm:p-10 hover-lift" style={{ border: `1px solid ${C.line}` }}>
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <Eyebrow>This week's brief</Eyebrow>
+                <StatusPill status="Designing" />
+              </div>
+              <div className="f-display mt-4" style={{ fontSize: 32, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
+              <div className="f-mono uppercase text-[11px] tracking-widest mt-1" style={{ color: C.mid }}>{currentBrief.category}</div>
+              <p className="f-body mt-5 max-w-2xl" style={{ color: C.ink, fontSize: 16, lineHeight: 1.6 }}>"{currentBrief.brief}"</p>
+              <div className="mt-8">
+                <ProgressTrack status="Designing" />
+              </div>
+              <div className="mt-10 rounded flex flex-col items-center justify-center text-center py-14 float-slow" style={{ backgroundColor: C.paperDim }}>
+                <div className="f-display" style={{ fontSize: 24, fontWeight: 600, color: C.ink }}>Design in progress.</div>
+                <p className="f-body text-sm mt-2" style={{ color: C.mid }}>"Come back Friday."</p>
+              </div>
             </div>
           </div>
-        </div>
-      </Reveal>
+        </Reveal>
+      )}
 
       <div className="mt-16 flex justify-center">
-        <Button onClick={() => go("submit")}>Submit your own brief</Button>
+        <SubmitCTA go={go} label="Submit your own brief" />
       </div>
     </div>
   );
@@ -755,7 +826,7 @@ function ProjectPage({ project, go }) {
         <div className="flex flex-col items-center gap-5 pb-24">
           {p.images && <Button icon={Download} onClick={downloadAll}>Download design</Button>}
           <div className="f-display" style={{ fontSize: 20, fontWeight: 600, color: C.ink }}>Want me to design yours?</div>
-          <Button variant="ghost" icon={null} onClick={() => go("submit")}>Submit another brief</Button>
+          <SubmitCTA go={go} variant="ghost" icon={null} label="Submit another brief" />
         </div>
       </Reveal>
     </div>
@@ -800,7 +871,7 @@ function ArchivePage({ go, openBrief }) {
       </div>
 
       <div className="mt-20 flex justify-center">
-        <Button onClick={() => go("submit")}>Submit a brief</Button>
+        <SubmitCTA go={go} />
       </div>
     </div>
   );
@@ -923,6 +994,22 @@ function SubmitFlow({ go }) {
     if (step === 3) return /\S+@\S+\.\S+/.test(data.email);
     return true;
   };
+
+  if (!submissionsOpen && !done) {
+    return (
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-24 pb-24 text-center rise">
+        <Lock size={20} color={C.faint} className="mx-auto" />
+        <h1 className="f-display mt-5" style={{ fontSize: 34, fontWeight: 600, color: C.ink }}>The pool's closed right now.</h1>
+        <p className="f-body text-sm mt-4 max-w-sm mx-auto" style={{ color: C.mid, lineHeight: 1.65 }}>
+          This week's brief is already being designed. Submissions reopen {CYCLE.nextOpen} — come back then.
+        </p>
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <Button variant="ghost" icon={null} onClick={() => go("week")}>See this week's brief</Button>
+          <Button variant="text" icon={null} onClick={() => go("home")}>Back home</Button>
+        </div>
+      </div>
+    );
+  }
 
   if (done) {
     return (
