@@ -1293,7 +1293,7 @@ function StatusPage() {
 /* ============================================================
    FLOATING SAMPLE STICKER — draggable, click-to-expand
    ============================================================ */
-const SAMPLE_IMG = "https://res.cloudinary.com/dmqyultl0/image/upload/v1787108898/Instagram_post_-_17_iep814.png";
+const SAMPLE_IMG = "https://res.cloudinary.com/dmqyultl0/image/upload/v1787210430/Instagram_post_-_5_u1nxqq.png";
 
 function FloatingSample() {
   const C = useC();
