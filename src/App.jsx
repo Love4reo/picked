@@ -610,7 +610,7 @@ function Home({ go, openBrief }) {
             I miss making proper creative work for real businesses — the idea, the direction, the type, the tiny details nobody asked about. So I started doing it again.
           </p>
           <p className="f-body mt-5" style={{ fontSize: 15, lineHeight: 1.7, color: C.mid }}>
-            One business, one campaign, every week — picked from whoever submits a brief. Free, because that's the whole point. Here's what's happened so far.
+            One business, one campaign, every week — picked from whoever submits a brief. Free, because that's the whole point.
           </p>
           <div className="flex flex-wrap items-center gap-4 mt-7">
             <SubmitCTA go={go} />
