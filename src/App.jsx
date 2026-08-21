@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+\import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   ArrowRight, ArrowLeft, ArrowUpRight, Check, X, Upload, Clock,
   ChevronDown, ChevronRight, Search, Instagram, Globe, Lock,
@@ -164,23 +164,6 @@ const CYCLE = {
 
 const submissionsOpen = CYCLE.status === "open";
 const currentBrief = POOL.find((b) => b.status === "Designing");
-
-/* Crops for the "desk" composition on Home — pulled from real delivered work
-   (see ARCHIVE above), not placeholder imagery, so the studio wall reads as
-   evidence rather than decoration. */
-const DESK_FRAMES = [
-  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204693/Instagram_post_-_18_3_y28wrb.png", tag: "W02·A", label: "Kairos" },
-  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787216769/Instagram_post_-_6_2_ukwh78.png", tag: "W03·A", label: "Third Place Coffee" },
-  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787168515/Instagram_post_-_25_1_wrk0bu.png", tag: "W01·A", label: "Studio Orea" },
-  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204315/Instagram_post_-_17_ezq0px.png", tag: "W02·C", label: "Kairos" },
-  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787217033/Instagram_post_-_7_1_rw7itt.png", tag: "W03·B", label: "Third Place Coffee" },
-];
-
-const DESK_SWATCHES = [
-  { hex: "#FF6A1A", name: "Kairos — signal orange" },
-  { hex: "#E8A33D", name: "Third Place — kraft amber" },
-  { hex: "#F6D9C4", name: "Studio Orea — blush" },
-];
 
 /* ============================================================
    SMALL PRIMITIVES
@@ -656,133 +639,63 @@ function PoolIllustration({ count }) {
 }
 
 /* ============================================================
-   THE DESK — replaces the pool/progress visual on Home with a
-   small studio-wall composition: real crops from delivered work,
-   a hand-marked "pick", a production note, a materials swatch.
-   Same tokens as the rest of the site, just used with more nerve.
+   THE DESK — replaces the pool/progress visual on Home. No
+   photography, minimal copy: a statement, one line of context,
+   the CTA, and a small hand-marked signature graphic — built to
+   be read and acted on in a few seconds, not studied.
    ============================================================ */
-function ContactFrame({ src, tag, label, picked, rotate = 0, size = 84 }) {
+function DeskMark({ count }) {
   const C = useC();
+  const W = 132, H = 132;
+  const cx = W / 2, cy = H / 2;
   return (
-    <div className="shrink-0" style={{ transform: `rotate(${rotate}deg)` }}>
-      <div
-        style={{
-          width: size, height: size * 1.25, borderRadius: 2, position: "relative",
-          border: `1px solid ${picked ? C.accent : C.lineStrong}`, backgroundColor: C.paperDim,
-          overflow: "hidden", boxShadow: "0 8px 18px rgba(18,18,18,0.14)",
-        }}
-      >
-        <img src={src} alt={label} draggable={false}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.96 }} />
-        {picked && (
-          <svg viewBox="0 0 100 125" className="absolute inset-0 w-full h-full" style={{ pointerEvents: "none" }}>
-            <ellipse cx="49" cy="61" rx="41" ry="51" fill="none" stroke={C.accent} strokeWidth="2.5" transform="rotate(-7 49 61)" opacity="0.92" />
-          </svg>
-        )}
-      </div>
-      <div className="f-mono text-[8px] uppercase tracking-widest mt-1.5 flex items-center gap-1.5" style={{ color: picked ? C.accent : C.faint, width: size }}>
-        <span>{tag}</span>
-        {picked && <span>— maybe this one</span>}
-      </div>
-    </div>
-  );
-}
+    <div style={{ width: W, transform: "rotate(-1.5deg)" }}>
+      <div className="relative" style={{ width: W, height: H, border: `1px solid ${C.line}`, borderRadius: 3, backgroundColor: C.paperDim }}>
+        <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full overflow-visible">
+          {/* corner registration marks — same motif as the rest of the site */}
+          <path d={`M9,23 L9,9 L23,9`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
+          <path d={`M${W - 23},9 L${W - 9},9 L${W - 9},23`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
+          <path d={`M9,${H - 23} L9,${H - 9} L23,${H - 9}`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
 
-function ProductionNote({ children, rotate = -2, style }) {
-  const C = useC();
-  return (
-    <div
-      className="f-mono text-[10px] leading-relaxed px-3 py-2.5"
-      style={{
-        transform: `rotate(${rotate}deg)`, backgroundColor: C.paperDim,
-        border: `1px solid ${C.line}`, color: C.mid, width: 168,
-        boxShadow: "0 10px 22px rgba(18,18,18,0.12)", ...style,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function SwatchStrip({ items }) {
-  const C = useC();
-  return (
-    <div className="flex items-center gap-4">
-      {items.map((s) => (
-        <div key={s.hex} className="flex flex-col items-center gap-1.5" style={{ width: 30 }}>
-          <span style={{ width: 18, height: 18, borderRadius: "50%", backgroundColor: s.hex, border: `1px solid ${C.line}`, display: "block" }} />
-          <span className="f-mono text-[8px] uppercase tracking-widest text-center leading-tight" style={{ color: C.faint }}>{s.hex}</span>
+          {/* the mark — a hand-circled pick, the site's one recurring gesture */}
+          <g className="crosshair-breathe">
+            <line x1={cx - 16} y1={cy} x2={cx + 16} y2={cy} stroke={C.accent} strokeWidth="0.75" />
+            <line x1={cx} y1={cy - 16} x2={cx} y2={cy + 16} stroke={C.accent} strokeWidth="0.75" />
+          </g>
+          <ellipse cx={cx} cy={cy} rx="26" ry="21" fill="none" stroke={C.accent} strokeWidth="2" transform={`rotate(-8 ${cx} ${cy})`} />
+          <circle cx={cx} cy={cy} r="3" fill={C.accent} className="pick-pulse" />
+        </svg>
+        <div className="absolute f-mono text-[8px] uppercase tracking-widest" style={{ bottom: 9, right: 11, color: C.faint }}>
+          W{String(CYCLE.week).padStart(2, "0")}
         </div>
-      ))}
+      </div>
+      <div className="f-mono text-[9px] uppercase tracking-widest mt-2 text-center" style={{ color: C.faint }}>
+        {count} in the running
+      </div>
     </div>
   );
 }
 
 function DeskSection({ go }) {
   const C = useC();
-  const hero = DESK_FRAMES[0], sideA = DESK_FRAMES[1], sideB = DESK_FRAMES[2];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-10 md:gap-6">
-      {/* Statement + invitation */}
-      <div className="max-w-md">
-        <h3 className="f-display uppercase" style={{ fontSize: "clamp(30px,4.2vw,44px)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.01em", color: C.ink }}>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-10 sm:gap-16">
+      <div className="flex-1 max-w-md">
+        <h3 className="f-display uppercase" style={{ fontSize: "clamp(28px,4vw,40px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.01em", color: C.ink }}>
           The desk<br />is open.
         </h3>
-        <p className="f-mono text-sm mt-4" style={{ color: C.mid, fontStyle: "italic" }}>Bring me something to make.</p>
-        <p className="f-body mt-4 text-sm leading-relaxed" style={{ color: C.mid }}>
-          Drop a brief before {CYCLE.deadline} and it's in the running. I pick one Friday — no shortlist, no funnel, just whichever one I can't stop thinking about.
+        <p className="f-body mt-3 text-sm leading-relaxed" style={{ color: C.mid }}>
+          One business, one Friday, one campaign — free, no pitch required.
         </p>
-        <SubmitCTA go={go} label="Give me your business" className="mt-7" />
-
-        {/* Mobile-only contact strip — the desktop version lives in the collage */}
-        <div className="md:hidden mt-12">
-          <div className="f-mono text-[9px] uppercase tracking-widest mb-3" style={{ color: C.faint }}>Recent picks, for reference</div>
-          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-            {DESK_FRAMES.map((f, i) => <ContactFrame key={f.tag} {...f} rotate={i % 2 === 0 ? -3 : 2} picked={i === 2} />)}
-          </div>
-          <div className="mt-6"><SwatchStrip items={DESK_SWATCHES} /></div>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mt-6">
+          <SubmitCTA go={go} label="Give me your business" />
+          <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>
+            Closes {CYCLE.deadline} · picked {CYCLE.pickDate}
+          </span>
         </div>
       </div>
-
-      {/* Desktop collage — a corner of the studio wall */}
-      <div className="hidden md:block relative" style={{ width: 320, minHeight: 340 }}>
-        <div className="f-display absolute select-none" aria-hidden="true" style={{
-          fontSize: 168, fontWeight: 700, color: C.line, top: -34, right: -14, lineHeight: 1, zIndex: 0,
-        }}>
-          {String(CYCLE.week).padStart(2, "0")}
-        </div>
-
-        <div className="absolute" style={{ top: 6, left: 6, width: 176, zIndex: 2, transform: "rotate(-3deg)" }}>
-          <div style={{ border: `1px solid ${C.ink}`, borderRadius: 2, overflow: "hidden", backgroundColor: C.paperDim, boxShadow: "0 20px 34px rgba(18,18,18,0.20)" }}>
-            <img src={hero.src} alt={hero.label} draggable={false} style={{ width: "100%", aspectRatio: "4 / 5", objectFit: "cover", display: "block" }} />
-          </div>
-          <div className="f-mono uppercase text-[8px] tracking-widest px-2 py-1 inline-block mt-2" style={{ border: `1px solid ${C.lineStrong}`, color: C.mid, transform: "rotate(2deg)", backgroundColor: C.paper }}>
-            Proof — not final
-          </div>
-        </div>
-
-        <div className="absolute flex gap-2.5" style={{ bottom: 44, right: 4, zIndex: 3 }}>
-          <ContactFrame {...sideA} rotate={4} size={72} />
-          <ContactFrame {...sideB} rotate={-4} size={72} picked />
-        </div>
-
-        <div className="absolute" style={{ top: -10, right: -8, zIndex: 4 }}>
-          <ProductionNote rotate={5}>Kerning tightened .02em on delivery. Keep the torn edge — don't clean it up.</ProductionNote>
-        </div>
-
-        <div className="absolute" style={{ bottom: -6, left: 10, zIndex: 3 }}>
-          <SwatchStrip items={DESK_SWATCHES} />
-        </div>
-      </div>
-
-      {/* Demoted mechanism — the promise, not the dashboard */}
-      <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-3 pt-6 mt-2" style={{ borderTop: `1px solid ${C.line}` }}>
-        <span className="f-mono uppercase text-[11px] tracking-widest" style={{ color: C.ink }}>
-          One business. One Friday. One campaign.
-        </span>
-        <span className="f-mono text-[10px]" style={{ color: C.faint }}>
-          {POOL.length} briefs on the desk — pick happens {CYCLE.pickDate}.
-        </span>
+      <div className="shrink-0 sm:ml-auto">
+        <DeskMark count={POOL.length} />
       </div>
     </div>
   );
