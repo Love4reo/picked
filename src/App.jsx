@@ -240,10 +240,10 @@ function useMagnetic(strength = 14) {
   return { ref, onMouseMove, onMouseLeave };
 }
 
-function Eyebrow({ children, dot = true }) {
+function Eyebrow({ children, dot = true, center = false }) {
   const C = useC();
   return (
-    <div className="f-mono flex items-center gap-2 uppercase tracking-widest text-xs" style={{ color: C.mid }}>
+    <div className={`f-mono flex items-center gap-2 uppercase tracking-widest text-xs ${center ? "justify-center" : ""}`} style={{ color: C.mid }}>
       {dot && <span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />}
       {children}
     </div>
@@ -865,19 +865,21 @@ function WeekPage({ go }) {
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 pb-24">
       <Reveal>
-        <Eyebrow>Week {CYCLE.week}</Eyebrow>
-        <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 600, color: C.ink }}>The current cycle.</h1>
-        <p className="f-body mt-4 max-w-lg" style={{ color: C.mid, fontSize: 16 }}>
-          {submissionsOpen
-            ? `${POOL.length} briefs submitted so far. One gets picked ${CYCLE.deadline}.`
-            : `${POOL.length} briefs were submitted this week. One got picked — here's where it stands.`}
-        </p>
+        <div className="text-center">
+          <Eyebrow center>Week {CYCLE.week}</Eyebrow>
+          <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 600, color: C.ink }}>The current cycle.</h1>
+          <p className="f-body mt-4 max-w-lg mx-auto" style={{ color: C.mid, fontSize: 16 }}>
+            {submissionsOpen
+              ? `${POOL.length} briefs submitted so far. One gets picked ${CYCLE.deadline}.`
+              : `${POOL.length} briefs were submitted this week. One got picked — here's where it stands.`}
+          </p>
+        </div>
       </Reveal>
 
       {submissionsOpen ? (
         <Reveal delay={120}>
           <div className="mt-14 rounded p-8 sm:p-10 hover-lift text-center flex flex-col items-center" style={{ border: `1px solid ${C.line}` }}>
-            <Eyebrow>The pool is open</Eyebrow>
+            <Eyebrow center>The pool is open</Eyebrow>
             <div className="f-display mt-4" style={{ fontSize: 28, fontWeight: 600, color: C.ink }}>Nothing's been picked yet.</div>
             <p className="f-body mt-3 max-w-md" style={{ color: C.mid, fontSize: 15, lineHeight: 1.65 }}>
               Drop a brief before {CYCLE.deadline} and it's in the running for this week's pick.
@@ -907,10 +909,6 @@ function WeekPage({ go }) {
           </div>
         </Reveal>
       )}
-
-      <div className="mt-16 flex justify-center">
-        <SubmitCTA go={go} label="Submit your own brief" />
-      </div>
     </div>
   );
 }
@@ -953,7 +951,7 @@ function ProjectPage({ project, go, openBrief }) {
       </div>
       <Reveal>
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-8 pb-8 text-center">
-          <Eyebrow>Week 0{p.week} · The design is ready</Eyebrow>
+          <Eyebrow center>Week 0{p.week}</Eyebrow>
           <h1 className="f-display mt-5" style={{ fontSize: "clamp(30px,5vw,52px)", fontWeight: 600, color: C.ink }}>
             {p.business}
           </h1>
