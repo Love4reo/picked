@@ -805,47 +805,53 @@ function Home({ go, openBrief }) {
         </Entry>
       )}
 
-      {/* Past weeks — the actual work, same log format */}
-      {ARCHIVE.map((a, i) => (
-        <Entry key={a.week} index={`W${String(a.week).padStart(2, "0")}`} meta={a.category}>
-          <Reveal delay={i * 80}>
-            <button onClick={() => openBrief(a)} className="flex flex-col md:flex-row md:items-start gap-6 md:gap-8 text-left group w-full">
-              <div className="w-full md:w-64 shrink-0 aspect-[4/5] rounded relative overflow-hidden" style={{ background: a.images ? C.paperDim : `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
-                {a.images ? (
-                  <ArchiveCardMedia a={a} />
-                ) : (
-                  <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" />
-                )}
-              </div>
-              <div className="pt-1">
-                <div className="f-display transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>{a.business}</div>
-                <div className="f-body text-sm mt-2 leading-relaxed max-w-md" style={{ color: C.mid }}>{a.brief}</div>
-                <span className="f-mono text-[11px] uppercase tracking-widest flex items-center gap-1 group mt-4" style={{ color: C.ink }}>
-                  Read the thinking <ArrowRight size={11} className="transition-transform duration-300 group-hover:translate-x-1" />
-                </span>
-              </div>
-            </button>
+      {/* Past weeks — the actual work, same log format. Wrapped with an id so
+          the floating sample can hide itself while this stretch scrolls by. */}
+      <div id="archive-weeks">
+        {ARCHIVE.map((a, i) => (
+          <Entry key={a.week} index={`W${String(a.week).padStart(2, "0")}`} meta={a.category}>
+            <Reveal delay={i * 80}>
+              <button onClick={() => openBrief(a)} className="flex flex-col md:flex-row md:items-start gap-6 md:gap-8 text-left group w-full">
+                <div className="w-full md:w-64 shrink-0 aspect-[4/5] rounded relative overflow-hidden" style={{ background: a.images ? C.paperDim : `linear-gradient(150deg, ${a.grad[0]}, ${a.grad[1]})` }}>
+                  {a.images ? (
+                    <ArchiveCardMedia a={a} />
+                  ) : (
+                    <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" />
+                  )}
+                </div>
+                <div className="pt-1">
+                  <div className="f-display transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>{a.business}</div>
+                  <div className="f-body text-sm mt-2 leading-relaxed max-w-md" style={{ color: C.mid }}>{a.brief}</div>
+                  <span className="f-mono text-[11px] uppercase tracking-widest flex items-center gap-1 group mt-4" style={{ color: C.ink }}>
+                    Read the thinking <ArrowRight size={11} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
+                </div>
+              </button>
+            </Reveal>
+          </Entry>
+        ))}
+      </div>
+
+      {/* Fine print — mechanics, kept quiet and appendix-like. Also the cue
+          for the floating sample to reappear once the archive has passed. */}
+      <div id="fine-print">
+        <Entry index="—" meta="The fine print">
+          <Reveal>
+            <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 max-w-2xl">
+              {[
+                ["Drop a brief", "Tell me what you need, who it's for, and what it should say."],
+                ["One gets picked, every Friday", "No shortlist, no rounds — just one, from everyone who submitted."],
+                ["It lands in your inbox", "Fully art-directed, free, ready to publish."],
+              ].map(([t, d]) => (
+                <div key={t} className="flex-1">
+                  <div className="f-body text-sm font-medium" style={{ color: C.ink }}>{t}</div>
+                  <p className="f-body text-xs mt-1.5 leading-relaxed" style={{ color: C.mid }}>{d}</p>
+                </div>
+              ))}
+            </div>
           </Reveal>
         </Entry>
-      ))}
-
-      {/* Fine print — mechanics, kept quiet and appendix-like */}
-      <Entry index="—" meta="The fine print">
-        <Reveal>
-          <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 max-w-2xl">
-            {[
-              ["Drop a brief", "Tell me what you need, who it's for, and what it should say."],
-              ["One gets picked, every Friday", "No shortlist, no rounds — just one, from everyone who submitted."],
-              ["It lands in your inbox", "Fully art-directed, free, ready to publish."],
-            ].map(([t, d]) => (
-              <div key={t} className="flex-1">
-                <div className="f-body text-sm font-medium" style={{ color: C.ink }}>{t}</div>
-                <p className="f-body text-xs mt-1.5 leading-relaxed" style={{ color: C.mid }}>{d}</p>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-      </Entry>
+      </div>
     </div>
   );
 }
@@ -1478,12 +1484,28 @@ function FloatingSample() {
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
   const drag = useRef({ dragging: false, moved: false, offX: 0, offY: 0 });
 
   useEffect(() => {
     if (SAMPLE_IMAGES.length < 2) return;
     const t = setInterval(() => setIdx((i) => (i + 1) % SAMPLE_IMAGES.length), 2400);
     return () => clearInterval(t);
+  }, []);
+
+  /* Default resting spot is next to the intro copy — while the "already
+     made" archive weeks scroll by, the sticker steps aside so it doesn't
+     sit on top of past work, then settles back in once the fine print
+     (the section right after the archive) comes into view. */
+  useEffect(() => {
+    const archiveEl = document.getElementById("archive-weeks");
+    if (!archiveEl) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setVisible(!entry.isIntersecting),
+      { threshold: 0, rootMargin: "-10% 0px -10% 0px" }
+    );
+    io.observe(archiveEl);
+    return () => io.disconnect();
   }, []);
 
   useEffect(() => {
@@ -1505,6 +1527,7 @@ function FloatingSample() {
   }, []);
 
   const onPointerDown = (e) => {
+    if (!visible) return;
     const rect = ref.current.getBoundingClientRect();
     drag.current.dragging = true;
     drag.current.moved = false;
@@ -1514,6 +1537,7 @@ function FloatingSample() {
   };
 
   const onClick = () => {
+    if (!visible) return;
     if (drag.current.moved) { drag.current.moved = false; return; }
     setOpen(true);
   };
@@ -1530,11 +1554,14 @@ function FloatingSample() {
         onClick={onClick}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
+        aria-hidden={!visible}
         className="select-none float-slow"
         style={{
           ...style, zIndex: 55, cursor: "grab", touchAction: "none",
-          transform: `rotate(${hover ? 0 : -6}deg) scale(${hover ? 1.04 : 1})`,
-          transition: "transform .3s cubic-bezier(.16,1,.3,1)",
+          opacity: visible ? 1 : 0,
+          pointerEvents: visible ? "auto" : "none",
+          transform: `rotate(${hover ? 0 : -6}deg) scale(${hover ? 1.04 : visible ? 1 : 0.9})`,
+          transition: "transform .3s cubic-bezier(.16,1,.3,1), opacity .45s ease",
         }}
       >
         <div className="relative">
