@@ -479,44 +479,42 @@ function Footer({ go }) {
   const C = useC();
   return (
     <div style={{ borderTop: `1px solid ${C.line}` }} className="mt-24">
-      {/* Special work — commissions outside the weekly pick */}
+      {/* One combined band: the hire-me pitch leads, the credit rides along as a
+          quieter secondary element — instead of two equally loud sections. */}
       <div style={{ borderBottom: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20">
-          <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Not everyone wants to wait for Friday</span>
-          <div className="f-display mt-3 max-w-xl" style={{ fontSize: "clamp(24px,3.2vw,34px)", lineHeight: 1.3, fontWeight: 500, color: C.ink }}>
-            If you'd rather just hire me for a proper campaign, gig, or one-off — that's on the table too.
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12 lg:gap-16">
+          <div className="max-w-xl">
+            <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Not everyone wants to wait for Friday</span>
+            <div className="f-display mt-3" style={{ fontSize: "clamp(22px,2.8vw,30px)", lineHeight: 1.35, fontWeight: 500, color: C.ink }}>
+              If you'd rather just hire me for a proper campaign, gig, or one-off — that's on the table too.
+            </div>
+            <p className="f-body mt-4 max-w-md" style={{ fontSize: 14, lineHeight: 1.7, color: C.mid }}>
+              No brief pool, no waiting your turn. Just email me directly and tell me what you need.
+            </p>
+            <a href="mailto:oshiderooreoluwa@gmail.com"
+              className="group inline-flex items-center gap-2 f-mono uppercase text-xs tracking-widest px-6 py-3.5 rounded-full mt-7 btn-press"
+              style={{ border: `1px solid ${C.ink}`, color: C.ink, transition: "background-color .25s ease, color .25s ease" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = C.ink; e.currentTarget.style.color = C.paper; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = C.ink; }}
+            >
+              oshiderooreoluwa@gmail.com <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </a>
           </div>
-          <p className="f-body mt-4 max-w-lg" style={{ fontSize: 15, lineHeight: 1.7, color: C.mid }}>
-            No brief pool, no waiting your turn. Just email me directly and tell me what you need.
-          </p>
-          <a href="mailto:oshiderooreoluwa@gmail.com"
-            className="group inline-flex items-center gap-2 f-mono uppercase text-xs tracking-widest px-6 py-3.5 rounded-full mt-7 btn-press"
-            style={{ border: `1px solid ${C.ink}`, color: C.ink, transition: "background-color .25s ease, color .25s ease" }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = C.ink; e.currentTarget.style.color = C.paper; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = C.ink; }}
-          >
-            oshiderooreoluwa@gmail.com <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
-        </div>
-      </div>
 
-      {/* Creator credit — its own section, not a footnote */}
-      <div style={{ borderBottom: `1px solid ${C.line}` }}>
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8">
-          <div>
+          <div className="shrink-0 lg:text-right">
             <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Designed by</span>
-            <div className="f-display mt-3" style={{ fontSize: "clamp(30px,4.5vw,48px)", fontWeight: 600, color: C.ink, letterSpacing: "-0.01em" }}>
+            <div className="f-display mt-2" style={{ fontSize: "clamp(22px,2.6vw,28px)", fontWeight: 600, color: C.ink, letterSpacing: "-0.01em" }}>
               Isaac Oreoluwa
             </div>
+            <a href="https://isaacoreoluwa.xyz" target="_blank" rel="noopener noreferrer"
+              className="group inline-flex items-center gap-1.5 f-mono uppercase text-[11px] tracking-widest mt-2.5"
+              style={{ color: C.mid, transition: "color .2s ease" }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = C.ink; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = C.mid; }}
+            >
+              isaacoreoluwa.xyz <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </a>
           </div>
-          <a href="https://isaacoreoluwa.xyz" target="_blank" rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 f-mono uppercase text-xs tracking-widest px-6 py-3.5 rounded-full shrink-0 btn-press"
-            style={{ border: `1px solid ${C.ink}`, color: C.ink, transition: "background-color .25s ease, color .25s ease" }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = C.ink; e.currentTarget.style.color = C.paper; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = C.ink; }}
-          >
-            isaacoreoluwa.xyz <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
         </div>
       </div>
 
