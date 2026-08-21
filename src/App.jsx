@@ -68,9 +68,24 @@ const getFonts = (C) => `
   .btn-press:active{transform:scale(.96);}
   .hover-lift{transition:transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease;}
   .hover-lift:hover{transform:translateY(-4px);}
+  @keyframes radarSweep { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .radar-sweep{animation:radarSweep 5s linear infinite;}
+  @keyframes ringSpin { from{transform:rotate(0deg)} to{transform:rotate(-360deg)} }
+  .ring-spin{animation:ringSpin 9s linear infinite;}
+  @keyframes ringSpinRev { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .ring-spin-rev{animation:ringSpinRev 14s linear infinite;}
+  @keyframes sonarPing { 0%{transform:scale(1); opacity:.9} 100%{transform:scale(4.5); opacity:0} }
+  .sonar-ping{animation:sonarPing 3s cubic-bezier(.2,.6,.4,1) infinite; transform-box:fill-box; transform-origin:center;}
+  @keyframes pickPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+  .pick-pulse{animation:pickPulse 2s ease-in-out infinite; transform-box:fill-box; transform-origin:center;}
+  @keyframes crosshairBreathe { 0%,100%{opacity:.3} 50%{opacity:.85} }
+  .crosshair-breathe{animation:crosshairBreathe 2s ease-in-out infinite;}
+  @keyframes dotFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+  @keyframes dotTwinkle { 0%,100%{opacity:.35} 50%{opacity:1} }
+  .dot-anim{animation:dotFloat 3s ease-in-out infinite, dotTwinkle 2.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center;}
   body{background-color:${C.paper};}
   input:focus, textarea:focus { border-color:${C.accent} !important; box-shadow:0 0 0 3px ${C.accentDim}; }
-  @media (prefers-reduced-motion: reduce){ .marquee-track,.rise,.pulse-dot,.digit-in,.float-slow,.btn-press,.hover-lift{animation:none !important; transition:none !important;} }
+  @media (prefers-reduced-motion: reduce){ .marquee-track,.rise,.pulse-dot,.digit-in,.float-slow,.btn-press,.hover-lift,.radar-sweep,.ring-spin,.ring-spin-rev,.sonar-ping,.pick-pulse,.crosshair-breathe,.dot-anim{animation:none !important; transition:none !important;} }
 `;
 
 /* ============================================================
@@ -541,15 +556,16 @@ function PoolIllustration({ count }) {
     const x = Math.sin(n * 12.9898) * 43758.5453;
     return x - Math.floor(x);
   };
-  const W = 200, H = 240, PAD = 20;
+  const W = 200, H = 250, PAD = 20;
   const dots = Array.from({ length: Math.max(count, 1) }, (_, i) => ({
     x: PAD + hash(i * 3.7 + 1) * (W - PAD * 2),
     y: PAD + hash(i * 9.1 + 4) * (H - PAD * 2 - 40), // keep clear of the label band at the bottom
   }));
   const pick = dots[Math.min(3, dots.length - 1)];
+  const originStyle = pick ? { transformBox: "view-box", transformOrigin: `${pick.x}px ${pick.y}px` } : {};
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 w-full h-full overflow-visible">
       {/* corner registration marks */}
       <path d={`M10,26 L10,10 L26,10`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
       <path d={`M${W - 26},10 L${W - 10},10 L${W - 10},26`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
@@ -559,18 +575,47 @@ function PoolIllustration({ count }) {
       {/* faint diagonal, purely compositional */}
       <line x1={PAD} y1={H - PAD - 30} x2={W - PAD} y2={PAD} stroke={C.line} strokeWidth="0.75" opacity="0.5" />
 
-      {/* the pool — one hollow ring per brief */}
+      {pick && (
+        <>
+          {/* radar sweep — a rotating gradient blade centered on the pick */}
+          <defs>
+            <linearGradient id="sweepFade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={C.accent} stopOpacity="0.5" />
+              <stop offset="100%" stopColor={C.accent} stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <g className="radar-sweep" style={originStyle}>
+            <line x1={pick.x} y1={pick.y} x2={pick.x} y2={pick.y - 95} stroke="url(#sweepFade)" strokeWidth="14" />
+          </g>
+
+          {/* sonar pings — expanding rings pulsing outward on a loop */}
+          <circle cx={pick.x} cy={pick.y} r="4" fill="none" stroke={C.accent} strokeWidth="1" className="sonar-ping" style={{ animationDelay: "0s" }} />
+          <circle cx={pick.x} cy={pick.y} r="4" fill="none" stroke={C.accent} strokeWidth="1" className="sonar-ping" style={{ animationDelay: "1s" }} />
+          <circle cx={pick.x} cy={pick.y} r="4" fill="none" stroke={C.accent} strokeWidth="1" className="sonar-ping" style={{ animationDelay: "2s" }} />
+        </>
+      )}
+
+      {/* the pool — one hollow ring per brief, gently drifting and twinkling */}
       {dots.map((d, i) => (
-        d === pick ? null : <circle key={i} cx={d.x} cy={d.y} r="2.5" fill="none" stroke={C.lineStrong} strokeWidth="1" />
+        d === pick ? null : (
+          <circle
+            key={i} cx={d.x} cy={d.y} r="2.5" fill="none" stroke={C.lineStrong} strokeWidth="1"
+            className="dot-anim"
+            style={{ animationDelay: `${(hash(i * 5.3) * 3).toFixed(2)}s, ${(hash(i * 6.1) * 2.4).toFixed(2)}s` }}
+          />
+        )
       ))}
 
-      {/* the pick — crosshair + target ring around one node */}
+      {/* the pick — breathing crosshair, spinning dashed rings, pulsing core */}
       {pick && (
         <g>
-          <line x1={pick.x - 22} y1={pick.y} x2={pick.x + 22} y2={pick.y} stroke={C.accent} strokeWidth="0.75" opacity="0.55" />
-          <line x1={pick.x} y1={pick.y - 22} x2={pick.x} y2={pick.y + 22} stroke={C.accent} strokeWidth="0.75" opacity="0.55" />
-          <circle cx={pick.x} cy={pick.y} r="13" fill="none" stroke={C.accent} strokeWidth="1" strokeDasharray="2 3" />
-          <circle cx={pick.x} cy={pick.y} r="4" fill={C.accent} />
+          <g className="crosshair-breathe">
+            <line x1={pick.x - 22} y1={pick.y} x2={pick.x + 22} y2={pick.y} stroke={C.accent} strokeWidth="0.75" />
+            <line x1={pick.x} y1={pick.y - 22} x2={pick.x} y2={pick.y + 22} stroke={C.accent} strokeWidth="0.75" />
+          </g>
+          <circle cx={pick.x} cy={pick.y} r="18" fill="none" stroke={C.lineStrong} strokeWidth="0.75" strokeDasharray="1 4" className="ring-spin-rev" style={originStyle} />
+          <circle cx={pick.x} cy={pick.y} r="13" fill="none" stroke={C.accent} strokeWidth="1" strokeDasharray="2 3" className="ring-spin" style={originStyle} />
+          <circle cx={pick.x} cy={pick.y} r="4" fill={C.accent} className="pick-pulse" />
         </g>
       )}
     </svg>
