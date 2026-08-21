@@ -14,7 +14,6 @@ const LIGHT = {
   paperDim: "#F2F0EA",
   mid: "#7A776F",
   faint: "#A8A59B",
-  line: "#DEDBD1",
   lineStrong: "#C7C3B6",
   accent: "#3547F0",
   accentDim: "#EBEDFD",
