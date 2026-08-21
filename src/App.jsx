@@ -918,9 +918,10 @@ function WeekPage({ go }) {
 /* ============================================================
    PROJECT / REVEAL PAGE
    ============================================================ */
-function ProjectPage({ project, go }) {
+function ProjectPage({ project, go, openBrief }) {
   const C = useC();
   const p = project || ARCHIVE[0];
+  const more = ARCHIVE.filter((a) => a.week !== p.week).slice(0, 3);
 
   // Cloudinary honors fl_attachment as a Content-Disposition hint, forcing a real
   // download instead of navigating to the image — plain <a download> doesn't
@@ -961,7 +962,7 @@ function ProjectPage({ project, go }) {
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-8 pb-8 text-center">
           <Eyebrow>Week 0{p.week} · The design is ready</Eyebrow>
           <h1 className="f-display mt-5" style={{ fontSize: "clamp(30px,5vw,52px)", fontWeight: 600, color: C.ink }}>
-            Designed for {p.business}.
+            {p.business}
           </h1>
           <div className="f-mono uppercase text-xs tracking-widest mt-2" style={{ color: C.mid }}>{p.category}</div>
         </div>
@@ -1013,6 +1014,36 @@ function ProjectPage({ project, go }) {
           </div>
         </Reveal>
       </div>
+
+      {more.length > 0 && (
+        <Reveal>
+          <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pb-16" style={{ borderTop: `1px solid ${C.line}`, paddingTop: 56 }}>
+            <div className="flex items-center justify-between mb-8">
+              <Eyebrow>More work</Eyebrow>
+              <button onClick={() => go("archive")} className="f-mono text-[11px] uppercase tracking-widest flex items-center gap-1.5 group shrink-0" style={{ color: C.mid }}>
+                See the full archive <ArrowRight size={11} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+              {more.map((o) => (
+                <button key={o.week} onClick={() => openBrief(o)} className="text-left group">
+                  <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ background: o.images ? C.paperDim : `linear-gradient(150deg, ${o.grad[0]}, ${o.grad[1]})` }}>
+                    {o.images ? (
+                      <ArchiveCardMedia a={o} />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-90 transition-transform duration-500 group-hover:scale-110">
+                        <span className="f-display" style={{ color: o.accent, fontSize: 20, fontWeight: 700 }}>{o.title}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="f-body text-sm mt-3 transition-opacity duration-300 group-hover:opacity-60" style={{ color: C.ink, fontWeight: 500 }}>{o.business}</div>
+                  <div className="f-mono text-[10px] uppercase tracking-widest mt-1" style={{ color: C.faint }}>{o.category}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      )}
 
       <Reveal>
         <div className="flex flex-col items-center gap-5 pb-24">
@@ -1621,7 +1652,7 @@ function AppShell() {
         {view === "home" && <Home go={go} openBrief={openBrief} />}
         {view === "week" && <WeekPage go={go} />}
         {view === "archive" && <ArchivePage go={go} openBrief={openBrief} />}
-        {view === "project" && <ProjectPage project={project} go={go} />}
+        {view === "project" && <ProjectPage project={project} go={go} openBrief={openBrief} />}
         {view === "submit" && <SubmitFlow go={go} />}
         {view === "status" && <StatusPage />}
       </div>
