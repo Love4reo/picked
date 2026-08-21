@@ -14,6 +14,7 @@ const LIGHT = {
   paperDim: "#F2F0EA",
   mid: "#7A776F",
   faint: "#A8A59B",
+  line: "#DEDBD1",
   lineStrong: "#C7C3B6",
   accent: "#3547F0",
   accentDim: "#EBEDFD",
@@ -711,23 +712,36 @@ function Home({ go, openBrief }) {
      Every entry on the page — the intro note, this week's brief, past weeks —
      uses this same two-column shape, so the page reads as one running log
      rather than a stack of different marketing sections. */
-  const Entry = ({ index, meta, children, first = false }) => (
+  const Entry = ({ index, meta, children, first = false, pattern = false }) => (
     <div
-      className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 grid grid-cols-[56px_1fr] sm:grid-cols-[96px_1fr] gap-6 sm:gap-10 py-12 sm:py-16"
+      className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 grid grid-cols-[56px_1fr] sm:grid-cols-[96px_1fr] gap-6 sm:gap-10 py-12 sm:py-16 relative overflow-hidden"
       style={{ borderTop: first ? "none" : `1px solid ${C.line}` }}
     >
-      <div className="pt-1">
+      {pattern && (
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          style={{
+            backgroundImage: `radial-gradient(${C.lineStrong} 1px, transparent 1.5px)`,
+            backgroundSize: "26px 26px",
+            opacity: 0.5,
+            maskImage: "linear-gradient(to left, black 0%, black 38%, transparent 82%)",
+            WebkitMaskImage: "linear-gradient(to left, black 0%, black 38%, transparent 82%)",
+          }}
+        />
+      )}
+      <div className="pt-1 relative z-10">
         <div className="f-mono text-xs sm:text-sm" style={{ color: C.faint }}>{index}</div>
         {meta && <div className="f-mono uppercase text-[9px] sm:text-[10px] tracking-widest mt-2 leading-relaxed" style={{ color: C.mid }}>{meta}</div>}
       </div>
-      <div>{children}</div>
+      <div className="relative z-10">{children}</div>
     </div>
   );
 
   return (
     <div>
       {/* 00 — the intro note, standing in for a hero */}
-      <Entry index="00" meta={<>Vol. 1<br />Ongoing</>} first>
+      <Entry index="00" meta={<>Vol. 1<br />Ongoing</>} first pattern>
         <div className="rise max-w-2xl">
           <p className="f-display" style={{ fontSize: "clamp(24px,3.4vw,34px)", lineHeight: 1.3, fontWeight: 500, color: C.ink }}>
             I miss making proper campaign work for real businesses — the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.
