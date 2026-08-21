@@ -165,6 +165,23 @@ const CYCLE = {
 const submissionsOpen = CYCLE.status === "open";
 const currentBrief = POOL.find((b) => b.status === "Designing");
 
+/* Crops for the "desk" composition on Home — pulled from real delivered work
+   (see ARCHIVE above), not placeholder imagery, so the studio wall reads as
+   evidence rather than decoration. */
+const DESK_FRAMES = [
+  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204693/Instagram_post_-_18_3_y28wrb.png", tag: "W02·A", label: "Kairos" },
+  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787216769/Instagram_post_-_6_2_ukwh78.png", tag: "W03·A", label: "Third Place Coffee" },
+  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787168515/Instagram_post_-_25_1_wrk0bu.png", tag: "W01·A", label: "Studio Orea" },
+  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787204315/Instagram_post_-_17_ezq0px.png", tag: "W02·C", label: "Kairos" },
+  { src: "https://res.cloudinary.com/dmqyultl0/image/upload/v1787217033/Instagram_post_-_7_1_rw7itt.png", tag: "W03·B", label: "Third Place Coffee" },
+];
+
+const DESK_SWATCHES = [
+  { hex: "#FF6A1A", name: "Kairos — signal orange" },
+  { hex: "#E8A33D", name: "Third Place — kraft amber" },
+  { hex: "#F6D9C4", name: "Studio Orea — blush" },
+];
+
 /* ============================================================
    SMALL PRIMITIVES
    ============================================================ */
@@ -639,6 +656,139 @@ function PoolIllustration({ count }) {
 }
 
 /* ============================================================
+   THE DESK — replaces the pool/progress visual on Home with a
+   small studio-wall composition: real crops from delivered work,
+   a hand-marked "pick", a production note, a materials swatch.
+   Same tokens as the rest of the site, just used with more nerve.
+   ============================================================ */
+function ContactFrame({ src, tag, label, picked, rotate = 0, size = 84 }) {
+  const C = useC();
+  return (
+    <div className="shrink-0" style={{ transform: `rotate(${rotate}deg)` }}>
+      <div
+        style={{
+          width: size, height: size * 1.25, borderRadius: 2, position: "relative",
+          border: `1px solid ${picked ? C.accent : C.lineStrong}`, backgroundColor: C.paperDim,
+          overflow: "hidden", boxShadow: "0 8px 18px rgba(18,18,18,0.14)",
+        }}
+      >
+        <img src={src} alt={label} draggable={false}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.96 }} />
+        {picked && (
+          <svg viewBox="0 0 100 125" className="absolute inset-0 w-full h-full" style={{ pointerEvents: "none" }}>
+            <ellipse cx="49" cy="61" rx="41" ry="51" fill="none" stroke={C.accent} strokeWidth="2.5" transform="rotate(-7 49 61)" opacity="0.92" />
+          </svg>
+        )}
+      </div>
+      <div className="f-mono text-[8px] uppercase tracking-widest mt-1.5 flex items-center gap-1.5" style={{ color: picked ? C.accent : C.faint, width: size }}>
+        <span>{tag}</span>
+        {picked && <span>— maybe this one</span>}
+      </div>
+    </div>
+  );
+}
+
+function ProductionNote({ children, rotate = -2, style }) {
+  const C = useC();
+  return (
+    <div
+      className="f-mono text-[10px] leading-relaxed px-3 py-2.5"
+      style={{
+        transform: `rotate(${rotate}deg)`, backgroundColor: C.paperDim,
+        border: `1px solid ${C.line}`, color: C.mid, width: 168,
+        boxShadow: "0 10px 22px rgba(18,18,18,0.12)", ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function SwatchStrip({ items }) {
+  const C = useC();
+  return (
+    <div className="flex items-center gap-4">
+      {items.map((s) => (
+        <div key={s.hex} className="flex flex-col items-center gap-1.5" style={{ width: 30 }}>
+          <span style={{ width: 18, height: 18, borderRadius: "50%", backgroundColor: s.hex, border: `1px solid ${C.line}`, display: "block" }} />
+          <span className="f-mono text-[8px] uppercase tracking-widest text-center leading-tight" style={{ color: C.faint }}>{s.hex}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DeskSection({ go }) {
+  const C = useC();
+  const hero = DESK_FRAMES[0], sideA = DESK_FRAMES[1], sideB = DESK_FRAMES[2];
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-10 md:gap-6">
+      {/* Statement + invitation */}
+      <div className="max-w-md">
+        <h3 className="f-display uppercase" style={{ fontSize: "clamp(30px,4.2vw,44px)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.01em", color: C.ink }}>
+          The desk<br />is open.
+        </h3>
+        <p className="f-mono text-sm mt-4" style={{ color: C.mid, fontStyle: "italic" }}>Bring me something to make.</p>
+        <p className="f-body mt-4 text-sm leading-relaxed" style={{ color: C.mid }}>
+          Drop a brief before {CYCLE.deadline} and it's in the running. I pick one Friday — no shortlist, no funnel, just whichever one I can't stop thinking about.
+        </p>
+        <SubmitCTA go={go} label="Give me your business" className="mt-7" />
+
+        {/* Mobile-only contact strip — the desktop version lives in the collage */}
+        <div className="md:hidden mt-12">
+          <div className="f-mono text-[9px] uppercase tracking-widest mb-3" style={{ color: C.faint }}>Recent picks, for reference</div>
+          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+            {DESK_FRAMES.map((f, i) => <ContactFrame key={f.tag} {...f} rotate={i % 2 === 0 ? -3 : 2} picked={i === 2} />)}
+          </div>
+          <div className="mt-6"><SwatchStrip items={DESK_SWATCHES} /></div>
+        </div>
+      </div>
+
+      {/* Desktop collage — a corner of the studio wall */}
+      <div className="hidden md:block relative" style={{ width: 320, minHeight: 340 }}>
+        <div className="f-display absolute select-none" aria-hidden="true" style={{
+          fontSize: 168, fontWeight: 700, color: C.line, top: -34, right: -14, lineHeight: 1, zIndex: 0,
+        }}>
+          {String(CYCLE.week).padStart(2, "0")}
+        </div>
+
+        <div className="absolute" style={{ top: 6, left: 6, width: 176, zIndex: 2, transform: "rotate(-3deg)" }}>
+          <div style={{ border: `1px solid ${C.ink}`, borderRadius: 2, overflow: "hidden", backgroundColor: C.paperDim, boxShadow: "0 20px 34px rgba(18,18,18,0.20)" }}>
+            <img src={hero.src} alt={hero.label} draggable={false} style={{ width: "100%", aspectRatio: "4 / 5", objectFit: "cover", display: "block" }} />
+          </div>
+          <div className="f-mono uppercase text-[8px] tracking-widest px-2 py-1 inline-block mt-2" style={{ border: `1px solid ${C.lineStrong}`, color: C.mid, transform: "rotate(2deg)", backgroundColor: C.paper }}>
+            Proof — not final
+          </div>
+        </div>
+
+        <div className="absolute flex gap-2.5" style={{ bottom: 44, right: 4, zIndex: 3 }}>
+          <ContactFrame {...sideA} rotate={4} size={72} />
+          <ContactFrame {...sideB} rotate={-4} size={72} picked />
+        </div>
+
+        <div className="absolute" style={{ top: -10, right: -8, zIndex: 4 }}>
+          <ProductionNote rotate={5}>Kerning tightened .02em on delivery. Keep the torn edge — don't clean it up.</ProductionNote>
+        </div>
+
+        <div className="absolute" style={{ bottom: -6, left: 10, zIndex: 3 }}>
+          <SwatchStrip items={DESK_SWATCHES} />
+        </div>
+      </div>
+
+      {/* Demoted mechanism — the promise, not the dashboard */}
+      <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-3 pt-6 mt-2" style={{ borderTop: `1px solid ${C.line}` }}>
+        <span className="f-mono uppercase text-[11px] tracking-widest" style={{ color: C.ink }}>
+          One business. One Friday. One campaign.
+        </span>
+        <span className="f-mono text-[10px]" style={{ color: C.faint }}>
+          {POOL.length} briefs on the desk — pick happens {CYCLE.pickDate}.
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
    HOME
    ============================================================ */
 function Home({ go, openBrief }) {
@@ -687,28 +837,7 @@ function Home({ go, openBrief }) {
           meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.accent }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />Open</span></>}
         >
           <Reveal>
-            <div className="flex flex-col md:flex-row gap-8">
-              <div className="flex-1 flex flex-col">
-                <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>The pool is open.</div>
-                <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>
-                  Drop a brief before {CYCLE.deadline} and it's in the running. I pick one Friday — no shortlist, no funnel, just whichever one I can't stop thinking about.
-                </p>
-                <SubmitCTA go={go} className="mt-6" />
-                <div className="mt-auto pt-10">
-                  <PoolRipples />
-                  <p className="f-mono text-[10px] uppercase tracking-widest mt-3" style={{ color: C.faint }}>Every brief drops another one in.</p>
-                </div>
-              </div>
-              <div className="w-full md:w-56 shrink-0">
-                <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ border: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
-                  <PoolIllustration count={POOL.length} />
-                  <div className="absolute inset-x-0 bottom-0 px-5 pt-10 pb-5" style={{ background: `linear-gradient(to top, ${C.paperDim} 50%, transparent)` }}>
-                    <StatBlock value={String(POOL.length)} label="In the pool" />
-                  </div>
-                </div>
-                <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Pick happens {CYCLE.pickDate}.</p>
-              </div>
-            </div>
+            <DeskSection go={go} />
           </Reveal>
         </Entry>
       ) : (
