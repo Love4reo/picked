@@ -752,7 +752,8 @@ function Home({ go, openBrief }) {
       <Entry index="00" meta={<>Vol. 1<br />Ongoing</>} first pattern>
         <div className="rise max-w-2xl">
           <p className="f-display" style={{ fontSize: "clamp(24px,3.4vw,34px)", lineHeight: 1.3, fontWeight: 500, color: C.ink }}>
-            I miss making proper campaign work for real businesses — the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.
+            I miss making proper campaign work for real businesses —{" "}
+            <span style={{ opacity: 0.56 }}>the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.</span>
           </p>
           <p className="f-body mt-5" style={{ fontSize: 15, lineHeight: 1.7, color: C.mid }}>
             One business, one campaign, every week — picked from whoever submits a brief. Free, because that's the whole point.
