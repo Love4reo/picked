@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   ArrowRight, ArrowLeft, ArrowUpRight, Check, X, Upload, Clock,
-  ChevronDown, ChevronRight, Search, Instagram, Globe, Lock,
+  ChevronDown, ChevronRight, Search, Lock,
   Download, Sparkles, Circle, CircleDot, Plus, Minus
 } from "lucide-react";
 
@@ -520,24 +520,34 @@ function Footer({ go }) {
         </div>
       </div>
 
-      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-14 flex flex-col sm:flex-row justify-between gap-8">
-        <div>
-          <div className="f-display" style={{ fontSize: 22, fontWeight: 700, color: C.ink }}>PICKED</div>
-          <p className="f-body text-sm mt-2 max-w-xs" style={{ color: C.mid }}>
-            One designer. One campaign a week. I miss making real stuff for real businesses — so here we are.
-          </p>
+      {/* Closing statement — the loud, dramatic sign-off. One word, full width. */}
+      <button
+        onClick={() => go("home")}
+        className="f-display block w-full text-left leading-none group"
+        style={{ padding: "0" }}
+      >
+        <div
+          className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 sm:pt-20 pb-6 sm:pb-10 transition-colors duration-500"
+          style={{
+            fontSize: "clamp(64px,14vw,208px)", fontWeight: 700, letterSpacing: "-0.03em",
+            color: C.ink, whiteSpace: "nowrap", overflow: "hidden",
+          }}
+        >
+          <span className="inline-block transition-transform duration-500 group-hover:-translate-y-1">
+            PICKED<span style={{ color: C.accent }}>.</span>
+          </span>
         </div>
-        <div className="flex gap-16">
-          <div className="flex flex-col gap-2">
-            <span className="f-mono uppercase text-[10px] tracking-widest mb-1" style={{ color: C.faint }}>Platform</span>
-            <button onClick={() => go("home")} className="f-body text-sm text-left" style={{ color: C.ink }}>Home</button>
-            <button onClick={() => go("archive")} className="f-body text-sm text-left" style={{ color: C.ink }}>Archive</button>
-            <SubmitCTA go={go} asLink className="f-body text-sm text-left" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <span className="f-mono uppercase text-[10px] tracking-widest mb-1" style={{ color: C.faint }}>Elsewhere</span>
-            <span className="f-body text-sm flex items-center gap-1.5" style={{ color: C.mid }}><Instagram size={13} /> @picked.studio</span>
-            <span className="f-body text-sm flex items-center gap-1.5" style={{ color: C.mid }}><Globe size={13} /> picked.design</span>
+      </button>
+
+      {/* Slim closing bar — essentials only, no filler links */}
+      <div style={{ borderTop: `1px solid ${C.line}` }}>
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>
+            © {new Date().getFullYear()} Picked — one designer, one campaign a week.
+          </span>
+          <div className="flex items-center gap-7">
+            <button onClick={() => go("archive")} className="f-mono text-[10px] uppercase tracking-widest hover:opacity-60 transition-opacity" style={{ color: C.mid }}>Archive</button>
+            <SubmitCTA go={go} asLink className="f-mono text-[10px] uppercase tracking-widest hover:opacity-60 transition-opacity" />
           </div>
         </div>
       </div>
