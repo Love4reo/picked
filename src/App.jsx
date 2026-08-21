@@ -941,13 +941,6 @@ function ProjectPage({ project, go, openBrief }) {
     document.body.removeChild(a);
   };
 
-  const downloadAll = () => {
-    if (!p.images?.length) return;
-    p.images.forEach((src, idx) => {
-      setTimeout(() => downloadOne(src, `${p.business} — ${p.title} ${idx + 1}`), idx * 350);
-    });
-  };
-
   return (
     <div>
       <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-10">
@@ -1047,7 +1040,6 @@ function ProjectPage({ project, go, openBrief }) {
 
       <Reveal>
         <div className="flex flex-col items-center gap-5 pb-24">
-          {p.images && <Button icon={Download} onClick={downloadAll}>Download design</Button>}
           <div className="f-display" style={{ fontSize: 20, fontWeight: 600, color: C.ink }}>Want me to design yours?</div>
           <SubmitCTA go={go} variant="ghost" icon={null} label="Submit another brief" />
         </div>
