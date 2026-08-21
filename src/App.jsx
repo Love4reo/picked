@@ -1,4 +1,4 @@
-\import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   ArrowRight, ArrowLeft, ArrowUpRight, Check, X, Upload, Clock,
   ChevronDown, ChevronRight, Search, Instagram, Globe, Lock,
