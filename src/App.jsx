@@ -550,6 +550,22 @@ function Footer({ go }) {
    corner registration marks. Deterministic, not random, so it
    doesn't reshuffle on every re-render.
    ============================================================ */
+function PoolRipples() {
+  const C = useC();
+  const points = [40, 150, 260, 370];
+  return (
+    <svg viewBox="0 0 400 50" preserveAspectRatio="none" className="w-full h-12 overflow-visible">
+      <line x1="0" y1="25" x2="400" y2="25" stroke={C.line} strokeWidth="1" />
+      {points.map((x, i) => (
+        <g key={x}>
+          <circle cx={x} cy="25" r="2" fill={C.accent} />
+          <circle cx={x} cy="25" r="2" fill="none" stroke={C.accent} strokeWidth="1" className="sonar-ping" style={{ animationDelay: `${i * 0.8}s` }} />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function PoolIllustration({ count }) {
   const C = useC();
   const hash = (n) => {
@@ -652,7 +668,7 @@ function Home({ go, openBrief }) {
       <Entry index="00" meta={<>Vol. 1<br />Ongoing</>} first>
         <div className="rise max-w-2xl">
           <p className="f-display" style={{ fontSize: "clamp(24px,3.4vw,34px)", lineHeight: 1.3, fontWeight: 500, color: C.ink }}>
-            I miss making proper creative work for real businesses — the idea, the direction, the type, the tiny details nobody asked about. So I started doing it again.
+            I miss making proper campaign work for real businesses — the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.
           </p>
           <p className="f-body mt-5" style={{ fontSize: 15, lineHeight: 1.7, color: C.mid }}>
             One business, one campaign, every week — picked from whoever submits a brief. Free, because that's the whole point.
@@ -671,13 +687,17 @@ function Home({ go, openBrief }) {
           meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.accent }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />Open</span></>}
         >
           <Reveal>
-            <div className="flex flex-col md:flex-row md:items-start gap-8">
-              <div className="flex-1">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex-1 flex flex-col">
                 <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>The pool is open.</div>
                 <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>
                   Drop a brief before {CYCLE.deadline} and it's in the running. I pick one Friday — no shortlist, no funnel, just whichever one I can't stop thinking about.
                 </p>
                 <SubmitCTA go={go} className="mt-6" />
+                <div className="mt-auto pt-10">
+                  <PoolRipples />
+                  <p className="f-mono text-[10px] uppercase tracking-widest mt-3" style={{ color: C.faint }}>Every brief drops another one in.</p>
+                </div>
               </div>
               <div className="w-full md:w-56 shrink-0">
                 <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ border: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
