@@ -1485,28 +1485,12 @@ function FloatingSample() {
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   const [idx, setIdx] = useState(0);
-  const [visible, setVisible] = useState(true);
   const drag = useRef({ dragging: false, moved: false, offX: 0, offY: 0 });
 
   useEffect(() => {
     if (SAMPLE_IMAGES.length < 2) return;
     const t = setInterval(() => setIdx((i) => (i + 1) % SAMPLE_IMAGES.length), 2400);
     return () => clearInterval(t);
-  }, []);
-
-  /* Default resting spot is next to the intro copy — while the "already
-     made" archive weeks scroll by, the sticker steps aside so it doesn't
-     sit on top of past work, then settles back in once the fine print
-     (the section right after the archive) comes into view. */
-  useEffect(() => {
-    const archiveEl = document.getElementById("archive-weeks");
-    if (!archiveEl) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setVisible(!entry.isIntersecting),
-      { threshold: 0, rootMargin: "-10% 0px -10% 0px" }
-    );
-    io.observe(archiveEl);
-    return () => io.disconnect();
   }, []);
 
   useEffect(() => {
@@ -1528,7 +1512,6 @@ function FloatingSample() {
   }, []);
 
   const onPointerDown = (e) => {
-    if (!visible) return;
     const rect = ref.current.getBoundingClientRect();
     drag.current.dragging = true;
     drag.current.moved = false;
@@ -1538,7 +1521,6 @@ function FloatingSample() {
   };
 
   const onClick = () => {
-    if (!visible) return;
     if (drag.current.moved) { drag.current.moved = false; return; }
     setOpen(true);
   };
@@ -1555,14 +1537,11 @@ function FloatingSample() {
         onClick={onClick}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        aria-hidden={!visible}
         className="select-none float-slow"
         style={{
           ...style, zIndex: 55, cursor: "grab", touchAction: "none",
-          opacity: visible ? 1 : 0,
-          pointerEvents: visible ? "auto" : "none",
-          transform: `rotate(${hover ? 0 : -6}deg) scale(${hover ? 1.04 : visible ? 1 : 0.9})`,
-          transition: "transform .3s cubic-bezier(.16,1,.3,1), opacity .45s ease",
+          transform: `rotate(${hover ? 0 : -6}deg) scale(${hover ? 1.04 : 1})`,
+          transition: "transform .3s cubic-bezier(.16,1,.3,1)",
         }}
       >
         <div className="relative">
