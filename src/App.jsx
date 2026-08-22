@@ -104,7 +104,7 @@ const POOL = [
   { id: "0246", business: "Basement Sessions", category: "Music", brief: "Social post for an underground jazz night. Should feel smoky, analog, like it was printed on a risograph.", status: "Submitted", submitted: "Aug 13" },
   { id: "0247", business: "Third Place Coffee", category: "Food & Hospitality", brief: "Social post for our loyalty card launch — playful, stamp-and-punch card energy.", status: "Submitted", submitted: "Aug 14" },
   { id: "0248", business: "Ade & Sons Realty", category: "Real Estate", brief: "New listing announcement post for a waterfront property in Lekki.", status: "Submitted", submitted: "Aug 15" },
-  { id: "0249", business: "Tim Luxury Place", category: "Real Estate", brief: "Instagram post announcing new luxury short-let units across the Lekki axis — Chevron, Ajah, and Ikate. Should feel upscale but reassuring: less like a listing, more like a map — show how close each property actually sits to the landmarks that matter (banks, hospitals, the toll plaza).", status: "Designing", submitted: "Aug 15" },
+  { id: "0249", business: "Tim Luxury Place", category: "Real Estate", brief: "Instagram post announcing new luxury short-let units across the Lekki axis — Chevron, Ajah, and Ikate. Should feel upscale but reassuring: less like a listing, more like a map — show how close each property actually sits to the landmarks that matter (banks, hospitals, the toll plaza).", status: "Designing", commissioned: true, submitted: "Aug 15" },
   { id: "0250", business: "The Reading Room", category: "Nonprofit", brief: "Social post for our childhood literacy fundraiser — hopeful but not sappy.", status: "Submitted", submitted: "Aug 16" },
   { id: "0251", business: "Halcyon Studio", category: "Fitness", brief: "Instagram carousel announcing our new Pilates timetable.", status: "Submitted", submitted: "Aug 16" },
   { id: "0252", business: "Root & Bloom Market", category: "Food & Hospitality", brief: "Social post for our farmers market pop-up this Saturday.", status: "Submitted", submitted: "Aug 17" },
@@ -422,6 +422,18 @@ function StatusPill({ status }) {
   return (
     <span className="f-mono uppercase tracking-widest text-[10px] px-2.5 py-1 rounded-full" style={{ color: C.white, backgroundColor: map[status] || C.mid }}>
       {status}
+    </span>
+  );
+}
+
+/* Marks a brief that was hired directly rather than picked from the pool —
+   an outline instead of a solid fill, so it reads as a different kind of
+   status, not a louder version of the same one. */
+function CommissionedTag() {
+  const C = useC();
+  return (
+    <span className="f-mono uppercase tracking-widest text-[10px] px-2.5 py-1 rounded-full" style={{ color: C.accent, border: `1px solid ${C.accent}` }}>
+      Commissioned
     </span>
   );
 }
@@ -784,7 +796,10 @@ function Home({ go, openBrief }) {
             <div className="flex flex-col md:flex-row md:items-start gap-8">
               <div className="flex-1">
                 <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
-                <div className="f-mono uppercase text-[10px] tracking-widest mt-1.5" style={{ color: C.mid }}>{currentBrief.category}</div>
+                <div className="flex items-center gap-2.5 mt-1.5">
+                  <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.mid }}>{currentBrief.category}</span>
+                  {currentBrief.commissioned && <CommissionedTag />}
+                </div>
                 <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>{currentBrief.brief}</p>
                 <button onClick={() => go("week")} className="f-mono text-xs uppercase tracking-widest flex items-center gap-1 group mt-6" style={{ color: C.ink }}>
                   Follow along <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -893,7 +908,10 @@ function WeekPage({ go }) {
             <div className="rounded p-8 sm:p-10 hover-lift" style={{ border: `1px solid ${C.line}` }}>
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <Eyebrow>This week's brief</Eyebrow>
-                <StatusPill status="Designing" />
+                <div className="flex items-center gap-2">
+                  {currentBrief.commissioned && <CommissionedTag />}
+                  <StatusPill status="Designing" />
+                </div>
               </div>
               <div className="f-display mt-4" style={{ fontSize: 32, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
               <div className="f-mono uppercase text-[11px] tracking-widest mt-1" style={{ color: C.mid }}>{currentBrief.category}</div>
