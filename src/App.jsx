@@ -104,7 +104,7 @@ const POOL = [
   { id: "0246", business: "Basement Sessions", category: "Music", brief: "Social post for an underground jazz night. Should feel smoky, analog, like it was printed on a risograph.", status: "Submitted", submitted: "Aug 13" },
   { id: "0247", business: "Third Place Coffee", category: "Food & Hospitality", brief: "Social post for our loyalty card launch — playful, stamp-and-punch card energy.", status: "Submitted", submitted: "Aug 14" },
   { id: "0248", business: "Ade & Sons Realty", category: "Real Estate", brief: "New listing announcement post for a waterfront property in Lekki.", status: "Submitted", submitted: "Aug 15" },
-  { id: "0249", business: "Foundry Skate Co.", category: "Retail", brief: "Social post for our new deck series, three colourways.", status: "Submitted", submitted: "Aug 15" },
+  { id: "0249", business: "Tim Luxury Place", category: "Real Estate", brief: "Instagram post announcing new luxury short-let units across the Lekki axis — Chevron, Ajah, and Ikate. Should feel upscale but reassuring: less like a listing, more like a map — show how close each property actually sits to the landmarks that matter (banks, hospitals, the toll plaza).", status: "Designing", submitted: "Aug 15" },
   { id: "0250", business: "The Reading Room", category: "Nonprofit", brief: "Social post for our childhood literacy fundraiser — hopeful but not sappy.", status: "Submitted", submitted: "Aug 16" },
   { id: "0251", business: "Halcyon Studio", category: "Fitness", brief: "Instagram carousel announcing our new Pilates timetable.", status: "Submitted", submitted: "Aug 16" },
   { id: "0252", business: "Root & Bloom Market", category: "Food & Hospitality", brief: "Social post for our farmers market pop-up this Saturday.", status: "Submitted", submitted: "Aug 17" },
@@ -158,8 +158,8 @@ const CYCLE = {
   opened: "Aug 20",
   deadline: "Aug 21",
   pickDate: "Aug 21, 5:00 PM WAT",
-  nextOpen: "Aug 21", // when the pool reopens for the following week, once this one is picked
-  status: "open", // open | picked | designing | delivered
+  nextOpen: "Aug 23", // when the pool reopens for the following week, once this one is picked
+  status: "designing", // open | picked | designing | delivered
 };
 
 const submissionsOpen = CYCLE.status === "open";
