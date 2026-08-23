@@ -470,7 +470,7 @@ function Nav({ go, view }) {
             className="transition-transform duration-300 ease-out group-hover:-rotate-3 group-hover:scale-105"
             style={{ height: 32, width: "auto", display: "block" }}
           />
-          <span className="f-mono text-[11px] hidden sm:inline transition-colors duration-300" style={{ color: C.faint }}>by Isaac Oreoluwa</span>
+          <span className="f-mono text-[8px] hidden sm:inline transition-colors duration-300" style={{ color: C.faint, letterSpacing: "-0.01em" }}>by Isaac Oreoluwa</span>
         </button>
         <div className="hidden md:flex items-center gap-8">
           {links.map(([id, label]) => (
