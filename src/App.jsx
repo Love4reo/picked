@@ -83,9 +83,14 @@ const getFonts = (C) => `
   @keyframes dotFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
   @keyframes dotTwinkle { 0%,100%{opacity:.35} 50%{opacity:1} }
   .dot-anim{animation:dotFloat 3s ease-in-out infinite, dotTwinkle 2.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center;}
+  @keyframes waveFill {
+    0%,100%{clip-path:polygon(0% 42%,8% 38%,16% 46%,24% 40%,32% 48%,40% 38%,48% 46%,56% 40%,64% 48%,72% 38%,80% 46%,88% 40%,96% 48%,100% 42%,100% 100%,0% 100%);}
+    50%{clip-path:polygon(0% 48%,8% 44%,16% 38%,24% 46%,32% 40%,40% 48%,48% 38%,56% 46%,64% 40%,72% 48%,80% 38%,88% 46%,96% 40%,100% 46%,100% 100%,0% 100%);}
+  }
+  .wave-fill-layer{animation:waveFill 3.2s ease-in-out infinite;}
   body{background-color:${C.paper};}
   input:focus, textarea:focus { border-color:${C.accent} !important; box-shadow:0 0 0 3px ${C.accentDim}; }
-  @media (prefers-reduced-motion: reduce){ .marquee-track,.rise,.pulse-dot,.digit-in,.float-slow,.btn-press,.hover-lift,.radar-sweep,.ring-spin,.ring-spin-rev,.sonar-ping,.pick-pulse,.crosshair-breathe,.dot-anim{animation:none !important; transition:none !important;} }
+  @media (prefers-reduced-motion: reduce){ .marquee-track,.rise,.pulse-dot,.digit-in,.float-slow,.btn-press,.hover-lift,.radar-sweep,.ring-spin,.ring-spin-rev,.sonar-ping,.pick-pulse,.crosshair-breathe,.dot-anim,.wave-fill-layer{animation:none !important; transition:none !important;} }
 `;
 
 /* ============================================================
@@ -447,6 +452,21 @@ function CommissionedTag() {
   return (
     <span className="f-mono uppercase tracking-widest text-[10px] px-2.5 py-1 rounded-full" style={{ color: C.accent, border: `1px solid ${C.accent}` }}>
       Commissioned
+    </span>
+  );
+}
+
+/* A liquid text-fill effect: the word renders once normally (hidden, purely
+   for layout sizing), then twice more stacked on top of it — a solid ink
+   layer and an accent layer clipped to a wave shape that animates — so a
+   band of colour washes across the letters like a tide. */
+function WaveFillText({ children }) {
+  const C = useC();
+  return (
+    <span style={{ position: "relative", display: "inline-block" }}>
+      <span style={{ visibility: "hidden" }}>{children}</span>
+      <span aria-hidden="true" style={{ position: "absolute", inset: 0, color: C.ink }}>{children}</span>
+      <span aria-hidden="true" className="wave-fill-layer" style={{ position: "absolute", inset: 0, color: C.accent }}>{children}</span>
     </span>
   );
 }
@@ -912,7 +932,7 @@ function WeekPage({ go }) {
       <Reveal>
         <div className="text-center">
           <Eyebrow center>Week {CYCLE.week}</Eyebrow>
-          <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 600, color: C.ink }}>The current cycle.</h1>
+          <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 600, color: C.ink }}>The current <WaveFillText>cycle.</WaveFillText></h1>
           <p className="f-body mt-4 max-w-lg mx-auto" style={{ color: C.mid, fontSize: 16 }}>
             {submissionsOpen
               ? `${POOL.length} briefs submitted so far. One gets picked ${CYCLE.deadline}.`
