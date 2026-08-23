@@ -547,22 +547,19 @@ function Footer({ go }) {
         </div>
       </div>
 
-      {/* Closing statement — the loud, dramatic sign-off. One word, full width. */}
+      {/* Closing statement — the loud, dramatic sign-off. The logo, full width. */}
       <button
         onClick={() => go("home")}
-        className="f-display block w-full text-left leading-none group"
+        className="block w-full text-left group"
         style={{ padding: "0" }}
       >
-        <div
-          className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 sm:pt-20 pb-6 sm:pb-10 transition-colors duration-500"
-          style={{
-            fontSize: "clamp(64px,14vw,208px)", fontWeight: 700, letterSpacing: "-0.03em",
-            color: C.ink, whiteSpace: "nowrap", overflow: "hidden",
-          }}
-        >
-          <span className="inline-block transition-transform duration-500 group-hover:-translate-y-1">
-            PICKED<span style={{ color: C.accent }}>.</span>
-          </span>
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 sm:pt-20 pb-6 sm:pb-10 overflow-hidden">
+          <img
+            src="/picked-logo.png"
+            alt="Picked"
+            className="inline-block transition-transform duration-500 group-hover:-translate-y-1"
+            style={{ width: "clamp(280px, 58vw, 880px)", height: "auto", display: "block" }}
+          />
         </div>
       </button>
 
