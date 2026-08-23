@@ -104,7 +104,7 @@ const POOL = [
   { id: "0246", business: "Basement Sessions", category: "Music", brief: "Social post for an underground jazz night. Should feel smoky, analog, like it was printed on a risograph.", status: "Submitted", submitted: "Aug 13" },
   { id: "0247", business: "Third Place Coffee", category: "Food & Hospitality", brief: "Social post for our loyalty card launch — playful, stamp-and-punch card energy.", status: "Submitted", submitted: "Aug 14" },
   { id: "0248", business: "Ade & Sons Realty", category: "Real Estate", brief: "New listing announcement post for a waterfront property in Lekki.", status: "Submitted", submitted: "Aug 15" },
-  { id: "0249", business: "Tim Luxury Place", category: "Real Estate", brief: "Instagram post announcing new luxury short-let units across the Lekki axis — Chevron, Ajah, and Ikate. Should feel upscale but reassuring: less like a listing, more like a map — show how close each property actually sits to the landmarks that matter (banks, hospitals, the toll plaza).", status: "Designing", commissioned: true, submitted: "Aug 15" },
+  { id: "0249", business: "Tim Luxury Place", category: "Real Estate", brief: "Instagram post announcing new luxury short-let units across the Lekki axis — Chevron, Ajah, and Ikate. Should feel upscale but reassuring: less like a listing, more like a map — show how close each property actually sits to the landmarks that matter (banks, hospitals, the toll plaza).", status: "Delivered", commissioned: true, submitted: "Aug 15" },
   { id: "0250", business: "The Reading Room", category: "Nonprofit", brief: "Social post for our childhood literacy fundraiser — hopeful but not sappy.", status: "Submitted", submitted: "Aug 16" },
   { id: "0251", business: "Halcyon Studio", category: "Fitness", brief: "Instagram carousel announcing our new Pilates timetable.", status: "Submitted", submitted: "Aug 16" },
   { id: "0252", business: "Root & Bloom Market", category: "Food & Hospitality", brief: "Social post for our farmers market pop-up this Saturday.", status: "Submitted", submitted: "Aug 17" },
@@ -117,6 +117,19 @@ const POOL = [
 ];
 
 const ARCHIVE = [
+  {
+    week: 4, business: "Tim Luxury Place", category: "Real Estate", title: "Location Campaign",
+    grad: ["#0B1233", "#1B2E6B"], accent: "#D9A441", commissioned: true,
+    images: [
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787486134/New_Units_fycyaj.jpg",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787486137/New_Units_1_n2kssh.jpg",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787486135/New_Units_2_vpydqk.jpg",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787486132/New_Units_3_eol7mq.jpg",
+    ],
+    brief: "Instagram post announcing new luxury short-let units across the Lekki axis — Chevron, Ajah, and Ikate. The reference they sent was built around a full illustrated map with nearby landmarks — banks, hospitals, the toll plaza — carrying that same 'we're right where you need us' reassurance.",
+    challenge: "The reference map was doing a lot at once — routes, transit lines, seven separate landmark icons — clear as a reference board but noisy for a fast Instagram scroll, and it read closer to a listing flyer than a brand moment.",
+    thinking: "I kept the reassurance and dropped the map. Three real interiors, pinned like photos on a corkboard and tagged simply by neighbourhood — Chevron, Ajah, Ikate — say 'we're already there' faster than any landmark icon could. The headline shortened to two lines, the logo and a quiet swipe cue anchor the corners, and the navy-and-gold palette keeps the same upscale feel the reference had, just with room to breathe.",
+  },
   {
     week: 3, business: "Third Place Coffee", category: "Food & Hospitality", title: "New Location Flyer",
     grad: ["#2B2B2B", "#4A3A2C"], accent: "#E8A33D",
@@ -154,12 +167,12 @@ const ARCHIVE = [
 ];
 
 const CYCLE = {
-  week: 4,
-  opened: "Aug 20",
-  deadline: "Aug 21",
-  pickDate: "Aug 21, 5:00 PM WAT",
-  nextOpen: "Aug 23", // when the pool reopens for the following week, once this one is picked
-  status: "designing", // open | picked | designing | delivered
+  week: 5,
+  opened: "Aug 23",
+  deadline: "Aug 28",
+  pickDate: "Aug 28, 5:00 PM WAT",
+  nextOpen: "Aug 30", // when the pool reopens for the following week, once this one is picked
+  status: "closed", // open | closed | designing | delivered
 };
 
 const submissionsOpen = CYCLE.status === "open";
@@ -790,33 +803,45 @@ function Home({ go, openBrief }) {
       ) : (
         <Entry
           index={`W${String(CYCLE.week).padStart(2, "0")}`}
-          meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.accent }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />In progress</span></>}
+          meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.faint }}><Lock size={9} />Closed</span></>}
         >
           <Reveal>
-            <div className="flex flex-col md:flex-row md:items-start gap-8">
-              <div className="flex-1">
-                <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
-                <div className="flex items-center gap-2.5 mt-1.5">
-                  <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.mid }}>{currentBrief.category}</span>
-                  {currentBrief.commissioned && <CommissionedTag />}
-                </div>
-                <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>{currentBrief.brief}</p>
-                <button onClick={() => go("week")} className="f-mono text-xs uppercase tracking-widest flex items-center gap-1 group mt-6" style={{ color: C.ink }}>
-                  Follow along <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
-              </div>
-              <div className="w-full md:w-56 shrink-0">
-                <div className="w-full aspect-[4/5] rounded relative overflow-hidden float-slow" style={{ border: `1px dashed ${C.lineStrong}` }}>
-                  <div className="absolute inset-0" style={{
-                    backgroundImage: `repeating-linear-gradient(135deg, ${C.line} 0px, ${C.line} 1px, transparent 1px, transparent 12px)`,
-                  }} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Lock size={20} color={C.faint} />
+            {currentBrief ? (
+              <div className="flex flex-col md:flex-row md:items-start gap-8">
+                <div className="flex-1">
+                  <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
+                  <div className="flex items-center gap-2.5 mt-1.5">
+                    <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.mid }}>{currentBrief.category}</span>
+                    {currentBrief.commissioned && <CommissionedTag />}
                   </div>
+                  <p className="f-body mt-4 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>{currentBrief.brief}</p>
+                  <button onClick={() => go("week")} className="f-mono text-xs uppercase tracking-widest flex items-center gap-1 group mt-6" style={{ color: C.ink }}>
+                    Follow along <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
                 </div>
-                <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Hidden until it's done — next pool opens {CYCLE.nextOpen}.</p>
+                <div className="w-full md:w-56 shrink-0">
+                  <div className="w-full aspect-[4/5] rounded relative overflow-hidden float-slow" style={{ border: `1px dashed ${C.lineStrong}` }}>
+                    <div className="absolute inset-0" style={{
+                      backgroundImage: `repeating-linear-gradient(135deg, ${C.line} 0px, ${C.line} 1px, transparent 1px, transparent 12px)`,
+                    }} />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Lock size={20} color={C.faint} />
+                    </div>
+                  </div>
+                  <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Hidden until it's done — next pool opens {CYCLE.nextOpen}.</p>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 max-w-2xl">
+                <div>
+                  <div className="f-display" style={{ fontSize: 24, fontWeight: 600, color: C.ink }}>Submissions are closed for now.</div>
+                  <p className="f-body mt-3 text-sm leading-relaxed max-w-md" style={{ color: C.mid }}>
+                    Last week's pick just shipped. The pool reopens {CYCLE.nextOpen} — check back then to submit a brief.
+                  </p>
+                </div>
+                <SubmitCTA go={go} className="shrink-0" />
+              </div>
+            )}
           </Reveal>
         </Entry>
       )}
@@ -836,7 +861,10 @@ function Home({ go, openBrief }) {
                   )}
                 </div>
                 <div className="pt-1">
-                  <div className="f-display transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>{a.business}</div>
+                  <div className="flex items-center gap-2.5">
+                    <div className="f-display transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>{a.business}</div>
+                    {a.commissioned && <CommissionedTag />}
+                  </div>
                   <div className="f-body text-sm mt-2 leading-relaxed max-w-md" style={{ color: C.mid }}>{a.brief}</div>
                   <span className="f-mono text-[11px] uppercase tracking-widest flex items-center gap-1 group mt-4" style={{ color: C.ink }}>
                     Read the thinking <ArrowRight size={11} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -886,7 +914,9 @@ function WeekPage({ go }) {
           <p className="f-body mt-4 max-w-lg mx-auto" style={{ color: C.mid, fontSize: 16 }}>
             {submissionsOpen
               ? `${POOL.length} briefs submitted so far. One gets picked ${CYCLE.deadline}.`
-              : `${POOL.length} briefs were submitted this week. One got picked — here's where it stands.`}
+              : currentBrief
+                ? `${POOL.length} briefs were submitted this week. One got picked — here's where it stands.`
+                : `Submissions are closed right now. The pool reopens ${CYCLE.nextOpen}.`}
           </p>
         </div>
       </Reveal>
@@ -902,7 +932,7 @@ function WeekPage({ go }) {
             <SubmitCTA go={go} className="mt-7" />
           </div>
         </Reveal>
-      ) : (
+      ) : currentBrief ? (
         <Reveal delay={120}>
           <div className="mt-14">
             <div className="rounded p-8 sm:p-10 hover-lift" style={{ border: `1px solid ${C.line}` }}>
@@ -924,6 +954,16 @@ function WeekPage({ go }) {
                 <p className="f-body text-sm mt-2" style={{ color: C.mid }}>"Come back Friday."</p>
               </div>
             </div>
+          </div>
+        </Reveal>
+      ) : (
+        <Reveal delay={120}>
+          <div className="mt-14 rounded p-8 sm:p-10 hover-lift text-center flex flex-col items-center" style={{ border: `1px solid ${C.line}` }}>
+            <Eyebrow center dot={false}><Lock size={11} />Closed</Eyebrow>
+            <div className="f-display mt-4" style={{ fontSize: 28, fontWeight: 600, color: C.ink }}>Nothing's open right now.</div>
+            <p className="f-body mt-3 max-w-md" style={{ color: C.mid, fontSize: 15, lineHeight: 1.65 }}>
+              Last week's pick just shipped. The pool reopens {CYCLE.nextOpen} for the next round.
+            </p>
           </div>
         </Reveal>
       )}
@@ -973,7 +1013,10 @@ function ProjectPage({ project, go, openBrief }) {
           <h1 className="f-display mt-5" style={{ fontSize: "clamp(30px,5vw,52px)", fontWeight: 600, color: C.ink }}>
             {p.business}
           </h1>
-          <div className="f-mono uppercase text-xs tracking-widest mt-2" style={{ color: C.mid }}>{p.category}</div>
+          <div className="flex items-center justify-center gap-2.5 mt-2">
+            <span className="f-mono uppercase text-xs tracking-widest" style={{ color: C.mid }}>{p.category}</span>
+            {p.commissioned && <CommissionedTag />}
+          </div>
         </div>
       </Reveal>
 
@@ -1136,7 +1179,10 @@ function ArchivePage({ go, openBrief }) {
                 <ArchiveCardMedia a={a} />
               </div>
               <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 18, fontWeight: 600, color: C.ink }}>{a.business}</div>
-              <div className="f-mono uppercase text-[10px] tracking-widest mt-1" style={{ color: C.mid }}>{a.category}</div>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.mid }}>{a.category}</span>
+                {a.commissioned && <CommissionedTag />}
+              </div>
             </button>
           </Reveal>
         ))}
@@ -1273,7 +1319,7 @@ function SubmitFlow({ go }) {
         <Lock size={20} color={C.faint} className="mx-auto" />
         <h1 className="f-display mt-5" style={{ fontSize: 34, fontWeight: 600, color: C.ink }}>The pool's closed right now.</h1>
         <p className="f-body text-sm mt-4 max-w-sm mx-auto" style={{ color: C.mid, lineHeight: 1.65 }}>
-          This week's brief is already being designed. Submissions reopen {CYCLE.nextOpen} — come back then.
+          Submissions are closed for now. They reopen {CYCLE.nextOpen} — come back then.
         </p>
         <div className="flex items-center justify-center gap-4 mt-8">
           <Button variant="ghost" icon={null} onClick={() => go("week")}>See this week's brief</Button>
