@@ -171,7 +171,7 @@ const CYCLE = {
   opened: "Aug 23",
   deadline: "Aug 28",
   pickDate: "Aug 28, 5:00 PM WAT",
-  nextOpen: "Aug 30", // when the pool reopens for the following week, once this one is picked
+  nextOpen: "Aug 26", // when the pool reopens for the following week, once this one is picked
   status: "closed", // open | closed | designing | delivered
 };
 
@@ -786,7 +786,7 @@ function Home({ go, openBrief }) {
           </p>
           <div className="flex flex-wrap items-center gap-4 mt-7">
             <SubmitCTA go={go} />
-            <Button variant="ghost" icon={null} onClick={() => go("archive")}>See the archive</Button>
+            <Button variant="ghost" icon={null} onClick={() => window.location.href = "mailto:oshiderooreoluwa@gmail.com"}>Hire me</Button>
           </div>
         </div>
       </Entry>
