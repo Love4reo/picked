@@ -527,6 +527,8 @@ function Nav({ go, view }) {
 
 function Footer({ go }) {
   const C = useC();
+  const [logoHover, setLogoHover] = useState(false);
+  const [gifPos, setGifPos] = useState({ x: 0, y: 0 });
   return (
     <div style={{ borderTop: `1px solid ${C.line}` }} className="mt-24">
       {/* One combined band: the hire-me pitch leads, the credit rides along as a
@@ -571,6 +573,9 @@ function Footer({ go }) {
       {/* Closing statement — the loud, dramatic sign-off. The logo, full width. */}
       <button
         onClick={() => go("home")}
+        onMouseEnter={() => setLogoHover(true)}
+        onMouseMove={(e) => setGifPos({ x: e.clientX, y: e.clientY })}
+        onMouseLeave={() => setLogoHover(false)}
         className="block w-full text-left group"
         style={{ padding: "0" }}
       >
@@ -583,6 +588,23 @@ function Footer({ go }) {
           />
         </div>
       </button>
+
+      {/* Cursor-following preview — a small tooltip-like reveal, not a static hover state */}
+      <img
+        src="https://res.cloudinary.com/dmqyultl0/image/upload/v1787511199/Untitled_design_wlkc2y.gif"
+        alt=""
+        aria-hidden="true"
+        className="hidden sm:block"
+        style={{
+          position: "fixed", left: gifPos.x, top: gifPos.y, zIndex: 60,
+          width: 176, height: 176, objectFit: "cover", borderRadius: 10,
+          border: `1px solid ${C.lineStrong}`, boxShadow: "0 20px 40px rgba(0,0,0,0.35)",
+          pointerEvents: "none",
+          transform: `translate(26px, -55%) rotate(-3deg) scale(${logoHover ? 1 : 0.85})`,
+          opacity: logoHover ? 1 : 0,
+          transition: "opacity .25s ease, transform .3s cubic-bezier(.16,1,.3,1)",
+        }}
+      />
 
       {/* Slim closing bar — essentials only, no filler links */}
       <div style={{ borderTop: `1px solid ${C.line}` }}>
