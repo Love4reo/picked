@@ -1207,8 +1207,21 @@ function ArchiveCardMedia({ a }) {
   );
 }
 
+const ARCHIVE_FILTERS = [
+  { id: "all", label: "All" },
+  { id: "picked", label: "Picked from the pool" },
+  { id: "commissioned", label: "Commissioned" },
+];
+
 function ArchivePage({ go, openBrief }) {
   const C = useC();
+  const [filter, setFilter] = useState("all");
+  const filtered = ARCHIVE.filter((a) => {
+    if (filter === "commissioned") return !!a.commissioned;
+    if (filter === "picked") return !a.commissioned;
+    return true;
+  });
+
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
       <Reveal>
@@ -1217,22 +1230,45 @@ function ArchivePage({ go, openBrief }) {
         <p className="f-body mt-4 max-w-lg" style={{ color: C.mid, fontSize: 16 }}>Every brief that's been picked, designed, and delivered — free, one a week.</p>
       </Reveal>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-14">
-        {ARCHIVE.map((a, i) => (
-          <Reveal delay={i * 100} key={a.week}>
-            <button onClick={() => openBrief(a)} className="text-left group w-full">
-              <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ backgroundColor: a.images ? C.paperDim : "transparent" }}>
-                <ArchiveCardMedia a={a} />
-              </div>
-              <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 18, fontWeight: 600, color: C.ink }}>{a.business}</div>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.mid }}>{a.category}</span>
-                {a.commissioned && <CommissionedTag />}
-              </div>
+      <Reveal delay={80}>
+        <div className="flex flex-wrap items-center gap-6 mt-10" style={{ borderBottom: `1px solid ${C.line}`, paddingBottom: 14 }}>
+          {ARCHIVE_FILTERS.map((f) => (
+            <button
+              key={f.id}
+              onClick={() => setFilter(f.id)}
+              className="relative f-mono uppercase text-[11px] tracking-widest py-1"
+              style={{ color: filter === f.id ? C.ink : C.mid, transition: "color .25s ease" }}
+            >
+              {f.label}
+              <span
+                className="absolute left-0 -bottom-0.5 h-px w-full origin-left transition-transform duration-300"
+                style={{ backgroundColor: C.ink, transform: filter === f.id ? "scaleX(1)" : "scaleX(0)" }}
+              />
             </button>
-          </Reveal>
-        ))}
-      </div>
+          ))}
+        </div>
+      </Reveal>
+
+      {filtered.length === 0 ? (
+        <p className="f-body text-sm mt-14" style={{ color: C.mid }}>Nothing here yet.</p>
+      ) : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+          {filtered.map((a, i) => (
+            <Reveal delay={i * 100} key={a.week}>
+              <button onClick={() => openBrief(a)} className="text-left group w-full">
+                <div className="w-full aspect-[4/5] rounded relative overflow-hidden" style={{ backgroundColor: a.images ? C.paperDim : "transparent" }}>
+                  <ArchiveCardMedia a={a} />
+                </div>
+                <div className="f-display mt-3 transition-colors duration-300 group-hover:opacity-60" style={{ fontSize: 18, fontWeight: 600, color: C.ink }}>{a.business}</div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.mid }}>{a.category}</span>
+                  {a.commissioned && <CommissionedTag />}
+                </div>
+              </button>
+            </Reveal>
+          ))}
+        </div>
+      )}
 
       <div className="mt-20 flex justify-center">
         <SubmitCTA go={go} />
