@@ -1013,10 +1013,12 @@ function ProjectPage({ project, go, openBrief }) {
           <h1 className="f-display mt-5" style={{ fontSize: "clamp(30px,5vw,52px)", fontWeight: 600, color: C.ink }}>
             {p.business}
           </h1>
-          <div className="flex items-center justify-center gap-2.5 mt-2">
-            <span className="f-mono uppercase text-xs tracking-widest" style={{ color: C.mid }}>{p.category}</span>
-            {p.commissioned && <CommissionedTag />}
-          </div>
+          <div className="f-mono uppercase text-xs tracking-widest mt-2" style={{ color: C.mid }}>{p.category}</div>
+          {p.commissioned && (
+            <div className="mt-3">
+              <CommissionedTag />
+            </div>
+          )}
         </div>
       </Reveal>
 
