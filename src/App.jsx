@@ -463,13 +463,14 @@ function Nav({ go, view }) {
   return (
     <div className="sticky top-0 z-40 backdrop-blur" style={{ backgroundColor: C.navBg, borderBottom: `1px solid ${C.line}` }}>
       <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 h-16 flex items-center justify-between">
-        <button onClick={() => go("home")} className="flex items-center group" aria-label="Picked — home">
+        <button onClick={() => go("home")} className="flex items-center gap-2.5 group" aria-label="Picked — home">
           <img
             src="/picked-logo.png"
             alt="Picked"
-            className="transition-transform duration-300 group-hover:scale-105"
+            className="transition-transform duration-300 ease-out group-hover:-rotate-3 group-hover:scale-105"
             style={{ height: 32, width: "auto", display: "block" }}
           />
+          <span className="f-mono text-[11px] hidden sm:inline transition-colors duration-300" style={{ color: C.faint }}>by Isaac Oreoluwa</span>
         </button>
         <div className="hidden md:flex items-center gap-8">
           {links.map(([id, label]) => (
