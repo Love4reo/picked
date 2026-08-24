@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { ArrowRight, ArrowUpRight, Mail } from "lucide-react";
+import React from "react";
 
 /* ============================================================
    TOKENS — mirrors App_2_.jsx exactly so this drops in cleanly.
@@ -65,16 +64,8 @@ function ScanMark({ C }) {
   );
 }
 
-export default function PausedScreen({ go, theme = "dark" }) {
+export default function PausedScreen({ theme = "dark" }) {
   const C = theme === "dark" ? DARK : LIGHT;
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-
-  const submit = (e) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setSent(true);
-  };
 
   return (
     <div
@@ -102,52 +93,8 @@ export default function PausedScreen({ go, theme = "dark" }) {
           </h1>
 
           <p className="f-body mt-4 max-w-sm" style={{ fontSize: 15, lineHeight: 1.7, color: C.mid }}>
-            This week's brief is already picked and in progress. New submissions open again once it ships — leave your email and I'll let you know the moment the pool reopens.
+            This week's brief is already picked and in progress. New submissions open again once it ships.
           </p>
-
-          {!sent ? (
-            <form onSubmit={submit} className="w-full max-w-xs mt-8 flex flex-col gap-3">
-              <div className="flex items-center gap-2 rounded-full px-4 py-1" style={{ border: `1px solid ${C.lineStrong}`, backgroundColor: C.paperDim }}>
-                <Mail size={14} color={C.faint} className="shrink-0" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@business.com"
-                  className="f-body w-full bg-transparent outline-none py-2.5 text-sm"
-                  style={{ color: C.ink }}
-                />
-              </div>
-              <button
-                type="submit"
-                className="group inline-flex items-center justify-center gap-2 f-mono uppercase text-xs tracking-widest px-6 py-3.5 rounded-full btn-press"
-                style={{ backgroundColor: C.ink, color: C.paper, transition: "opacity .2s ease" }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = 0.85)}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = 1)}
-              >
-                Notify me <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
-            </form>
-          ) : (
-            <div
-              className="mt-8 f-mono uppercase text-xs tracking-widest px-5 py-3 rounded-full"
-              style={{ border: `1px solid ${C.accent}`, color: C.accent, backgroundColor: C.accentDim }}
-            >
-              You're on the list — check back soon
-            </div>
-          )}
-
-          <button
-            onClick={() => go && go("archive")}
-            className="group inline-flex items-center gap-1.5 f-mono uppercase text-[11px] tracking-widest mt-10"
-            style={{ color: C.mid, transition: "color .2s ease" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = C.ink)}
-            onMouseLeave={(e) => (e.currentTarget.style.color = C.mid)}
-          >
-            Or browse past picks while you wait
-            <ArrowUpRight size={12} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </button>
         </div>
       </div>
 
