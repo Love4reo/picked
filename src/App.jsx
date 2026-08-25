@@ -548,7 +548,8 @@ function Footer({ go }) {
           <div className="max-w-xl">
             <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Not everyone wants to wait for Friday</span>
             <div className="f-display mt-3" style={{ fontSize: "clamp(22px,2.8vw,30px)", lineHeight: 1.35, fontWeight: 500, color: C.ink }}>
-              If you'd rather just hire me for a proper campaign, gig, or one-off — that's on the table too.
+              If you'd rather just hire me{" "}
+              <span style={{ opacity: 0.56 }}>for a proper campaign, gig, or one-off — that's on the table too.</span>
             </div>
             <p className="f-body mt-4 max-w-md" style={{ fontSize: 14, lineHeight: 1.7, color: C.mid }}>
               No brief pool, no waiting your turn. Just email me directly and tell me what you need.
