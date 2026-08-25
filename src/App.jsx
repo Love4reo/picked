@@ -162,7 +162,7 @@ const ARCHIVE = [
     week: 1, business: "Studio Orea", category: "Beauty", title: "Studio Flyer",
     images: [
       "https://res.cloudinary.com/dmqyultl0/image/upload/v1787168512/Instagram_post_-_27_ws2qbz.png",
-      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787487894/Instagram_post_-_28_heid55.png",
+      "https://res.cloudinary.com/dmqyultl0/image/upload/v1787636919/Instagram_post_-_29_bajpe2.png",
     ],
     grad: ["#3B0F1E", "#C96A2E"], accent: "#F6D9C4",
     brief: "A single flyer for our nail and lash studio in Lugbe, Abuja. Needs to carry the full service list and location without losing the glam — and make people want to book on the spot.",
