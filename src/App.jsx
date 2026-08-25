@@ -315,7 +315,7 @@ function Button({ children, variant = "primary", onClick, icon: Icon = ArrowRigh
    open/closed rule only has to live in one place. When submissions are closed,
    it swaps to a plain, non-interactive line telling people when the pool
    reopens instead of a dead-looking disabled button. */
-function SubmitCTA({ go, variant = "primary", label = "Submit a brief", icon, className = "", asLink = false }) {
+function SubmitCTA({ go, variant = "primary", label = "Get picked", icon, className = "", asLink = false, pill = true }) {
   const C = useC();
   if (!submissionsOpen) {
     return (
@@ -332,9 +332,19 @@ function SubmitCTA({ go, variant = "primary", label = "Submit a brief", icon, cl
     );
   }
   return (
-    <Button variant={variant} onClick={() => go("submit")} icon={icon} className={className}>
-      {label}
-    </Button>
+    <span className={`relative inline-block ${className}`}>
+      <Button variant={variant} onClick={() => go("submit")} icon={icon}>
+        {label}
+      </Button>
+      {pill && (
+        <span
+          className="f-mono uppercase text-[9px] tracking-widest px-2.5 py-1 rounded-full absolute -top-3 -right-3 z-10 select-none pointer-events-none"
+          style={{ backgroundColor: C.accent, color: "#fff", transform: "rotate(8deg)", boxShadow: "0 4px 12px rgba(53,71,240,0.35)" }}
+        >
+          Free
+        </span>
+      )}
+    </span>
   );
 }
 
@@ -518,7 +528,7 @@ function Nav({ go, view }) {
               {theme === "dark" ? <Circle size={9} color={C.accent} fill={C.accent} /> : <CircleDot size={9} color={C.mid} />}
             </span>
           </button>
-          <SubmitCTA go={go} variant="ghost" className="!py-2.5 !px-4" />
+          <SubmitCTA go={go} variant="ghost" className="!py-2.5 !px-4" pill={false} />
         </div>
       </div>
     </div>
@@ -1150,7 +1160,7 @@ function ProjectPage({ project, go, openBrief }) {
       <Reveal>
         <div className="flex flex-col items-center gap-5 pb-24">
           <div className="f-display" style={{ fontSize: 20, fontWeight: 600, color: C.ink }}>Want me to design yours?</div>
-          <SubmitCTA go={go} variant="ghost" icon={null} label="Submit another brief" />
+          <SubmitCTA go={go} variant="ghost" icon={null} label="Get yours made" />
         </div>
       </Reveal>
     </div>
