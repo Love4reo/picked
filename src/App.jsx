@@ -845,35 +845,19 @@ function Home({ go, openBrief }) {
           </div>
         </div>
 
-        {/* The mechanic — the core loop, made visible immediately */}
-        <div className="rise mt-14 flex flex-wrap items-center gap-x-3 gap-y-4" style={{ animationDelay: "80ms" }}>
-          {[`${POOL.length} briefs`, "shortlisted", "1 picked", "finished design"].map((step, i, arr) => (
-            <React.Fragment key={step}>
-              <span className="f-mono uppercase text-[11px] sm:text-xs tracking-widest px-3.5 py-2 rounded-full" style={{
-                border: `1px solid ${i === arr.length - 1 ? C.accent : C.lineStrong}`,
-                color: i === arr.length - 1 ? C.accent : C.mid,
-              }}>
-                {step}
-              </span>
-              {i < arr.length - 1 && <ArrowRight size={13} color={C.faint} />}
-            </React.Fragment>
-          ))}
+        {/* Why am I doing this? — a quiet text-button that slides down to the Why note */}
+        <div className="rise mt-14" style={{ animationDelay: "80ms" }}>
+          <button
+            onClick={() => document.getElementById("why-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+            className="f-mono uppercase text-[11px] sm:text-xs tracking-widest transition-colors duration-200 inline-flex items-center gap-1.5 group"
+            style={{ color: C.mid, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = C.ink)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = C.mid)}
+          >
+            <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+            Why am I doing this?
+          </button>
         </div>
-      </Entry>
-
-      {/* "Maybe I'll design yours." — the brand's recurring, playfully uncertain device */}
-      <Entry index="—" meta="The offer">
-        <Reveal>
-          <div className="max-w-xl">
-            <h2 className="f-display" style={{ fontSize: "clamp(22px,3vw,30px)", fontWeight: 600, color: C.ink }}>
-              Maybe I'll design yours.
-            </h2>
-            <p className="f-body mt-3 text-sm leading-relaxed" style={{ color: C.mid }}>
-              Tell me what you're trying to make happen. If your brief gets picked, I'll take it from idea to finished creative.
-            </p>
-            <SubmitCTA go={go} className="mt-6" />
-          </div>
-        </Reveal>
       </Entry>
 
       {/* This week — open for submissions, or already in progress */}
@@ -989,7 +973,7 @@ function Home({ go, openBrief }) {
               </p>
             </div>
 
-            <div className="mt-10 pt-10 max-w-xl" style={{ borderTop: `1px solid ${C.line}` }}>
+            <div id="why-section" className="mt-10 pt-10 max-w-xl" style={{ borderTop: `1px solid ${C.line}` }}>
               <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Why</span>
               <p className="f-body text-sm mt-3 leading-relaxed" style={{ color: C.mid, opacity: 0.75 }}>
                 I miss making proper campaign work for real businesses — the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.
