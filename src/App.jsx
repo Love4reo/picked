@@ -730,42 +730,53 @@ function PoolIllustration({ count }) {
    and the CTA staged as a rotated strip of tape — built to
    be read and acted on in a few seconds, not studied.
    ============================================================ */
-function DeskTapeCTA({ go, count }) {
+function DeskTargetCTA({ go, count }) {
   const C = useC();
-  const m = useMagnetic(10);
+  const m = useMagnetic(14);
   if (!submissionsOpen) {
     return (
-      <span className="f-mono uppercase text-xs tracking-widest inline-flex items-center gap-2" style={{ color: C.faint }}>
+      <span className="f-mono uppercase text-xs tracking-widest inline-flex items-center gap-2" style={{ color: "rgba(255,255,255,0.75)" }}>
         <Lock size={12} /> Opens {CYCLE.nextOpen}
       </span>
     );
   }
+  const size = 172;
+  const ringBox = size + 64;
+  const cx = ringBox / 2, cy = ringBox / 2;
   return (
-    <div className="inline-block" style={{ transform: "rotate(-6deg)" }}>
-      <div className="relative">
-        <span
-          className="f-mono uppercase text-[9px] tracking-widest px-2.5 py-1 rounded-full absolute -top-3 -right-3 z-10 select-none pointer-events-none"
-          style={{ backgroundColor: "#fff", color: C.accent, transform: "rotate(8deg)", boxShadow: "0 4px 12px rgba(0,0,0,0.25)" }}
-        >
-          Free
-        </span>
+    <div className="relative inline-flex flex-col items-center">
+      <div className="relative" style={{ width: ringBox, height: ringBox }}>
+        {/* orbiting rings + sonar pings — the site's own "hand-circled pick" motif, scaled up into the actual click target */}
+        <svg viewBox={`0 0 ${ringBox} ${ringBox}`} width={ringBox} height={ringBox} className="absolute inset-0 pointer-events-none overflow-visible">
+          <circle cx={cx} cy={cy} r={ringBox / 2 - 2} fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1" />
+          <circle cx={cx} cy={cy} r={ringBox / 2 - 2} fill="none" stroke="#fff" strokeWidth="1.5" className="sonar-ping" style={{ transformOrigin: `${cx}px ${cy}px` }} />
+          <circle cx={cx} cy={cy} r={ringBox / 2 - 14} fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1" strokeDasharray="1 5" className="ring-spin-rev" style={{ transformOrigin: `${cx}px ${cy}px` }} />
+          <line x1={cx - 8} y1={4} x2={cx + 8} y2={4} stroke="#fff" strokeWidth="1.5" />
+          <line x1={cx - 8} y1={ringBox - 4} x2={cx + 8} y2={ringBox - 4} stroke="#fff" strokeWidth="1.5" />
+          <line x1={4} y1={cy - 8} x2={4} y2={cy + 8} stroke="#fff" strokeWidth="1.5" />
+          <line x1={ringBox - 4} y1={cy - 8} x2={ringBox - 4} y2={cy + 8} stroke="#fff" strokeWidth="1.5" />
+        </svg>
+
         <button
           ref={m.ref}
           onClick={() => go("submit")}
           onMouseMove={m.onMouseMove}
           onMouseLeave={m.onMouseLeave}
-          className="f-mono inline-flex items-center gap-3 px-8 py-5 text-sm sm:text-base uppercase tracking-widest btn-press group/tape"
+          aria-label="Drop a brief"
+          className="absolute rounded-full f-mono uppercase btn-press flex flex-col items-center justify-center group/target"
           style={{
-            backgroundColor: C.paper, color: C.ink, border: `1px solid ${C.ink}`, borderRadius: 4,
-            boxShadow: "0 14px 30px rgba(0,0,0,0.3)",
+            width: size, height: size, top: (ringBox - size) / 2, left: (ringBox - size) / 2,
+            backgroundColor: C.paper, color: C.ink,
+            boxShadow: "0 22px 44px rgba(0,0,0,0.35)",
             transition: "transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s ease",
           }}
         >
-          Drop a brief
-          <ArrowRight size={18} className="transition-transform duration-300 group-hover/tape:translate-x-1" />
+          <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: "-0.01em", lineHeight: 1.15 }}>Drop</span>
+          <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: "-0.01em", lineHeight: 1.15 }}>a brief</span>
+          <ArrowRight size={17} className="mt-2 transition-transform duration-300 group-hover/target:translate-x-1" />
         </button>
       </div>
-      <div className="f-mono text-[9px] uppercase tracking-widest mt-3 text-center" style={{ color: "rgba(255,255,255,0.75)", transform: "rotate(6deg)" }}>
+      <div className="f-mono text-[9px] uppercase tracking-widest mt-4 text-center" style={{ color: "rgba(255,255,255,0.75)" }}>
         {count} in the running
       </div>
     </div>
@@ -787,7 +798,7 @@ function DeskSection({ go }) {
         </div>
       </div>
       <div className="shrink-0 sm:ml-auto">
-        <DeskTapeCTA go={go} count={POOL.length} />
+        <DeskTargetCTA go={go} count={POOL.length} />
       </div>
     </div>
   );
