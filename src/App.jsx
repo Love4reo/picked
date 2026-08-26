@@ -1941,6 +1941,9 @@ function StatusPage() {
 const SAMPLE_IMAGES = [
   "https://res.cloudinary.com/dmqyultl0/image/upload/v1787210430/Instagram_post_-_5_u1nxqq.png",
   "https://res.cloudinary.com/dmqyultl0/image/upload/v1787227199/Instagram_post_-_8_ww1a49.png",
+  "https://res.cloudinary.com/dmqyultl0/image/upload/v1787718388/Instagram_post_-_16_m2jyth.png",
+  "https://res.cloudinary.com/dmqyultl0/image/upload/v1787718386/Instagram_post_-_17_kdoroh.png",
+  "https://res.cloudinary.com/dmqyultl0/image/upload/v1787718385/Instagram_post_-_18_dy3fmb.png",
 ];
 
 function FloatingSample() {
