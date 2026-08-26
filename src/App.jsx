@@ -851,14 +851,14 @@ function Home({ go, openBrief }) {
       {/* 00 — the intro note, standing in for a hero. Leads with the business
           owner's problem, not the designer's story. */}
       <Entry index={null} meta={null} first pattern>
-        <div className="rise max-w-2xl">
+        <div className="rise max-w-2xl mx-auto text-center">
           <p className="f-display" style={{ fontSize: "clamp(52px,9vw,96px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: C.ink }}>
             Got a design problem?
           </p>
-          <p className="f-body mt-4 max-w-lg" style={{ fontSize: 16, lineHeight: 1.7, color: C.mid }}>
+          <p className="f-body mt-4 max-w-lg mx-auto" style={{ fontSize: 16, lineHeight: 1.7, color: C.mid }}>
             Drop the brief. I pick one every week and turn it into a finished creative.
           </p>
-          <div className="flex flex-wrap items-center gap-4 mt-7">
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-7">
             <SubmitCTA go={go} />
             {submissionsOpen ? (
               <Button variant="ghost" icon={null} onClick={() => go("archive")}>See what I've picked</Button>
@@ -869,7 +869,7 @@ function Home({ go, openBrief }) {
         </div>
 
         {/* Why am I doing this? — a quiet text-button that slides down to the Why note */}
-        <div className="rise mt-14" style={{ animationDelay: "80ms" }}>
+        <div className="rise mt-14 flex justify-center" style={{ animationDelay: "80ms" }}>
           <button
             onClick={() => document.getElementById("why-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
             className="f-mono uppercase text-[11px] sm:text-xs tracking-widest transition-colors duration-200 inline-flex items-center gap-1.5 group"
@@ -1333,9 +1333,10 @@ function ArchivePage({ go, openBrief }) {
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
       <Reveal>
-        <Eyebrow>Every brief that's been picked</Eyebrow>
-        <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,58px)", fontWeight: 600, color: C.ink }}>The picks.</h1>
-        <p className="f-body mt-4 max-w-lg" style={{ color: C.mid, fontSize: 16 }}>Real problems, picked one at a time, and turned into finished creative — free, one a week.</p>
+        <div className="text-center mx-auto">
+          <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,58px)", fontWeight: 600, color: C.ink }}>The picks.</h1>
+          <p className="f-body mt-4 max-w-lg mx-auto" style={{ color: C.mid, fontSize: 16 }}>Real problems, picked one at a time, and turned into finished creative — free, one a week.</p>
+        </div>
       </Reveal>
 
       <Reveal delay={80}>
