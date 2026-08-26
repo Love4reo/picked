@@ -259,7 +259,150 @@ function RotatingWord({ words, interval = 2200 }) {
   );
 }
 
-/* Magnetic hover — subtle cursor-follow pull, used on primary CTAs */
+/* Converts a #RRGGBB hex color to an rgba() string at the given alpha —
+   used by HeroDotField since canvas fillStyle needs a resolvable color. */
+function hexToRgba(hex, alpha) {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.length === 3 ? h[0] + h[0] : h.slice(0, 2), 16);
+  const g = parseInt(h.length === 3 ? h[1] + h[1] : h.slice(2, 4), 16);
+  const b = parseInt(h.length === 3 ? h[2] + h[2] : h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+/* The hero's dotted backdrop, rebuilt as a live canvas instead of a static
+   CSS pattern. Dots sit quiet near the center (so the centered headline
+   stays legible) and brighten toward the edges; the cursor drags a soft
+   glow through the grid, and a click sends an actual expanding ripple
+   through nearby dots. Falls back to a still, dim grid if the user has
+   reduced-motion set. */
+function HeroDotField() {
+  const C = useC();
+  const wrapRef = useRef(null);
+  const canvasRef = useRef(null);
+  const pointer = useRef({ x: -9999, y: -9999, tx: -9999, ty: -9999 });
+  const ripples = useRef([]);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const canvas = canvasRef.current;
+    if (!wrap || !canvas) return;
+    const ctx = canvas.getContext("2d");
+    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let w = 0, h = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const resize = () => {
+      const rect = wrap.getBoundingClientRect();
+      w = rect.width; h = rect.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(wrap);
+
+    const inBounds = (x, y) => x >= 0 && y >= 0 && x <= w && y <= h;
+    const onMove = (e) => {
+      const rect = wrap.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      if (inBounds(x, y)) { pointer.current.tx = x; pointer.current.ty = y; }
+      else { pointer.current.tx = -9999; pointer.current.ty = -9999; }
+    };
+    const onLeave = () => { pointer.current.tx = -9999; pointer.current.ty = -9999; };
+    const onDown = (e) => {
+      const rect = wrap.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      if (!inBounds(x, y)) return;
+      ripples.current.push({ x, y, t0: performance.now() });
+      if (ripples.current.length > 4) ripples.current.shift();
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerleave", onLeave);
+    window.addEventListener("pointerdown", onDown);
+
+    const step = 26;
+
+    const drawStatic = () => {
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2, maxDist = Math.hypot(cx, cy) || 1;
+      for (let y = step / 2; y < h; y += step) {
+        for (let x = step / 2; x < w; x += step) {
+          const dCenter = Math.hypot(x - cx, y - cy) / maxDist;
+          const alpha = 0.1 + dCenter * 0.3;
+          ctx.beginPath();
+          ctx.fillStyle = hexToRgba(C.lineStrong, alpha);
+          ctx.arc(x, y, 1, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    };
+
+    if (reduced) { drawStatic(); return () => ro.disconnect(); }
+
+    const draw = (now) => {
+      pointer.current.x += (pointer.current.tx - pointer.current.x) * 0.15;
+      pointer.current.y += (pointer.current.ty - pointer.current.y) * 0.15;
+      ctx.clearRect(0, 0, w, h);
+      ripples.current = ripples.current.filter((r) => now - r.t0 < 1100);
+
+      const cx = w / 2, cy = h / 2, maxDist = Math.hypot(cx, cy) || 1;
+
+      for (let y = step / 2; y < h; y += step) {
+        for (let x = step / 2; x < w; x += step) {
+          const dCenter = Math.hypot(x - cx, y - cy) / maxDist;
+          let alpha = 0.1 + dCenter * 0.3;
+          let radius = 1;
+          let color = C.lineStrong;
+
+          const dp = Math.hypot(x - pointer.current.x, y - pointer.current.y);
+          if (dp < 160) {
+            const f = 1 - dp / 160;
+            alpha = Math.min(0.9, alpha + f * 0.6);
+            radius = 1 + f * 1.6;
+            color = C.accent;
+          }
+
+          for (const r of ripples.current) {
+            const age = (now - r.t0) / 1000;
+            const rr = age * 380;
+            const band = Math.abs(Math.hypot(x - r.x, y - r.y) - rr);
+            if (band < 26) {
+              const f = (1 - band / 26) * Math.max(0, 1 - age / 1.1);
+              alpha = Math.min(1, alpha + f * 0.8);
+              radius = Math.max(radius, 1 + f * 2.2);
+              color = C.accent;
+            }
+          }
+
+          ctx.beginPath();
+          ctx.fillStyle = hexToRgba(color, alpha);
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      rafRef.current = requestAnimationFrame(draw);
+    };
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("pointerdown", onDown);
+    };
+  }, [C]);
+
+  return (
+    <div ref={wrapRef} className="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <canvas ref={canvasRef} style={{ display: "block" }} />
+    </div>
+  );
+}
 function useMagnetic(strength = 14) {
   const ref = useRef(null);
   const onMouseMove = (e) => {
@@ -831,7 +974,7 @@ function Home({ go, openBrief }) {
      Every entry on the page — the intro note, this week's brief, past weeks —
      uses this same two-column shape, so the page reads as one running log
      rather than a stack of different marketing sections. */
-  const Entry = ({ index, meta, children, first = false, pattern = false, invert = false }) => (
+  const Entry = ({ index, meta, children, first = false, pattern = false, invert = false, bg = null }) => (
     <div
       className={`w-full px-6 sm:px-10 lg:px-16 xl:px-24 ${index === null ? "" : "grid grid-cols-[56px_1fr] sm:grid-cols-[96px_1fr] gap-6 sm:gap-10"} py-12 sm:py-16 relative overflow-hidden`}
       style={{
@@ -839,6 +982,7 @@ function Home({ go, openBrief }) {
         backgroundColor: invert ? C.accent : "transparent",
       }}
     >
+      {bg}
       {pattern && (
         <div
           className="absolute inset-0 pointer-events-none"
@@ -866,7 +1010,7 @@ function Home({ go, openBrief }) {
     <div>
       {/* 00 — the intro note, standing in for a hero. Leads with the business
           owner's problem, not the designer's story. */}
-      <Entry index={null} meta={null} first pattern>
+      <Entry index={null} meta={null} first bg={<HeroDotField />}>
         <div className="rise max-w-2xl mx-auto text-center">
           <p className="f-display" style={{ fontSize: "clamp(44px,7.5vw,80px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-6px", color: C.ink }}>
             Got a <RotatingWord words={["design", "campaign", "branding", "launch", "promotion"]} /> problem?
