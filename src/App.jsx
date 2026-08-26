@@ -243,6 +243,22 @@ function AnimatedNumber({ value, pad = 0 }) {
   return <span ref={ref}>{String(display).padStart(pad, "0")}</span>;
 }
 
+/* Cycles through a list of words in place — used in the hero headline so
+   "Got a design problem?" rotates through the kinds of problems Picked
+   actually solves. Reuses the same digit-in slide used for the stat counters. */
+function RotatingWord({ words, interval = 2200 }) {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setI((v) => (v + 1) % words.length), interval);
+    return () => clearInterval(id);
+  }, [words.length, interval]);
+  return (
+    <span key={i} className="digit-in inline-block" style={{ color: "inherit" }}>
+      {words[i]}
+    </span>
+  );
+}
+
 /* Magnetic hover — subtle cursor-follow pull, used on primary CTAs */
 function useMagnetic(strength = 14) {
   const ref = useRef(null);
@@ -853,7 +869,7 @@ function Home({ go, openBrief }) {
       <Entry index={null} meta={null} first pattern>
         <div className="rise max-w-2xl mx-auto text-center">
           <p className="f-display" style={{ fontSize: "clamp(44px,7.5vw,80px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-6px", color: C.ink }}>
-            Got a design problem?
+            Got a <RotatingWord words={["design", "campaign", "branding", "launch", "promotion"]} /> problem?
           </p>
           <p className="f-body mt-4 mx-auto whitespace-nowrap" style={{ fontSize: 16, lineHeight: 1.7, color: C.mid }}>
             Drop the brief. I pick one every week and turn it into a finished creative.
