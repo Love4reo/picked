@@ -800,7 +800,7 @@ function Home({ go, openBrief }) {
      rather than a stack of different marketing sections. */
   const Entry = ({ index, meta, children, first = false, pattern = false }) => (
     <div
-      className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 grid grid-cols-[56px_1fr] sm:grid-cols-[96px_1fr] gap-6 sm:gap-10 py-12 sm:py-16 relative overflow-hidden"
+      className={`w-full px-6 sm:px-10 lg:px-16 xl:px-24 ${index === null ? "" : "grid grid-cols-[56px_1fr] sm:grid-cols-[96px_1fr] gap-6 sm:gap-10"} py-12 sm:py-16 relative overflow-hidden`}
       style={{ borderTop: first ? "none" : `1px solid ${C.line}` }}
     >
       {pattern && (
@@ -816,10 +816,12 @@ function Home({ go, openBrief }) {
           }}
         />
       )}
-      <div className="pt-1 relative z-10">
-        <div className="f-mono text-xs sm:text-sm" style={{ color: C.faint }}>{index}</div>
-        {meta && <div className="f-mono uppercase text-[9px] sm:text-[10px] tracking-widest mt-2 leading-relaxed" style={{ color: C.mid }}>{meta}</div>}
-      </div>
+      {index !== null && (
+        <div className="pt-1 relative z-10">
+          <div className="f-mono text-xs sm:text-sm" style={{ color: C.faint }}>{index}</div>
+          {meta && <div className="f-mono uppercase text-[9px] sm:text-[10px] tracking-widest mt-2 leading-relaxed" style={{ color: C.mid }}>{meta}</div>}
+        </div>
+      )}
       <div className="relative z-10">{children}</div>
     </div>
   );
