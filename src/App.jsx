@@ -877,8 +877,8 @@ function Home({ go, openBrief }) {
             onMouseEnter={(e) => (e.currentTarget.style.color = C.ink)}
             onMouseLeave={(e) => (e.currentTarget.style.color = C.mid)}
           >
+            Why I'm doing this
             <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
-            Why am I doing this?
           </button>
         </div>
       </Entry>
