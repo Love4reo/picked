@@ -852,10 +852,10 @@ function Home({ go, openBrief }) {
           owner's problem, not the designer's story. */}
       <Entry index={null} meta={null} first pattern>
         <div className="rise max-w-2xl mx-auto text-center">
-          <p className="f-display" style={{ fontSize: "clamp(52px,9vw,96px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: C.ink }}>
+          <p className="f-display" style={{ fontSize: "clamp(44px,7.5vw,80px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-6px", color: C.ink }}>
             Got a design problem?
           </p>
-          <p className="f-body mt-4 max-w-lg mx-auto" style={{ fontSize: 16, lineHeight: 1.7, color: C.mid }}>
+          <p className="f-body mt-4 mx-auto whitespace-nowrap" style={{ fontSize: 16, lineHeight: 1.7, color: C.mid }}>
             Drop the brief. I pick one every week and turn it into a finished creative.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 mt-7">
