@@ -745,7 +745,7 @@ function DeskTapeCTA({ go, count }) {
       <div className="relative">
         <span
           className="f-mono uppercase text-[9px] tracking-widest px-2.5 py-1 rounded-full absolute -top-3 -right-3 z-10 select-none pointer-events-none"
-          style={{ backgroundColor: C.accent, color: "#fff", transform: "rotate(8deg)", boxShadow: "0 4px 12px rgba(53,71,240,0.35)" }}
+          style={{ backgroundColor: "#fff", color: C.accent, transform: "rotate(8deg)", boxShadow: "0 4px 12px rgba(0,0,0,0.25)" }}
         >
           Free
         </span>
@@ -757,7 +757,7 @@ function DeskTapeCTA({ go, count }) {
           className="f-mono inline-flex items-center gap-3 px-8 py-5 text-sm sm:text-base uppercase tracking-widest btn-press group/tape"
           style={{
             backgroundColor: C.paper, color: C.ink, border: `1px solid ${C.ink}`, borderRadius: 4,
-            boxShadow: "0 14px 30px rgba(0,0,0,0.28)",
+            boxShadow: "0 14px 30px rgba(0,0,0,0.3)",
             transition: "transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s ease",
           }}
         >
@@ -765,7 +765,7 @@ function DeskTapeCTA({ go, count }) {
           <ArrowRight size={18} className="transition-transform duration-300 group-hover/tape:translate-x-1" />
         </button>
       </div>
-      <div className="f-mono text-[9px] uppercase tracking-widest mt-3 text-center" style={{ color: C.faint, transform: "rotate(6deg)" }}>
+      <div className="f-mono text-[9px] uppercase tracking-widest mt-3 text-center" style={{ color: "rgba(255,255,255,0.75)", transform: "rotate(6deg)" }}>
         {count} in the running
       </div>
     </div>
@@ -777,11 +777,11 @@ function DeskSection({ go }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-10 sm:gap-16">
       <div className="flex-1 max-w-md">
-        <h3 className="f-display uppercase" style={{ fontSize: "clamp(28px,4vw,40px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.01em", color: C.ink }}>
+        <h3 className="f-display uppercase" style={{ fontSize: "clamp(28px,4vw,40px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.01em", color: "#fff" }}>
           The desk<br />is open.
         </h3>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mt-6">
-          <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>
+          <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.75)" }}>
             Closes {CYCLE.deadline} · picked {CYCLE.pickDate}
           </span>
         </div>
@@ -804,10 +804,13 @@ function Home({ go, openBrief }) {
      Every entry on the page — the intro note, this week's brief, past weeks —
      uses this same two-column shape, so the page reads as one running log
      rather than a stack of different marketing sections. */
-  const Entry = ({ index, meta, children, first = false, pattern = false }) => (
+  const Entry = ({ index, meta, children, first = false, pattern = false, invert = false }) => (
     <div
       className={`w-full px-6 sm:px-10 lg:px-16 xl:px-24 ${index === null ? "" : "grid grid-cols-[56px_1fr] sm:grid-cols-[96px_1fr] gap-6 sm:gap-10"} py-12 sm:py-16 relative overflow-hidden`}
-      style={{ borderTop: first ? "none" : `1px solid ${C.line}` }}
+      style={{
+        borderTop: first ? "none" : `1px solid ${invert ? "rgba(255,255,255,0.18)" : C.line}`,
+        backgroundColor: invert ? C.accent : "transparent",
+      }}
     >
       {pattern && (
         <div
@@ -824,8 +827,8 @@ function Home({ go, openBrief }) {
       )}
       {index !== null && (
         <div className="pt-1 relative z-10">
-          <div className="f-mono text-xs sm:text-sm" style={{ color: C.faint }}>{index}</div>
-          {meta && <div className="f-mono uppercase text-[9px] sm:text-[10px] tracking-widest mt-2 leading-relaxed" style={{ color: C.mid }}>{meta}</div>}
+          <div className="f-mono text-xs sm:text-sm" style={{ color: invert ? "rgba(255,255,255,0.65)" : C.faint }}>{index}</div>
+          {meta && <div className="f-mono uppercase text-[9px] sm:text-[10px] tracking-widest mt-2 leading-relaxed" style={{ color: invert ? "rgba(255,255,255,0.85)" : C.mid }}>{meta}</div>}
         </div>
       )}
       <div className="relative z-10">{children}</div>
@@ -873,7 +876,8 @@ function Home({ go, openBrief }) {
       {submissionsOpen ? (
         <Entry
           index={`W${String(CYCLE.week).padStart(2, "0")}`}
-          meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: C.accent }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: C.accent }} />Open</span></>}
+          meta={<>{CYCLE.opened}<br /><span className="inline-flex items-center gap-1.5" style={{ color: "#fff" }}><span className="inline-block w-1.5 h-1.5 rounded-full pulse-dot" style={{ backgroundColor: "#fff" }} />Open</span></>}
+          invert
         >
           <Reveal>
             <DeskSection go={go} />
