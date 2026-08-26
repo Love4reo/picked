@@ -727,35 +727,45 @@ function PoolIllustration({ count }) {
 /* ============================================================
    THE DESK — replaces the pool/progress visual on Home. No
    photography, minimal copy: a statement, one line of context,
-   the CTA, and a small hand-marked signature graphic — built to
+   and the CTA staged as a rotated strip of tape — built to
    be read and acted on in a few seconds, not studied.
    ============================================================ */
-function DeskMark({ count }) {
+function DeskTapeCTA({ go, count }) {
   const C = useC();
-  const W = 132, H = 132;
-  const cx = W / 2, cy = H / 2;
+  const m = useMagnetic(10);
+  if (!submissionsOpen) {
+    return (
+      <span className="f-mono uppercase text-xs tracking-widest inline-flex items-center gap-2" style={{ color: C.faint }}>
+        <Lock size={12} /> Opens {CYCLE.nextOpen}
+      </span>
+    );
+  }
   return (
-    <div style={{ width: W, transform: "rotate(-1.5deg)" }}>
-      <div className="relative" style={{ width: W, height: H, border: `1px solid ${C.line}`, borderRadius: 3, backgroundColor: C.paperDim }}>
-        <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full overflow-visible">
-          {/* corner registration marks — same motif as the rest of the site */}
-          <path d={`M9,23 L9,9 L23,9`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
-          <path d={`M${W - 23},9 L${W - 9},9 L${W - 9},23`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
-          <path d={`M9,${H - 23} L9,${H - 9} L23,${H - 9}`} stroke={C.lineStrong} strokeWidth="1" fill="none" />
-
-          {/* the mark — a hand-circled pick, the site's one recurring gesture */}
-          <g className="crosshair-breathe">
-            <line x1={cx - 16} y1={cy} x2={cx + 16} y2={cy} stroke={C.accent} strokeWidth="0.75" />
-            <line x1={cx} y1={cy - 16} x2={cx} y2={cy + 16} stroke={C.accent} strokeWidth="0.75" />
-          </g>
-          <ellipse cx={cx} cy={cy} rx="26" ry="21" fill="none" stroke={C.accent} strokeWidth="2" transform={`rotate(-8 ${cx} ${cy})`} />
-          <circle cx={cx} cy={cy} r="3" fill={C.accent} className="pick-pulse" />
-        </svg>
-        <div className="absolute f-mono text-[8px] uppercase tracking-widest" style={{ bottom: 9, right: 11, color: C.faint }}>
-          W{String(CYCLE.week).padStart(2, "0")}
-        </div>
+    <div className="inline-block" style={{ transform: "rotate(-6deg)" }}>
+      <div className="relative">
+        <span
+          className="f-mono uppercase text-[9px] tracking-widest px-2.5 py-1 rounded-full absolute -top-3 -right-3 z-10 select-none pointer-events-none"
+          style={{ backgroundColor: C.accent, color: "#fff", transform: "rotate(8deg)", boxShadow: "0 4px 12px rgba(53,71,240,0.35)" }}
+        >
+          Free
+        </span>
+        <button
+          ref={m.ref}
+          onClick={() => go("submit")}
+          onMouseMove={m.onMouseMove}
+          onMouseLeave={m.onMouseLeave}
+          className="f-mono inline-flex items-center gap-3 px-8 py-5 text-sm sm:text-base uppercase tracking-widest btn-press group/tape"
+          style={{
+            backgroundColor: C.paper, color: C.ink, border: `1px solid ${C.ink}`, borderRadius: 4,
+            boxShadow: "0 14px 30px rgba(0,0,0,0.28)",
+            transition: "transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s ease",
+          }}
+        >
+          Drop a brief
+          <ArrowRight size={18} className="transition-transform duration-300 group-hover/tape:translate-x-1" />
+        </button>
       </div>
-      <div className="f-mono text-[9px] uppercase tracking-widest mt-2 text-center" style={{ color: C.faint }}>
+      <div className="f-mono text-[9px] uppercase tracking-widest mt-3 text-center" style={{ color: C.faint, transform: "rotate(6deg)" }}>
         {count} in the running
       </div>
     </div>
@@ -770,18 +780,14 @@ function DeskSection({ go }) {
         <h3 className="f-display uppercase" style={{ fontSize: "clamp(28px,4vw,40px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.01em", color: C.ink }}>
           The desk<br />is open.
         </h3>
-        <p className="f-body mt-3 text-sm leading-relaxed" style={{ color: C.mid }}>
-          One business, one Friday, one campaign — free, no pitch required.
-        </p>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mt-6">
-          <SubmitCTA go={go} />
           <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>
             Closes {CYCLE.deadline} · picked {CYCLE.pickDate}
           </span>
         </div>
       </div>
       <div className="shrink-0 sm:ml-auto">
-        <DeskMark count={POOL.length} />
+        <DeskTapeCTA go={go} count={POOL.length} />
       </div>
     </div>
   );
