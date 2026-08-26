@@ -98,7 +98,7 @@ const getFonts = (C) => `
    ============================================================ */
 const CATEGORIES = ["Food & Hospitality", "Fashion", "Fitness", "Retail", "Beauty", "Music", "Real Estate", "Nonprofit"];
 
-const STATUS_ORDER = ["Submitted", "Picked", "Designing", "Delivered"];
+const STATUS_ORDER = ["Submitted", "Reviewing", "Shortlisted", "Picked", "Designing", "Delivered"];
 
 const POOL = [
   { id: "0241", business: "Lagos Street Food Co.", category: "Food & Hospitality", brief: "We need an Instagram post set for our weekend food festival — three posts and a story that feel loud, hot, and a little chaotic, like the market itself.", status: "Submitted", submitted: "Aug 11" },
@@ -315,7 +315,7 @@ function Button({ children, variant = "primary", onClick, icon: Icon = ArrowRigh
    open/closed rule only has to live in one place. When submissions are closed,
    it swaps to a plain, non-interactive line telling people when the pool
    reopens instead of a dead-looking disabled button. */
-function SubmitCTA({ go, variant = "primary", label = "Get picked", icon, className = "", asLink = false, pill = true }) {
+function SubmitCTA({ go, variant = "primary", label = "Drop a brief", icon, className = "", asLink = false, pill = true }) {
   const C = useC();
   if (!submissionsOpen) {
     return (
@@ -445,7 +445,7 @@ function ProgressTrack({ status, compact }) {
 function StatusPill({ status }) {
   const C = useC();
   const map = {
-    Submitted: C.mid, Picked: C.ink, Designing: C.accent, Delivered: "#2E9C5B", Completed: "#2E9C5B", Rejected: C.faint,
+    Submitted: C.mid, Reviewing: C.mid, Shortlisted: C.ink, Picked: C.ink, Designing: C.accent, Delivered: "#2E9C5B", Completed: "#2E9C5B", Rejected: C.faint,
   };
   return (
     <span className="f-mono uppercase tracking-widest text-[10px] px-2.5 py-1 rounded-full" style={{ color: C.white, backgroundColor: map[status] || C.mid }}>
@@ -551,9 +551,6 @@ function Footer({ go }) {
               If you'd rather just hire me{" "}
               <span style={{ opacity: 0.56 }}>for a proper campaign, gig, or one-off — that's on the table too.</span>
             </div>
-            <p className="f-body mt-4 max-w-md" style={{ fontSize: 14, lineHeight: 1.7, color: C.mid }}>
-              No brief pool, no waiting your turn. Just email me directly and tell me what you need.
-            </p>
             <a href="mailto:oshiderooreoluwa@gmail.com"
               className="group inline-flex items-center gap-2 f-mono uppercase text-xs tracking-widest px-6 py-3.5 rounded-full mt-7 btn-press"
               style={{ border: `1px solid ${C.ink}`, color: C.ink, transition: "background-color .25s ease, color .25s ease" }}
@@ -776,7 +773,7 @@ function DeskSection({ go }) {
           One business, one Friday, one campaign — free, no pitch required.
         </p>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mt-6">
-          <SubmitCTA go={go} label="Give me your business" />
+          <SubmitCTA go={go} />
           <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>
             Closes {CYCLE.deadline} · picked {CYCLE.pickDate}
           </span>
@@ -828,25 +825,55 @@ function Home({ go, openBrief }) {
 
   return (
     <div>
-      {/* 00 — the intro note, standing in for a hero */}
+      {/* 00 — the intro note, standing in for a hero. Leads with the business
+          owner's problem, not the designer's story. */}
       <Entry index="00" meta={<>Vol. 1<br />Ongoing</>} first pattern>
         <div className="rise max-w-2xl">
-          <p className="f-display" style={{ fontSize: "clamp(24px,3.4vw,34px)", lineHeight: 1.3, fontWeight: 500, color: C.ink }}>
-            I miss making proper campaign work for real businesses —{" "}
-            <span style={{ opacity: 0.56 }}>the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.</span>
+          <p className="f-display" style={{ fontSize: "clamp(28px,4.2vw,44px)", fontWeight: 600, lineHeight: 1.15, color: C.ink }}>
+            Got a design problem?
           </p>
-          <p className="f-body mt-5" style={{ fontSize: 15, lineHeight: 1.7, color: C.mid }}>
-            One business, one campaign, every week — picked from whoever submits a brief. Free, because that's the whole point.
+          <p className="f-body mt-4 max-w-lg" style={{ fontSize: 16, lineHeight: 1.7, color: C.mid }}>
+            Drop the brief. I pick one every week and turn it into a finished creative.
           </p>
           <div className="flex flex-wrap items-center gap-4 mt-7">
             <SubmitCTA go={go} />
             {submissionsOpen ? (
-              <Button variant="ghost" icon={null} onClick={() => go("archive")}>See the archive</Button>
+              <Button variant="ghost" icon={null} onClick={() => go("archive")}>See what I've picked</Button>
             ) : (
               <Button variant="ghost" icon={null} onClick={() => window.location.href = "mailto:oshiderooreoluwa@gmail.com"}>Hire me</Button>
             )}
           </div>
         </div>
+
+        {/* The mechanic — the core loop, made visible immediately */}
+        <div className="rise mt-14 flex flex-wrap items-center gap-x-3 gap-y-4" style={{ animationDelay: "80ms" }}>
+          {[`${POOL.length} briefs`, "shortlisted", "1 picked", "finished design"].map((step, i, arr) => (
+            <React.Fragment key={step}>
+              <span className="f-mono uppercase text-[11px] sm:text-xs tracking-widest px-3.5 py-2 rounded-full" style={{
+                border: `1px solid ${i === arr.length - 1 ? C.accent : C.lineStrong}`,
+                color: i === arr.length - 1 ? C.accent : C.mid,
+              }}>
+                {step}
+              </span>
+              {i < arr.length - 1 && <ArrowRight size={13} color={C.faint} />}
+            </React.Fragment>
+          ))}
+        </div>
+      </Entry>
+
+      {/* "Maybe I'll design yours." — the brand's recurring, playfully uncertain device */}
+      <Entry index="—" meta="The offer">
+        <Reveal>
+          <div className="max-w-xl">
+            <h2 className="f-display" style={{ fontSize: "clamp(22px,3vw,30px)", fontWeight: 600, color: C.ink }}>
+              Maybe I'll design yours.
+            </h2>
+            <p className="f-body mt-3 text-sm leading-relaxed" style={{ color: C.mid }}>
+              Tell me what you're trying to make happen. If your brief gets picked, I'll take it from idea to finished creative.
+            </p>
+            <SubmitCTA go={go} className="mt-6" />
+          </div>
+        </Reveal>
       </Entry>
 
       {/* This week — open for submissions, or already in progress */}
@@ -868,7 +895,8 @@ function Home({ go, openBrief }) {
             {currentBrief ? (
               <div className="flex flex-col md:flex-row md:items-start gap-8">
                 <div className="flex-1">
-                  <div className="f-display" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
+                  <Eyebrow>This week's pick</Eyebrow>
+                  <div className="f-display mt-3" style={{ fontSize: 26, fontWeight: 600, color: C.ink }}>{currentBrief.business}</div>
                   <div className="flex items-center gap-2.5 mt-1.5">
                     <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.mid }}>{currentBrief.category}</span>
                     {currentBrief.commissioned && <CommissionedTag />}
@@ -883,8 +911,9 @@ function Home({ go, openBrief }) {
                     <div className="absolute inset-0" style={{
                       backgroundImage: `repeating-linear-gradient(135deg, ${C.line} 0px, ${C.line} 1px, transparent 1px, transparent 12px)`,
                     }} />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Lock size={20} color={C.faint} />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                      <Lock size={18} color={C.faint} />
+                      <span className="f-mono uppercase text-[9px] tracking-widest" style={{ color: C.faint }}>Picked. We're designing it.</span>
                     </div>
                   </div>
                   <p className="f-mono text-[10px] mt-2" style={{ color: C.faint }}>Hidden until it's done — next pool opens {CYCLE.nextOpen}.</p>
@@ -926,7 +955,7 @@ function Home({ go, openBrief }) {
                   </div>
                   <div className="f-body text-sm mt-2 leading-relaxed max-w-md" style={{ color: C.mid }}>{a.brief}</div>
                   <span className="f-mono text-[11px] uppercase tracking-widest flex items-center gap-1 group mt-4" style={{ color: C.ink }}>
-                    Read the thinking <ArrowRight size={11} className="transition-transform duration-300 group-hover:translate-x-1" />
+                    See the design <ArrowRight size={11} className="transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
                 </div>
               </button>
@@ -943,7 +972,7 @@ function Home({ go, openBrief }) {
             <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 max-w-2xl">
               {[
                 ["Drop a brief", "Tell me what you need, who it's for, and what it should say."],
-                ["One gets picked, every Friday", "No shortlist, no rounds — just one, from everyone who submitted."],
+                ["One gets picked, every week", "Reviewed, shortlisted, then one is picked — from everyone who submitted."],
                 ["It lands in your inbox", "Fully art-directed, free, ready to publish."],
               ].map(([t, d]) => (
                 <div key={t} className="flex-1">
@@ -951,6 +980,20 @@ function Home({ go, openBrief }) {
                   <p className="f-body text-xs mt-1.5 leading-relaxed" style={{ color: C.mid }}>{d}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-12 pt-10 max-w-xl" style={{ borderTop: `1px solid ${C.line}` }}>
+              <div className="f-body text-sm font-medium" style={{ color: C.ink }}>You already have the brief.</div>
+              <p className="f-body text-sm mt-2 leading-relaxed" style={{ color: C.mid }}>
+                No pitch. No quote. No awkward sales call. Just tell me what you're trying to achieve — if I pick it, I'll figure out the creative.
+              </p>
+            </div>
+
+            <div className="mt-10 pt-10 max-w-xl" style={{ borderTop: `1px solid ${C.line}` }}>
+              <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Why</span>
+              <p className="f-body text-sm mt-3 leading-relaxed" style={{ color: C.mid, opacity: 0.75 }}>
+                I miss making proper campaign work for real businesses — the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.
+              </p>
             </div>
           </Reveal>
         </Entry>
@@ -974,9 +1017,22 @@ function WeekPage({ go }) {
             {submissionsOpen
               ? `${POOL.length} briefs submitted so far. One gets picked ${CYCLE.deadline}.`
               : currentBrief
-                ? `${POOL.length} briefs were submitted this week. One got picked — here's where it stands.`
+                ? `${POOL.length} briefs came in this week. One got picked — here's where it stands.`
                 : `Submissions are closed right now. The pool reopens ${CYCLE.nextOpen}.`}
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-3 mt-6">
+            {[`${POOL.length} briefs`, "shortlisted", "1 picked", "finished design"].map((step, i, arr) => (
+              <React.Fragment key={step}>
+                <span className="f-mono uppercase text-[10px] tracking-widest px-3 py-1.5 rounded-full" style={{
+                  border: `1px solid ${i === arr.length - 1 ? C.accent : C.lineStrong}`,
+                  color: i === arr.length - 1 ? C.accent : C.mid,
+                }}>
+                  {step}
+                </span>
+                {i < arr.length - 1 && <ArrowRight size={11} color={C.faint} />}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </Reveal>
 
@@ -996,7 +1052,7 @@ function WeekPage({ go }) {
           <div className="mt-14">
             <div className="rounded p-8 sm:p-10 hover-lift" style={{ border: `1px solid ${C.line}` }}>
               <div className="flex flex-wrap items-center justify-between gap-4">
-                <Eyebrow>This week's brief</Eyebrow>
+                <Eyebrow>This week's pick</Eyebrow>
                 <div className="flex items-center gap-2">
                   {currentBrief.commissioned && <CommissionedTag />}
                   <StatusPill status="Designing" />
@@ -1009,8 +1065,8 @@ function WeekPage({ go }) {
                 <ProgressTrack status="Designing" />
               </div>
               <div className="mt-10 rounded flex flex-col items-center justify-center text-center py-14 float-slow" style={{ backgroundColor: C.paperDim }}>
-                <div className="f-display" style={{ fontSize: 24, fontWeight: 600, color: C.ink }}>Design in progress.</div>
-                <p className="f-body text-sm mt-2" style={{ color: C.mid }}>"Come back Friday."</p>
+                <div className="f-display" style={{ fontSize: 24, fontWeight: 600, color: C.ink }}>Picked.</div>
+                <p className="f-body text-sm mt-2" style={{ color: C.mid }}>"We're designing it. Come back Friday."</p>
               </div>
             </div>
           </div>
@@ -1083,6 +1139,8 @@ function ProjectPage({ project, go, openBrief }) {
 
       <Reveal delay={120}>
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
+          <Eyebrow>The design</Eyebrow>
+          <div className="mt-5">
           {p.images ? (
             <div className={`grid gap-4 ${p.images.length > 1 ? "sm:grid-cols-2" : "grid-cols-1"}`}>
               {p.images.map((src, idx) => (
@@ -1110,20 +1168,39 @@ function ProjectPage({ project, go, openBrief }) {
               </div>
             </div>
           )}
+          </div>
         </div>
       </Reveal>
 
-      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 grid sm:grid-cols-2 gap-12">
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 flex flex-col gap-12 max-w-3xl">
         <Reveal>
           <div>
-            <Eyebrow>The brief</Eyebrow>
+            <Eyebrow>The problem</Eyebrow>
             <p className="f-body mt-4 leading-relaxed" style={{ color: C.ink, fontSize: 16 }}>{p.brief}</p>
           </div>
         </Reveal>
-        <Reveal delay={100}>
+        {p.challenge && (
+          <Reveal delay={80}>
+            <div>
+              <Eyebrow>The challenge</Eyebrow>
+              <p className="f-body mt-4 leading-relaxed" style={{ color: C.ink, fontSize: 16 }}>{p.challenge}</p>
+            </div>
+          </Reveal>
+        )}
+        <Reveal delay={160}>
           <div>
-            <Eyebrow>The thinking</Eyebrow>
+            <Eyebrow>The approach</Eyebrow>
             <p className="f-body mt-4 leading-relaxed" style={{ color: C.ink, fontSize: 16 }}>{p.thinking}</p>
+          </div>
+        </Reveal>
+        <Reveal delay={240}>
+          <div className="pt-8" style={{ borderTop: `1px solid ${C.line}` }}>
+            <Eyebrow>The result</Eyebrow>
+            <p className="f-body mt-4 leading-relaxed" style={{ color: C.mid, fontSize: 16 }}>
+              {p.commissioned
+                ? `Commissioned directly and delivered — a finished, ready-to-publish design for ${p.business}.`
+                : `Picked from that week's pool, delivered free — a finished, ready-to-publish design for ${p.business}.`}
+            </p>
           </div>
         </Reveal>
       </div>
@@ -1159,9 +1236,10 @@ function ProjectPage({ project, go, openBrief }) {
       )}
 
       <Reveal>
-        <div className="flex flex-col items-center gap-5 pb-24">
-          <div className="f-display" style={{ fontSize: 20, fontWeight: 600, color: C.ink }}>Want me to design yours?</div>
-          <SubmitCTA go={go} variant="ghost" icon={null} label="Get yours made" />
+        <div className="flex flex-col items-center gap-5 pb-24 text-center">
+          <div className="f-display" style={{ fontSize: 22, fontWeight: 600, color: C.ink }}>Got something that needs designing?</div>
+          <p className="f-body text-sm" style={{ color: C.mid }}>Maybe I'll design yours.</p>
+          <SubmitCTA go={go} variant="ghost" icon={null} />
         </div>
       </Reveal>
     </div>
@@ -1240,9 +1318,9 @@ function ArchivePage({ go, openBrief }) {
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
       <Reveal>
-        <Eyebrow>All completed weeks</Eyebrow>
-        <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,58px)", fontWeight: 600, color: C.ink }}>The design archive.</h1>
-        <p className="f-body mt-4 max-w-lg" style={{ color: C.mid, fontSize: 16 }}>Every brief that's been picked, designed, and delivered — free, one a week.</p>
+        <Eyebrow>Every brief that's been picked</Eyebrow>
+        <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,58px)", fontWeight: 600, color: C.ink }}>The picks.</h1>
+        <p className="f-body mt-4 max-w-lg" style={{ color: C.mid, fontSize: 16 }}>Real problems, picked one at a time, and turned into finished creative — free, one a week.</p>
       </Reveal>
 
       <Reveal delay={80}>
@@ -1310,12 +1388,14 @@ function SubmitFlow({ go }) {
     try {
       const saved = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
       return saved?.data ?? {
+        goal: "", format: "",
         businessName: "", category: "",
         instagram: "", facebook: "", tiktok: "", twitter: "", website: "",
         brief: "", email: "", phone: "",
       };
     } catch {
       return {
+        goal: "", format: "",
         businessName: "", category: "",
         instagram: "", facebook: "", tiktok: "", twitter: "", website: "",
         brief: "", email: "", phone: "",
@@ -1326,7 +1406,7 @@ function SubmitFlow({ go }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const steps = ["About your business", "Your post", "If you're picked", "Delivery", "Review"];
+  const steps = ["Tell me about it", "The brief", "References", "Delivery", "Review"];
   const set = (k, v) => setData((d) => ({ ...d, [k]: v }));
 
   // Autosave the draft on every change so a reload or accidental navigation doesn't lose it.
@@ -1434,9 +1514,12 @@ function SubmitFlow({ go }) {
         <div className="f-mono text-sm mt-3" style={{ color: C.mid }}>BRIEF #0259</div>
 
         <div className="mt-10 rounded p-8" style={{ border: `1px solid ${C.line}` }}>
-          <StatusPill status="Submitted" />
-          <p className="f-body text-sm mt-4" style={{ color: C.mid }}>Every Friday, one brief gets picked. Your social campaign brief is officially in the pool for Week {CYCLE.week}.</p>
-          <div className="mt-8">
+          <div className="flex items-center gap-2">
+            <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Status</span>
+            <StatusPill status="Submitted" />
+          </div>
+          <p className="f-body text-sm mt-4" style={{ color: C.mid }}>Every week, one brief gets picked. Yours is officially in the pool for Week {CYCLE.week}.</p>
+          <div className="mt-8 overflow-x-auto">
             <ProgressTrack status="Submitted" />
           </div>
         </div>
@@ -1455,7 +1538,7 @@ function SubmitFlow({ go }) {
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-14 pb-24">
       <div className="flex items-center justify-between mb-3">
-        <Eyebrow>Submit a social campaign brief</Eyebrow>
+        <Eyebrow>Drop your brief</Eyebrow>
         <span className="f-mono text-[10px] uppercase tracking-widest" style={{ color: C.faint }}>{step + 1} / {steps.length}</span>
       </div>
       <div className="w-full h-px mb-10" style={{ backgroundColor: C.line }}>
@@ -1467,6 +1550,13 @@ function SubmitFlow({ go }) {
       <div className="mt-9 rise" key={step}>
         {step === 0 && (
           <div className="flex flex-col gap-6">
+            <Field label="What are you trying to make happen?" optional>
+              <div className="flex flex-wrap gap-2">
+                {["Promote a weekend offer", "Launch a new product", "Get people to attend an event", "Announce something important", "Make our new service impossible to ignore", "Something else"].map((g) => (
+                  <Chip key={g} active={data.goal === g} onClick={() => set("goal", g)}>{g}</Chip>
+                ))}
+              </div>
+            </Field>
             <Field label="Business name">
               <input value={data.businessName} onChange={(e) => set("businessName", e.target.value)} placeholder="Lagos Street Food Co." style={inputStyle} />
             </Field>
@@ -1508,17 +1598,26 @@ function SubmitFlow({ go }) {
         )}
 
         {step === 1 && (
-          <div>
-            <textarea
-              value={data.brief} onChange={(e) => set("brief", e.target.value)}
-              placeholder="What story do you want your social campaign to tell?"
-              rows={8}
-              className="f-body w-full p-5 rounded outline-none resize-none"
-              style={{ border: `1px solid ${C.line}`, backgroundColor: C.paper, fontSize: 15, lineHeight: 1.6 }}
-            />
-            <p className="f-body text-xs mt-3" style={{ color: C.mid }}>
-              Tell me what you're trying to achieve, who it's for, what it should communicate, and anything else I should know. Every brief here is for one art-directed social campaign — nothing else.
-            </p>
+          <div className="flex flex-col gap-8">
+            <div>
+              <textarea
+                value={data.brief} onChange={(e) => set("brief", e.target.value)}
+                placeholder="What do you need people to see, understand, or do?"
+                rows={8}
+                className="f-body w-full p-5 rounded outline-none resize-none"
+                style={{ border: `1px solid ${C.line}`, backgroundColor: C.paper, fontSize: 15, lineHeight: 1.6 }}
+              />
+              <p className="f-body text-xs mt-3" style={{ color: C.mid }}>
+                Give me the context. Tell me what you're promoting, who it's for, what you want it to communicate, and anything I should know.
+              </p>
+            </div>
+            <Field label="What needs to be designed?" optional>
+              <div className="flex flex-wrap gap-2">
+                {["Social campaign", "Promotional graphic", "Event campaign", "Product launch", "Advertisement", "Poster", "Flyer", "Menu", "Editorial graphic", "Other"].map((f) => (
+                  <Chip key={f} active={data.format === f} onClick={() => set("format", f)}>{f}</Chip>
+                ))}
+              </div>
+            </Field>
           </div>
         )}
 
@@ -1552,9 +1651,10 @@ function SubmitFlow({ go }) {
         {step === 4 && (
           <div className="rounded p-7" style={{ border: `1px solid ${C.line}` }}>
             {[
+              ["Trying to", data.goal || "—"],
               ["Business", data.businessName || "—"],
               ["Category", data.category || "—"],
-              ["Format", "Social campaign"],
+              ["Format", data.format || "—"],
               ["Brief", data.brief ? data.brief.slice(0, 120) + (data.brief.length > 120 ? "…" : "") : "—"],
               ["Delivery email", data.email || "—"],
             ].map(([k, v]) => (
@@ -1616,11 +1716,11 @@ function StatusPage() {
   const C = useC();
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-24">
-      <Eyebrow>What happens next</Eyebrow>
-      <h1 className="f-display mt-4" style={{ fontSize: 38, fontWeight: 600, color: C.ink }}>Your brief is in.</h1>
+      <Eyebrow>You already have the brief</Eyebrow>
+      <h1 className="f-display mt-4" style={{ fontSize: 38, fontWeight: 600, color: C.ink }}>No pitch. No quote. No awkward sales call.</h1>
       <p className="f-body text-sm mt-4 max-w-lg" style={{ color: C.mid }}>
-        There's no dashboard to refresh and no ticket number to track — just one designer working through everything
-        that comes in. Here's exactly what happens from here.
+        Just tell me what you're trying to achieve. If I pick it, I'll figure out the creative — here's exactly what
+        happens between now and then.
       </p>
 
       <div className="mt-10 rounded p-8" style={{ border: `1px solid ${C.line}` }}>
@@ -1635,12 +1735,19 @@ function StatusPage() {
           <div className="flex gap-4">
             <span className="f-mono text-xs mt-1" style={{ color: C.faint }}>02</span>
             <div>
-              <div className="f-body text-sm font-medium" style={{ color: C.ink }}>One brief gets picked</div>
-              <p className="f-body text-sm mt-1" style={{ color: C.mid }}>Every Friday, one is chosen for that week's free post — no shortlist, no rounds.</p>
+              <div className="f-body text-sm font-medium" style={{ color: C.ink }}>Reviewed, then shortlisted</div>
+              <p className="f-body text-sm mt-1" style={{ color: C.mid }}>Every brief gets read. A few make the shortlist each week.</p>
             </div>
           </div>
           <div className="flex gap-4">
             <span className="f-mono text-xs mt-1" style={{ color: C.faint }}>03</span>
+            <div>
+              <div className="f-body text-sm font-medium" style={{ color: C.ink }}>One gets picked</div>
+              <p className="f-body text-sm mt-1" style={{ color: C.mid }}>From that shortlist, one problem becomes this week's design — free, start to finish.</p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <span className="f-mono text-xs mt-1" style={{ color: C.faint }}>04</span>
             <div>
               <div className="f-body text-sm font-medium" style={{ color: C.ink }}>You'll hear by email either way</div>
               <p className="f-body text-sm mt-1" style={{ color: C.mid }}>Picked or not, an email goes out to the address you submitted with — check your inbox (and spam folder, just in case).</p>
