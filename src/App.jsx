@@ -546,11 +546,12 @@ function Footer({ go }) {
       <div style={{ borderBottom: `1px solid ${C.line}`, backgroundColor: C.paperDim }}>
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12 lg:gap-16">
           <div className="max-w-xl">
-            <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Not everyone wants to wait for Friday</span>
-            <div className="f-display mt-3" style={{ fontSize: "clamp(22px,2.8vw,30px)", lineHeight: 1.35, fontWeight: 500, color: C.ink }}>
-              If you'd rather just hire me{" "}
-              <span style={{ opacity: 0.56 }}>for a proper campaign, gig, or one-off — that's on the table too.</span>
+            <div className="f-display" style={{ fontSize: "clamp(22px,2.8vw,30px)", lineHeight: 1.35, fontWeight: 500, color: C.ink }}>
+              If you'd rather just hire me
             </div>
+            <p className="f-body mt-2 text-sm leading-relaxed" style={{ color: C.mid }}>
+              for a proper campaign, gig, or one-off — that's on the table too.
+            </p>
             <a href="mailto:oshiderooreoluwa@gmail.com"
               className="group inline-flex items-center gap-2 f-mono uppercase text-xs tracking-widest px-6 py-3.5 rounded-full mt-7 btn-press"
               style={{ border: `1px solid ${C.ink}`, color: C.ink, transition: "background-color .25s ease, color .25s ease" }}
@@ -829,7 +830,7 @@ function Home({ go, openBrief }) {
           owner's problem, not the designer's story. */}
       <Entry index="00" meta={<>Vol. 1<br />Ongoing</>} first pattern>
         <div className="rise max-w-2xl">
-          <p className="f-display" style={{ fontSize: "clamp(28px,4.2vw,44px)", fontWeight: 600, lineHeight: 1.15, color: C.ink }}>
+          <p className="f-display" style={{ fontSize: "clamp(52px,9vw,96px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: C.ink }}>
             Got a design problem?
           </p>
           <p className="f-body mt-4 max-w-lg" style={{ fontSize: 16, lineHeight: 1.7, color: C.mid }}>
