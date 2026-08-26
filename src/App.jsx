@@ -1188,26 +1188,6 @@ function WeekPage({ go }) {
         <div className="text-center">
           <Eyebrow center>Week {CYCLE.week}</Eyebrow>
           <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 600, color: C.ink }}>The current <WaveFillText>cycle.</WaveFillText></h1>
-          <p className="f-body mt-4 max-w-lg mx-auto" style={{ color: C.mid, fontSize: 16 }}>
-            {submissionsOpen
-              ? `${POOL.length} briefs submitted so far. One gets picked ${CYCLE.deadline}.`
-              : currentBrief
-                ? `${POOL.length} briefs came in this week. One got picked — here's where it stands.`
-                : `Submissions are closed right now. The pool reopens ${CYCLE.nextOpen}.`}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-3 mt-6">
-            {[`${POOL.length} briefs`, "shortlisted", "1 picked", "finished design"].map((step, i, arr) => (
-              <React.Fragment key={step}>
-                <span className="f-mono uppercase text-[10px] tracking-widest px-3 py-1.5 rounded-full" style={{
-                  border: `1px solid ${i === arr.length - 1 ? C.accent : C.lineStrong}`,
-                  color: i === arr.length - 1 ? C.accent : C.mid,
-                }}>
-                  {step}
-                </span>
-                {i < arr.length - 1 && <ArrowRight size={11} color={C.faint} />}
-              </React.Fragment>
-            ))}
-          </div>
         </div>
       </Reveal>
 
@@ -1215,7 +1195,7 @@ function WeekPage({ go }) {
         <Reveal delay={120}>
           <div className="mt-14 rounded p-8 sm:p-10 hover-lift text-center flex flex-col items-center" style={{ border: `1px solid ${C.line}` }}>
             <Eyebrow center>The pool is open</Eyebrow>
-            <div className="f-display mt-4" style={{ fontSize: 28, fontWeight: 600, color: C.ink }}>Nothing's been picked yet.</div>
+            <div className="f-display mt-4" style={{ fontSize: 28, fontWeight: 600, color: C.ink }}>{POOL.length} briefs submitted so far.</div>
             <p className="f-body mt-3 max-w-md" style={{ color: C.mid, fontSize: 15, lineHeight: 1.65 }}>
               Drop a brief before {CYCLE.deadline} and it's in the running for this week's pick.
             </p>
