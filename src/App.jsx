@@ -828,7 +828,7 @@ function Home({ go, openBrief }) {
     <div>
       {/* 00 — the intro note, standing in for a hero. Leads with the business
           owner's problem, not the designer's story. */}
-      <Entry index="00" meta={<>Vol. 1<br />Ongoing</>} first pattern>
+      <Entry index={null} meta={null} first pattern>
         <div className="rise max-w-2xl">
           <p className="f-display" style={{ fontSize: "clamp(52px,9vw,96px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: C.ink }}>
             Got a design problem?
@@ -956,33 +956,40 @@ function Home({ go, openBrief }) {
           <Reveal>
             <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 max-w-2xl">
               {[
-                ["Drop a brief", "Tell me what you need, who it's for, and what it should say."],
-                ["One gets picked, every week", "Reviewed, shortlisted, then one is picked — from everyone who submitted."],
-                ["It lands in your inbox", "Fully art-directed, free, ready to publish."],
-              ].map(([t, d]) => (
+                ["01", "Drop a brief", "Tell me what you need."],
+                ["02", "I pick one", "Every week, one brief gets picked."],
+                ["03", "You get the design", "Finished, art-directed, ready to use."],
+              ].map(([n, t, d]) => (
                 <div key={t} className="flex-1">
-                  <div className="f-body text-sm font-medium" style={{ color: C.ink }}>{t}</div>
+                  <div className="f-mono text-xs" style={{ color: C.faint }}>{n}</div>
+                  <div className="f-body text-sm font-medium mt-1.5" style={{ color: C.ink }}>{t}</div>
                   <p className="f-body text-xs mt-1.5 leading-relaxed" style={{ color: C.mid }}>{d}</p>
                 </div>
               ))}
             </div>
-
-            <div className="mt-12 pt-10 max-w-xl" style={{ borderTop: `1px solid ${C.line}` }}>
-              <div className="f-body text-sm font-medium" style={{ color: C.ink }}>You already have the brief.</div>
-              <p className="f-body text-sm mt-2 leading-relaxed" style={{ color: C.mid }}>
-                No pitch. No quote. No awkward sales call. Just tell me what you're trying to achieve — if I pick it, I'll figure out the creative.
-              </p>
-            </div>
-
-            <div id="why-section" className="mt-10 pt-10 max-w-xl" style={{ borderTop: `1px solid ${C.line}` }}>
-              <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Why</span>
-              <p className="f-body text-sm mt-3 leading-relaxed" style={{ color: C.mid, opacity: 0.75 }}>
-                I miss making proper campaign work for real businesses — the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.
-              </p>
-            </div>
           </Reveal>
         </Entry>
       </div>
+
+      {/* "Maybe I'll design yours." + Why — the human close, kept separate
+          from the mechanics above so each section does one job. */}
+      <Entry index="—" meta="The offer">
+        <Reveal>
+          <div className="max-w-xl">
+            <h2 className="f-display" style={{ fontSize: "clamp(22px,3vw,30px)", fontWeight: 600, color: C.ink }}>
+              Maybe I'll design yours.
+            </h2>
+            <SubmitCTA go={go} className="mt-6" />
+          </div>
+
+          <div id="why-section" className="mt-12 pt-10 max-w-xl" style={{ borderTop: `1px solid ${C.line}` }}>
+            <span className="f-mono uppercase text-[10px] tracking-widest" style={{ color: C.faint }}>Why</span>
+            <p className="f-body text-sm mt-3 leading-relaxed" style={{ color: C.mid, opacity: 0.75 }}>
+              I miss making proper campaign work for real businesses — the idea, the direction, the type, the tiny details nobody asked for. So I started making it again.
+            </p>
+          </div>
+        </Reveal>
+      </Entry>
     </div>
   );
 }
