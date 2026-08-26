@@ -1187,7 +1187,6 @@ function WeekPage({ go }) {
       <Reveal>
         <div className="text-center">
           <Eyebrow center>Week {CYCLE.week}</Eyebrow>
-          <h1 className="f-display mt-4" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 600, color: C.ink }}>The current <WaveFillText>cycle.</WaveFillText></h1>
         </div>
       </Reveal>
 
