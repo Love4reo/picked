@@ -176,8 +176,8 @@ const CYCLE = {
   opened: "Aug 23",
   deadline: "Aug 28",
   pickDate: "Aug 28, 5:00 PM WAT",
-  nextOpen: "Aug 26", // when the pool reopens for the following week, once this one is picked
-  status: "open", // open | closed | designing | delivered
+  nextOpen: "Sep 1", // when the pool reopens for the following week, once this one is picked
+  status: "closed", // open | closed | designing | delivered
 };
 
 const submissionsOpen = CYCLE.status === "open";
