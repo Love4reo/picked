@@ -1031,7 +1031,7 @@ function Home({ go, openBrief }) {
         {/* Why am I doing this? — a quiet text-button that slides down to the Why note */}
         <div className="rise mt-14 flex justify-center" style={{ animationDelay: "80ms" }}>
           <button
-            onClick={() => document.getElementById("why-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+            onClick={() => document.getElementById("why-section")?.scrollIntoView({ behavior: "smooth", block: "start" })}
             className="f-mono uppercase text-[11px] sm:text-xs tracking-widest transition-colors duration-200 inline-flex items-center gap-1.5 group"
             style={{ color: C.mid, background: "none", border: "none", padding: 0, cursor: "pointer" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = C.ink)}
@@ -1158,7 +1158,7 @@ function Home({ go, openBrief }) {
           ("maybe I'll design yours") now sits underneath as the follow-through. */}
       <Entry index="—" meta="Why">
         <Reveal>
-          <div id="why-section" className="max-w-xl">
+          <div id="why-section" className="max-w-xl" style={{ scrollMarginTop: 88 }}>
             <h2 className="f-display" style={{ fontSize: "clamp(22px,3vw,30px)", fontWeight: 600, color: C.ink, lineHeight: 1.3 }}>
               I miss making real work for real businesses.
             </h2>
