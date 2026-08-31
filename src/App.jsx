@@ -173,11 +173,11 @@ const ARCHIVE = [
 
 const CYCLE = {
   week: 5,
-  opened: "Aug 23",
-  deadline: "Aug 28",
-  pickDate: "Aug 28, 5:00 PM WAT",
-  nextOpen: "Sep 1", // when the pool reopens for the following week, once this one is picked
-  status: "closed", // open | closed | designing | delivered
+  opened: "Sep 1",
+  deadline: "Sep 4",
+  pickDate: "Sep 4, 5:00 PM WAT",
+  nextOpen: "Sep 8", // when the pool reopens for the following week, once this one is picked
+  status: "open", // open | closed | designing | delivered
 };
 
 const submissionsOpen = CYCLE.status === "open";
