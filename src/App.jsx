@@ -174,8 +174,8 @@ const ARCHIVE = [
 const CYCLE = {
   week: 5,
   opened: "Sep 1",
-  deadline: "Sep 4",
-  pickDate: "Sep 4, 5:00 PM WAT",
+  deadline: "Sep 11",
+  pickDate: "Sep 11, 5:00 PM WAT",
   nextOpen: "Sep 8", // when the pool reopens for the following week, once this one is picked
   status: "open", // open | closed | designing | delivered
 };
@@ -957,7 +957,7 @@ function DeskSection({ go }) {
         </div>
       </div>
       <div className="shrink-0 sm:ml-auto">
-        <DeskTargetCTA go={go} count={POOL.length} />
+        <DeskTargetCTA go={go} count={6} />
       </div>
     </div>
   );
